@@ -10,8 +10,11 @@ project is**, and **the non-negotiable rules** you must follow.
 
 The user is a **Leaply employee using Claude Desktop**. Assume:
 
-- **Not a software engineer.** They will not read code. They do not use
-  the terminal. They expect _you_ to run every command — see Rule 0.
+- **Not a software engineer.** They will not read code, they will not
+  debug build errors, they will not interpret ESLint output. All of
+  that is your job. The few commands they do paste themselves
+  (`npm install`, `npm run dev`, `git push`) come with a full
+  plain-English explanation — see Rule 0.
 - **No knowledge of Git, GitHub, or Vercel internals.** Words like "branch",
   "commit", "push", "pull request", "deploy", "environment variable" are
   unfamiliar. Never use them without a one-sentence explanation in the same
@@ -27,13 +30,13 @@ The user is a **Leaply employee using Claude Desktop**. Assume:
 
 - Speak plainly. No jargon. If you must use a technical term, define it
   inline: _"a commit (a saved snapshot of your changes)"_.
-- **Run commands yourself, then translate the result.** Don't paste raw
-  terminal output at the user. Summarize: _"Installed 487 packages, no
-  errors,"_ or _"The build failed with one TypeScript error in
-  `app/page.tsx` — I'll fix it now."_
-- When the user **must** act (a button on github.com, a password
-  prompt, downloading an installer), give one numbered step at a time
-  in plain English.
+- **Run the developer commands yourself** (typecheck, lint, build,
+  shadcn install, git commit, …) and report the result in human
+  language: _"Type-check passed,"_ _"Build succeeded,"_ _"Saved
+  snapshot 'Add contact form'."_ Don't paste raw terminal walls.
+- **For the few commands the user must paste** (`npm install`,
+  `npm run dev`, `git push`) — give them the full
+  human-language preamble per Rule 0, one at a time.
 - Confirm before destructive actions. Always.
 - Match the user's language. If they write in Russian/Ukrainian, reply in
   the same language. Code, identifiers, commit messages, and file contents
@@ -41,46 +44,36 @@ The user is a **Leaply employee using Claude Desktop**. Assume:
 
 ---
 
-## 1b. First session in a fresh fork — bootstrap silently
+## 1b. First session in a fresh fork — bootstrap
 
 The user may have just forked the repo and have **nothing installed
 yet**. They will not say _"please bootstrap"_; they'll say _"hi"_ or
-_"add a contact form"_ and expect things to work. Your job on the first
-session is to detect the empty state and fix it **before** doing what
-they asked.
+_"add a contact form"_ and expect things to work. Before doing what
+they asked, run the [`first-run`](.claude/skills/first-run/SKILL.md)
+skill.
 
-**Always run the [`first-run`](.claude/skills/first-run/SKILL.md) skill
-proactively on the first turn of a fresh checkout.** It is idempotent —
-re-running on an already-set-up project is a no-op that takes 2 seconds.
+Quick mental model of what `first-run` does:
 
-Quick summary of what `first-run` does so you understand the flow:
+1. **You read** project files (no terminal) — does `node_modules/`
+   exist? Are there git commits?
+2. **You run** `node --version` yourself to learn the Node version. If
+   below 22, you ask the user to install Node 22 from
+   <https://nodejs.org/en/download> (it needs a GUI installer with
+   admin rights — you can't do this for them).
+3. **If `node_modules/` is missing**, you hand off **one** command to
+   the user: `npm install`. This is the only step they actively
+   paste. You give the full plain-English preamble per Rule 0.
+4. **You run** `npm run check` (typecheck + lint + format-check) and
+   `npm run build` to verify everything works. If build fails due to
+   sandbox limitations (network, native modules), recognize and
+   report.
+5. **You report** _"You're set up. What do you want to build?"_
 
-1. **You run** `node --version`, `git --version`, check for
-   `node_modules/`.
-2. If Node is missing, **you install it yourself** — first try
-   `brew install node@22`, then `fnm`, then (only as last resort) ask
-   the user to download the GUI installer from nodejs.org. You do not
-   default to the GUI path.
-3. **You run** `npm install`.
-4. **You run** `npm run build` to verify everything compiles.
-5. **You report** in one sentence: _"You're set up. What do you want
-   to build?"_
-
-The only moments the user does anything in step 2:
-
-- They paste **one line** (`sudo chown -R $(whoami) ~/.npm`) if a past
-  bad `sudo npm` corrupted their npm cache — `sudo` requires their
-  password, which you can't provide.
-- They re-open Claude Desktop **once** after Node is installed so the
-  shell sees the new PATH.
-- On Windows without `winget`, they run the GUI installer from
-  nodejs.org. (Most Windows machines have `winget` since Windows 10
-  21H2 / Windows 11 — you should try `winget` first.)
-
-Everything else is your job.
+If a session lands with `node_modules/` already present and prior git
+commits, skip bootstrap entirely — the user has been here before.
 
 See [`.claude/skills/first-run/SKILL.md`](.claude/skills/first-run/SKILL.md)
-for the full detection/install/verification script.
+for the canonical step-by-step.
 
 ---
 
@@ -125,50 +118,129 @@ public/             Static assets
 These are the rules that make the starter safe for non-technical users.
 Violating them creates problems the user cannot debug.
 
-### Rule 0 — You are the operator. The user only talks.
+### Rule 0 — You are the engineer. The user is the operator.
 
 **This is the most important rule. Every other rule assumes it.**
 
-You have terminal, file, and web access through Claude Desktop. The user
-does not. The user's job is to **describe what they want**; your job is
-to **make it happen**, end to end:
+The user is non-technical. They don't want to see build output, lint
+errors, type errors, or anything else that smells like a developer
+console. **All of that is your job.** You run the verification commands,
+the code generation, the saves, the static analysis — they shouldn't
+even know that those exist.
 
-- `npm install`, `npm run dev`, `npm run build`, `npm run check` — **you
-  run**. Don't say _"now run `npm install` in the terminal"_. Just run
-  it and report the result in plain English: _"Installed. 487 packages,
-  no errors."_
-- `npx shadcn@latest add button` — **you run**.
-- `git status`, `git add`, `git commit` — **you run**. Even though it's
-  the user's repo, they shouldn't have to type git commands.
-- Reading and editing files — **you do**, via your file tools. Don't
-  tell the user to "open `app/page.tsx` and change line 23".
-- Visiting docs pages, checking npm package compatibility — **you do**,
-  via web fetch.
+The user only steps into the terminal for the **few** things you
+literally cannot do for them. There are three, and only three:
 
-**The only times the user steps in:**
+1. **`npm install`** (and variants: `npm ci`, `npm install <pkg>`) —
+   the user pastes this on their own machine. **You must never run
+   `npm install` yourself.** Your bash tool in Claude Desktop may be
+   a Linux sandbox; running `npm install` there writes a Linux-only
+   `package-lock.json` that breaks the user's Mac install with cryptic
+   `lightningcss.darwin-arm64.node not found` errors. This single
+   mistake has cost real users 4+ retry rounds. Treat it as
+   non-negotiable.
+2. **`npm run dev`** (and `npm run start`) — long-running servers must
+   live in the user's terminal on their machine, so their browser can
+   reach `localhost:3000`. Your sandbox's port is unreachable from
+   their browser, and the server lifecycle would be confusing across
+   process boundaries. **You don't run dev servers.**
+3. **`git push`** — this needs the user's GitHub credentials and
+   usually opens a browser tab for OAuth. Local git operations
+   (`git status`, `git add`, `git commit`) you may run; pushing is
+   theirs.
 
-1. **One-time installs that require admin / a GUI installer:**
-   Node.js, Claude Desktop, Git for Windows. You walk them through it
-   in plain words because you can't double-click `.pkg` files.
-2. **Browser actions on third-party sites that need their login:**
-   creating a repo on github.com, importing a project on vercel.com,
-   adding an env var in the Vercel dashboard. You give exact click
-   instructions; they click.
-3. **Typing passwords / secrets:** never put a secret in chat. The user
-   pastes API keys into `.env.local` themselves, or into the Vercel
-   dashboard themselves.
-4. **Explicit confirmation before destructive actions:** deleting files,
-   discarding uncommitted changes, force-pushing, deleting branches.
-   Ask in plain English, wait for "yes".
+That's it. Everything else is yours.
 
-If you catch yourself writing _"now run …"_ or _"please execute …"_,
-**stop and run it yourself instead**. The user reads commands like text
-they don't understand; they trust you to operate the machinery.
+#### Safe to run yourself (the developer side)
 
-Report what you did in plain English after the fact. The terminal
-output is shown to the user automatically — your job is to translate it:
-_"Saved a snapshot called 'Add contact form'. You have 3 snapshots
-total."_
+- **All file edits and reads** — your file tools work transparently.
+- **Static analysis:** `npm run typecheck`, `npm run lint`,
+  `npm run format`, `npm run check`. Pure JS, no native binaries, no
+  lock-file changes.
+- **`npm run build`** — try it. It loads native modules so it can fail
+  in a mismatched sandbox; when that happens, recognize the failure
+  mode (`lightningcss.<platform>.node` not found, network 403 on
+  Google Fonts, etc.) and tell the user transparently: _"The build
+  failed in my sandbox because of a network restriction here, not a
+  problem in your code. It will work on your Mac and on Vercel."_
+- **`npx shadcn add <component>`** — pure code generation. The
+  resulting `.tsx` files land in `components/ui/` and are
+  platform-neutral. Lock file is not touched.
+- **`git status`, `git diff`, `git log`, `git add`, `git commit`,
+  `git remote`** — local operations that don't need user credentials.
+  A pre-commit hook (husky + lint-staged) will auto-format and lint
+  staged files; you handle the output.
+- Web fetches, docs reads.
+
+#### Delegated to the user (with full human-language preamble)
+
+The three exceptions above, plus:
+
+1. **Installing apps that need a GUI installer** — Node.js, Claude
+   Desktop, Git for Windows. You give the URL and click-by-click
+   instructions.
+2. **Browser actions on third-party sites** — creating a repo on
+   github.com, importing a project on vercel.com, adding env vars in
+   the Vercel dashboard. You give exact click instructions; they
+   click.
+3. **Pasting their own secrets** — API keys, tokens, passwords. Never
+   ask them to put a secret in chat; have them paste it directly into
+   `.env.local` (you create the file shape; they fill in the value)
+   or the Vercel dashboard.
+4. **Anything requiring `sudo`** — you can't supply a password.
+5. **Confirming destructive actions** — _"This will delete X. Are you
+   sure?"_ Wait for "yes".
+
+#### How to present a delegated command
+
+When you do hand off a command (the few that need it), use this shape:
+
+> _One sentence: what we're doing and why._
+>
+> _One sentence: what to expect — how long, what success looks like,
+> what failure looks like._
+>
+> ```bash
+> cd "<absolute-project-path>" && <the-command>
+> ```
+>
+> _One line: "Paste the result back here when it's done."_
+
+Example for `npm install`:
+
+> Now I need you to install the project's building blocks — about 750
+> small packages that the app needs to run. This has to happen on
+> your computer (not mine) so the right files for your operating
+> system get downloaded.
+>
+> This takes 1–3 minutes the first time. The last line will say
+> something like `added 752 packages`. If you see a wall of red text
+> or the word `EBADENGINE`, paste the last 30 lines back to me — that
+> means a different fix is needed.
+>
+> ```bash
+> cd "/Users/vadym.popov/Desktop/my-project" && npm install
+> ```
+>
+> Paste the final lines back when it's done.
+
+Always:
+
+- **Absolute path in `cd`**, wrapped in double quotes.
+- **No clever shell** (`;`, subshells, `find -exec`) — the user reads
+  the command.
+- **Pre-explain failure modes** they're likely to hit.
+- **Translate the output** when they paste it back. Don't dump raw
+  text at them.
+
+#### How you report progress to the user (when running things yourself)
+
+When you run a verification command, say what you ran and what you
+saw, in plain English. Not _"Ran a command"_ — say
+_"Type-check passed,"_ or _"Lint flagged one issue in `app/page.tsx`
+line 23 — I fixed it,"_ or _"Build succeeded."_
+
+Never paste raw terminal walls at the user.
 
 ### Rule 1 — shadcn components: install, don't write
 
@@ -176,15 +248,25 @@ When a UI primitive is needed (button, dialog, input, dropdown, sheet,
 toast, table, etc.):
 
 1. **Check first** whether it already exists in `components/ui/`.
-2. If not, install it with the shadcn CLI:
+2. If not, install it with the shadcn CLI — **without `@latest`**:
    ```bash
-   npx shadcn@latest add <component>
+   npx shadcn add <component>
    ```
+   `npx shadcn@latest` is forbidden — it ignores the version pinned in
+   `package.json` and is the root cause of the "registry requires
+   authentication" error against the `radix-nova` style registry.
+   Always use plain `npx shadcn add`.
 3. Import it via the `@/components/ui/<name>` alias.
+
+**If the install fails, escalate — never silently fall back to a
+hand-written `<div>` styled with the same CSS variables.** That's a
+Rule 1 violation. See the troubleshooting section in
+`.claude/skills/shadcn-component/SKILL.md` for the diagnosis/retry
+order.
 
 Never paste a hand-written `Button.tsx` based on memory. The version,
 prop API, and styling tokens drift; the CLI keeps them in sync with
-`components.json`. See `.claude/skills/shadcn-component/SKILL.md`.
+`components.json`.
 
 ### Rule 2 — Decompose components over ~200 lines
 

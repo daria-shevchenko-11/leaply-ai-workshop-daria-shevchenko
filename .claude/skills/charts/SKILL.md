@@ -16,11 +16,14 @@ Reference: <https://ui.shadcn.com/docs/components/radix/chart>
 ## Prerequisites
 
 The chart primitive should already be installed at
-`components/ui/chart.tsx`. If not:
+`components/ui/chart.tsx`. If not, run:
 
 ```bash
-npx shadcn@latest add chart
+npx shadcn add chart
 ```
+
+**Plain `npx shadcn add`, never `@latest`** — same reasoning as for
+any other shadcn component (see `.claude/skills/shadcn-component/SKILL.md`).
 
 `recharts` is already in `package.json`.
 

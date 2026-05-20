@@ -9,13 +9,13 @@ The user said _"I have an API key"_, _"I need to add a secret"_, _"how
 do I store this token"_. Environment variables are how secrets and
 config values are kept out of the source code.
 
-**Division of labor (Rule 0 applies):** you create and edit
-`.env.local`, you edit `lib/env.ts`, you restart the dev server. The
-**user only does two things**: (1) pastes their actual secret value into
-chat _once_ so you can write it to `.env.local`, and (2) clicks through
-the Vercel dashboard to add the same var for production (you can't reach
-their Vercel account). Never ask them to open or edit `.env.local`
-themselves.
+**Division of labor (Rule 0):** you create and edit `.env.local` and
+`lib/env.ts` directly with your file tools (no terminal needed). The
+user does three things: (1) pastes their secret value into chat once
+so you can write it to `.env.local`, (2) pastes any restart-the-dev-
+server command if needed, and (3) clicks through the Vercel dashboard
+to add the same var for production (you can't reach their Vercel
+account).
 
 ## The two places they live
 

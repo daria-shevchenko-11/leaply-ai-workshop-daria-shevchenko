@@ -8,11 +8,11 @@ description: Help a non-technical user deploy their app to Vercel's free Hobby t
 The user said _"put it online"_, _"make it a real website"_, _"deploy
 it"_. They want a live URL.
 
-**Division of labor (Rule 0 applies):** you run `npm run build` and any
-`git` commands yourself. The user only does the parts that require
-their Vercel/GitHub login in a browser — signing in, importing the
-repo, pasting env vars into the dashboard, clicking **Deploy**. Don't
-ask them to type a terminal command at any point in this flow.
+**Division of labor (Rule 0):** you run `npm run build` (the pre-flight
+check) and all local git operations yourself. The user pastes
+`git push` (needs their credentials) and handles the Vercel dashboard
+flow (signing in, importing the repo, pasting env vars, clicking
+Deploy).
 
 ## The model
 
@@ -24,21 +24,30 @@ This means before deploying, the code **must already be on GitHub** —
 see `.claude/skills/github-publish/SKILL.md`. If it isn't, start there
 and come back.
 
-## Pre-flight checks
+## Pre-flight check (you run this)
 
-Before sending the user to Vercel, make sure the build works locally:
+Before sending the user to Vercel, run a local production build to
+catch any errors before the dashboard does:
 
 ```bash
 npm run build
 ```
 
-If this fails locally, it will fail on Vercel — fix the errors first.
-Common issues:
+If it succeeds, tell the user, in one sentence: _"The production build
+works — let's go to Vercel."_
 
-- Missing env var referenced as `process.env.X` (see
-  `.claude/skills/env-variables/SKILL.md`)
+If it fails, common causes (diagnose and fix yourself via file tools):
+
+- Missing env var referenced as `process.env.X` → see
+  `.claude/skills/env-variables/SKILL.md`
 - A client component using a Node API
-- A type error or lint error you skipped
+- A type error or lint error that slipped through
+
+If it fails because of a sandbox-specific issue (Google Fonts 403,
+native module on the wrong platform), tell the user transparently:
+_"The build failed in my sandbox because of a network restriction on
+my side, not a problem in your code — it'll work on Vercel."_ and
+move on.
 
 ## First-time deploy — the script
 
@@ -72,13 +81,15 @@ automatically.**
 
 After the first deploy, the user does nothing on Vercel. The flow is:
 
-1. User asks Claude to make changes.
+1. User asks for changes.
 2. Claude makes them.
 3. User says _"publish this"_ / _"update the site"_.
-4. Claude saves a snapshot (`git-commit` skill) and pushes (`git push`).
-5. Vercel auto-rebuilds in ~1–2 minutes. The live site updates.
+4. Claude saves a snapshot (runs `git-commit` skill itself).
+5. Claude hands the user the `git push` command (it needs their
+   credentials).
+6. Once the push lands, Vercel auto-rebuilds in ~1–2 minutes.
 
-If the user wants to peek at the deployment status, point them to
+If the user wants to peek at deployment status, point them to
 <https://vercel.com/dashboard> → their project → latest deployment.
 They don't need to go there for a successful deploy — Vercel emails on
 failure.
@@ -98,14 +109,13 @@ can't. So:
 2. From the pasted log, **you** diagnose the issue. It's almost always
    one of:
    - **Missing env var** → run the env-variables skill.
-   - **Type error skipped locally** → you reproduce with
-     `npm run build`, fix, commit, push.
-   - **ESLint error** → you run `npm run lint`, fix, commit, push.
-   - **`npm install` failure** → an incompatible dependency. You inspect
-     `package.json` and downgrade or replace.
-3. **You** fix the code, save the snapshot, and push. Vercel retries
-   automatically on the new push — the user doesn't have to do
-   anything on Vercel.
+   - **Type error / lint error** → you reproduce locally with
+     `npm run typecheck` / `npm run lint`, fix the file, save.
+   - **`npm install` failure on Vercel** → an incompatible dependency.
+     You inspect `package.json` and adjust.
+3. **You fix the code and commit** (via file edits + `git-commit`
+   skill). Then hand the **`git push`** command to the user (their
+   credentials). Vercel retries automatically on the new push.
 
 ## Environment variables on Vercel
 

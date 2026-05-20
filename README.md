@@ -6,24 +6,32 @@ Claude, put it on GitHub, and publish it to the internet for free.
 
 ## How this works (read this first)
 
-**You don't write code. You don't type terminal commands. You don't
-click around in Git.** You talk to Claude in Claude Desktop and Claude does the work:
+**You don't write code. You don't read build errors. You don't click
+around in Git.** You talk to Claude in Claude Desktop, in plain
+English, and Claude does the engineering work:
 
-- Installing packages, running the app, building it — Claude.
-- Adding components, editing files — Claude.
-- Saving versions, publishing to GitHub, deploying to Vercel — Claude.
+- Editing your files, adding components — Claude.
+- Type-checking, linting, building, fixing errors — Claude.
+- Saving versions (commits) in Git — Claude.
+- Talking to shadcn / installing UI primitives — Claude.
 
-**You only step in when it's something Claude literally can't do for
-you:**
+**You only step in for the few things Claude literally cannot do for
+you. There are basically three of them:**
 
-1. **Installing apps on your computer** (Claude Desktop itself,
-   Node.js, Git). These are one-time, ~10-minute setups with regular
-   installer windows.
-2. **Clicking buttons on websites you log into** — creating a repo on
-   github.com, importing a project on vercel.com. Claude tells you
-   exactly where to click; you click.
-3. **Typing your own passwords / API keys** — never share these in
-   chat. You paste them directly into a settings page or a hidden file.
+1. **Three terminal commands** you paste once each, when Claude asks.
+   Claude gives you the exact line and explains in plain English what
+   it does:
+   - `npm install` — once per project, to download the building
+     blocks onto **your** computer (not Claude's). About 2 minutes.
+   - `npm run dev` — to start the live preview at
+     `http://localhost:3000`. Stays running in your terminal.
+   - `git push` — to send your project to GitHub. Needs **your**
+     GitHub sign-in.
+2. **Installing apps** (Claude Desktop itself, Node.js, Git for
+   Windows). One-time, ~10-minute installer windows.
+3. **Clicking buttons on websites you log into** — creating a repo on
+   github.com, importing a project on vercel.com, pasting API keys
+   into the Vercel dashboard. Claude tells you exactly where to click.
 
 That's it. Everything else is _"Hey Claude, do X"_.
 
@@ -51,53 +59,52 @@ You don't need to know what any of this is. Claude does.
 
 ---
 
-## First-time setup (~3 minutes of your time)
+## First-time setup (~10 minutes of your time, mostly waiting)
 
-You only need **one** thing yourself: **Claude Desktop.**
+Open Claude Desktop in this project folder and say _"hi"_ (or _"set
+me up"_). Claude takes it from there and tells you what to do, one
+small step at a time. The whole flow looks like this:
 
-1. Download from <https://claude.ai/download> and install it.
-2. Sign in with your Leaply account.
-3. Open this project folder in Claude Desktop and just say _"hi"_ (or
-   _"set me up"_, or _"let's start building"_ — anything).
+### What Claude does
 
-**Claude does the rest.** On the first message, Claude detects what's
-missing on your computer and installs it for you, end-to-end:
+- Checks what's installed on your computer.
+- If a developer tool is missing, tells you exactly which app to
+  download and where to click.
+- Once tools are in place, asks you to paste **one** install command
+  (about 2 minutes of waiting).
+- Then runs the type-check, lint, and build itself to verify
+  everything works.
+- Reports _"You're set up — what do you want to build?"_
 
-- ✅ **Node.js** (the engine that runs the app) — Claude installs
-  Node 22 automatically using the tools already on your system
-  (Homebrew on Mac, winget on Windows, or a small built-in installer
-  called `fnm`).
-- ✅ **Project dependencies** — Claude runs `npm install` for you
-  (~1–3 minutes the first time).
-- ✅ **Verification build** — Claude makes sure the starter actually
-  compiles before reporting back.
+### What you do
 
-When it's done, Claude says something like _"You're set up. What do
-you want to build?"_ and you go.
+You install **two apps** yourself (they need admin / a real
+installer):
 
-### The (rare) two moments you might have to do something
+1. **Claude Desktop** — from <https://claude.ai/download>. Install it
+   like any other app, sign in with your Leaply account.
+2. **Node.js (version 22 LTS)** — from
+   <https://nodejs.org/en/download>. Click the big green **LTS**
+   button, run the installer, accept all defaults. (Claude can't do
+   this for you — it needs your computer's admin password.)
 
-These only happen if Claude's automatic install can't proceed:
+(Optional: on **Windows** only, you might also need **Git** from
+<https://git-scm.com/download/win>. On Mac it's already there, and
+Claude will tell you if it isn't.)
 
-1. **Re-open Claude Desktop once.** After Node is installed, Claude
-   Desktop needs to relaunch so the new tools are visible. Claude
-   tells you exactly when to do this.
-2. **Paste one line into your terminal.** If your computer has an old
-   broken `npm` setup, Claude can't fix it without your password.
-   Claude will give you a single line to copy-paste and type your
-   password — that's it. Nothing else.
+Then you paste **one** command when Claude asks you to — the
+`npm install` line. Claude gives you the exact text in a code block;
+you copy-paste into your terminal, press Enter, wait 1–3 minutes, and
+paste the last few lines back to Claude. That's it.
 
-### What if I'm on Windows and don't have `winget`?
+### Why does the install have to be on your side?
 
-Claude will tell you to download the Node.js installer from
-<https://nodejs.org/en/download> (green LTS button). It's a regular
-Windows installer — accept all defaults, restart Claude Desktop, done.
+The short version: `npm install` downloads building blocks that match
+**your** operating system. If Claude ran it on its side, you'd get
+the wrong files for your computer and we'd be stuck untangling weird
+errors. So this one command lives in your terminal — always.
 
-### What about Git?
-
-You don't deal with Git. Claude uses it under the hood. On Mac it's
-already there; on Windows Claude will direct you to
-<https://git-scm.com/download/win> if it's missing.
+You won't have to think about this again after the first install.
 
 ---
 
@@ -130,11 +137,21 @@ You never need to read those — but they're there if you're curious.
 
 Just say: _"Show me the app."_ or _"Start the preview."_
 
-Claude starts the development server in the background, then gives you
-a link (usually <http://localhost:3000>) to open in your browser. The
-page reloads automatically every time Claude changes something.
+Claude gives you **one** command to paste into your terminal (your
+preview server runs on your computer, not Claude's, so your browser
+can reach it). Something like:
 
-When you're done, say _"Stop the preview."_ — Claude shuts it down.
+```bash
+cd "/path/to/your/project" && npm run dev
+```
+
+You paste, press Enter, the terminal shows a `http://localhost:3000`
+link, and you open that in your browser. The page reloads
+automatically every time Claude changes something.
+
+When you're done for the day: go to the terminal window where the
+server is running and press **Ctrl + C** to stop it. (Or just close
+the terminal.)
 
 ---
 

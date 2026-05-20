@@ -69,10 +69,28 @@ return parsed.data
 shadcn's `Form` component is built for this exact stack. Install the
 form primitive once:
 
-```bash
-npx shadcn@latest add form input label
-npm install react-hook-form @hookform/resolvers
-```
+Two installs are needed:
+
+1. **shadcn primitives** (you run this — code generation only):
+
+   ```bash
+   npx shadcn add form input label
+   ```
+
+2. **react-hook-form + resolvers** (this is `npm install`, so the
+   **user pastes it** — see Rule 0; the lock file must be regenerated
+   on their machine):
+
+   > I need to add the form library to your project. This step has to
+   > happen on your computer so the right files for your OS get
+   > downloaded. Takes about 15 seconds. Last line says
+   > `added 2 packages`.
+   >
+   > ```bash
+   > cd "<absolute-project-path>" && npm install react-hook-form @hookform/resolvers
+   > ```
+   >
+   > Paste the result back.
 
 Then:
 
