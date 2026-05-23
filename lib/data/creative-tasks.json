@@ -1,21 +1,21 @@
 {
-  "_note": "Placeholder creative tasks for fit-check linking. Real export from Airtable goes here. IDs/titles are illustrative.",
+  "_note": "Placeholder creative tasks for fit-check linking. Uses new Hokuto CM/VF taxonomy. IDs/titles are illustrative. Replace with real Airtable export when access available.",
   "tasks": [
     {
       "id": 1247,
-      "title": "Lymph Reset 30s body",
-      "hook_text": "Your lymph nodes are blocked — here's the 30-second reset.",
-      "core_message_id": "blocked-lymph-flow",
-      "visual_format_id": "professional-authority",
-      "pain_point_id": "neck-shoulders",
-      "hook_type_id": "problem-reveal",
+      "title": "Story mom 30 years neck",
+      "hook_text": "My mom carried this neck hump for 30 years. Yesterday she stopped wearing scarves.",
+      "core_message_id": "story-base-movie",
+      "visual_format_id": "social-interaction",
+      "pain_point_id": "neck-hump",
+      "hook_type_id": "dialogue-opener",
       "status": "running"
     },
     {
       "id": 1283,
       "title": "Doctor reveal hook ×3",
-      "hook_text": "Doctors won't tell you this about your morning swelling.",
-      "core_message_id": "expert-guided",
+      "hook_text": "Your doctor won't tell you this about your morning swelling.",
+      "core_message_id": "revealing",
       "visual_format_id": "professional-authority",
       "pain_point_id": "face",
       "hook_type_id": "authority-statement",
@@ -23,107 +23,7 @@
     },
     {
       "id": 1311,
-      "title": "Neck pain testimonial",
-      "hook_text": "I gave it to my mom — she stopped wearing scarves.",
-      "core_message_id": "relative-proof",
-      "visual_format_id": "native-ugc",
-      "pain_point_id": "neck-hump",
-      "hook_type_id": "social-proof",
-      "status": "running"
-    },
-    {
-      "id": 1352,
-      "title": "Story Base — mom transformation",
-      "hook_text": "My mom carried this neck hump for 30 years.",
-      "core_message_id": "story-base-movie",
-      "visual_format_id": "longread-story",
-      "pain_point_id": "neck-hump",
-      "hook_type_id": "dialogue-opener",
-      "status": "running"
-    },
-    {
-      "id": 1378,
-      "title": "Plantar fasciitis demo",
-      "hook_text": "If your foot hurts when you get up — watch this.",
-      "core_message_id": "root-cause",
-      "visual_format_id": "action-lifestyle",
-      "pain_point_id": "plantar-fasciitis",
-      "hook_type_id": "curiosity-gap",
-      "status": "running"
-    },
-    {
-      "id": 1401,
-      "title": "Face puffiness reveal",
-      "hook_text": "Stop blaming aging. Your face is just puffy.",
-      "core_message_id": "aging-not-cause",
-      "visual_format_id": "text-centric",
-      "pain_point_id": "face",
-      "hook_type_id": "pattern-interrupt-hook",
-      "status": "paused"
-    },
-    {
-      "id": 1428,
-      "title": "Buffalo hump warning",
-      "hook_text": "By 50, this neck hump is irreversible.",
-      "core_message_id": "early-warning",
-      "visual_format_id": "professional-authority",
-      "pain_point_id": "neck-hump",
-      "hook_type_id": "fear-trigger",
-      "status": "running"
-    },
-    {
-      "id": 1455,
-      "title": "Posture confidence UGC",
-      "hook_text": "I walked into the meeting differently this morning.",
-      "core_message_id": "lack-confidence",
-      "visual_format_id": "native-ugc",
-      "pain_point_id": "neck-hump",
-      "hook_type_id": "social-proof",
-      "status": "running"
-    },
-    {
-      "id": 1472,
-      "title": "Foam roller myth bust",
-      "hook_text": "Foam rollers don't fix this. Here's what does.",
-      "core_message_id": "superficial-fix",
-      "visual_format_id": "action-lifestyle",
-      "pain_point_id": "back",
-      "hook_type_id": "pattern-interrupt-hook",
-      "status": "running"
-    },
-    {
-      "id": 1503,
-      "title": "Studies show shock stat",
-      "hook_text": "87% of women over 35 have this — and don't know it.",
-      "core_message_id": "early-warning",
-      "visual_format_id": "text-centric",
-      "pain_point_id": "general",
-      "hook_type_id": "fear-trigger",
-      "status": "running"
-    },
-    {
-      "id": 1521,
-      "title": "Leg swelling lifestyle",
-      "hook_text": "I sit 8 hours. My legs were dead weight by 6pm.",
-      "core_message_id": "blocked-lymph-flow",
-      "visual_format_id": "action-lifestyle",
-      "pain_point_id": "legs",
-      "hook_type_id": "social-proof",
-      "status": "running"
-    },
-    {
-      "id": 1547,
-      "title": "Stress in shoulders",
-      "hook_text": "Your shoulders are holding 6 years of stress.",
-      "core_message_id": "stress-stored",
-      "visual_format_id": "text-centric",
-      "pain_point_id": "neck-shoulders",
-      "hook_type_id": "problem-reveal",
-      "status": "running"
-    },
-    {
-      "id": 1573,
-      "title": "Kids View hump",
+      "title": "Kids View daughter points",
       "hook_text": "My daughter pointed at my neck and asked why I have a 'bump'.",
       "core_message_id": "kids-view",
       "visual_format_id": "native-ugc",
@@ -132,23 +32,153 @@
       "status": "running"
     },
     {
-      "id": 1591,
-      "title": "Pattern Interrupt — feel that",
-      "hook_text": "Wait. Did you just feel that crackle in your neck?",
+      "id": 1352,
+      "title": "Asian grandmother ritual",
+      "hook_text": "What Japanese grandmothers have done for 1,000 years to stay supple.",
+      "core_message_id": "asian-approach",
+      "visual_format_id": "action-lifestyle",
+      "pain_point_id": "general",
+      "hook_type_id": "authority-statement",
+      "status": "running"
+    },
+    {
+      "id": 1378,
+      "title": "Plantar fasciitis inside look",
+      "hook_text": "Here's why your foot hurts the first 10 steps every morning.",
+      "core_message_id": "inside-look",
+      "visual_format_id": "visual-evidence",
+      "pain_point_id": "plantar-fasciitis",
+      "hook_type_id": "curiosity-gap",
+      "status": "running"
+    },
+    {
+      "id": 1401,
+      "title": "Face puffiness pattern interrupt",
+      "hook_text": "Wait. Your face isn't puffy because of last night's wine.",
       "core_message_id": "pattern-interrupt",
+      "visual_format_id": "text-centric",
+      "pain_point_id": "face",
+      "hook_type_id": "pattern-interrupt-hook",
+      "status": "paused"
+    },
+    {
+      "id": 1428,
+      "title": "Developmental window neck hump",
+      "hook_text": "By 50, this neck hump becomes irreversible.",
+      "core_message_id": "developmental-window",
+      "visual_format_id": "professional-authority",
+      "pain_point_id": "neck-hump",
+      "hook_type_id": "fear-trigger",
+      "status": "running"
+    },
+    {
+      "id": 1455,
+      "title": "Success story 14 days neck",
+      "hook_text": "I lost 5cm of neck swelling in 14 days. Here's what I did.",
+      "core_message_id": "success-story",
+      "visual_format_id": "visual-evidence",
+      "pain_point_id": "neck-shoulders",
+      "hook_type_id": "social-proof",
+      "status": "running"
+    },
+    {
+      "id": 1472,
+      "title": "Call-out 8 hours sitting",
+      "hook_text": "You sit 8 hours a day. Your lymph is screaming.",
+      "core_message_id": "call-out",
+      "visual_format_id": "action-lifestyle",
+      "pain_point_id": "back",
+      "hook_type_id": "fear-trigger",
+      "status": "running"
+    },
+    {
+      "id": 1503,
+      "title": "FOMO 87% women shock stat",
+      "hook_text": "87% of women over 35 have blocked lymph and don't know it.",
+      "core_message_id": "fomo",
+      "visual_format_id": "text-centric",
+      "pain_point_id": "general",
+      "hook_type_id": "social-proof",
+      "status": "running"
+    },
+    {
+      "id": 1521,
+      "title": "Leg swelling lifestyle",
+      "hook_text": "I sit 8 hours. My legs were dead weight by 6pm.",
+      "core_message_id": "call-out",
+      "visual_format_id": "action-lifestyle",
+      "pain_point_id": "legs",
+      "hook_type_id": "social-proof",
+      "status": "running"
+    },
+    {
+      "id": 1547,
+      "title": "Time spent on dumb ways massages",
+      "hook_text": "$4,000 on massages. The actual fix took 30 days.",
+      "core_message_id": "time-spent-on-dumb-ways",
+      "visual_format_id": "social-interaction",
+      "pain_point_id": "neck-shoulders",
+      "hook_type_id": "social-proof",
+      "status": "running"
+    },
+    {
+      "id": 1573,
+      "title": "Parenting approach toddler tantrum",
+      "hook_text": "Your toddler isn't the only one having a tantrum — your nervous system is too.",
+      "core_message_id": "parenting-approach",
       "visual_format_id": "native-ugc",
       "pain_point_id": "neck-shoulders",
-      "hook_type_id": "pattern-interrupt-hook",
+      "hook_type_id": "problem-reveal",
+      "status": "running"
+    },
+    {
+      "id": 1591,
+      "title": "Stoic Kid posture inversion",
+      "hook_text": "My 8-year-old has better posture than I do. Here's why.",
+      "core_message_id": "stoic-kid",
+      "visual_format_id": "native-ugc",
+      "pain_point_id": "neck-hump",
+      "hook_type_id": "curiosity-gap",
       "status": "running"
     },
     {
       "id": 1612,
-      "title": "Time wasted on massages",
-      "hook_text": "$4K on massages. The fix took 30 days.",
-      "core_message_id": "time-spent-dumb",
-      "visual_format_id": "longread-story",
+      "title": "Future Potential 60 days",
+      "hook_text": "Imagine waking up without that neck stiffness in 60 days.",
+      "core_message_id": "future-potential",
+      "visual_format_id": "visual-evidence",
+      "pain_point_id": "stiffness-pain",
+      "hook_type_id": "curiosity-gap",
+      "status": "running"
+    },
+    {
+      "id": 1635,
+      "title": "Expert-Guided PT 5 steps",
+      "hook_text": "Physiotherapist of 20 years walks you through the exact 5 steps.",
+      "core_message_id": "expert-guided-transformation",
+      "visual_format_id": "professional-authority",
       "pain_point_id": "back",
-      "hook_type_id": "social-proof",
+      "hook_type_id": "authority-statement",
+      "status": "running"
+    },
+    {
+      "id": 1658,
+      "title": "Urgent Appeal please don't wait",
+      "hook_text": "Please. Don't wait until you can't turn your head.",
+      "core_message_id": "the-urgent-appeal",
+      "visual_format_id": "professional-authority",
+      "pain_point_id": "neck-shoulders",
+      "hook_type_id": "fear-trigger",
+      "status": "running"
+    },
+    {
+      "id": 1681,
+      "title": "Inside look lymph 3am",
+      "hook_text": "Here's what your lymph actually does at 3am.",
+      "core_message_id": "inside-look",
+      "visual_format_id": "visual-evidence",
+      "pain_point_id": "general",
+      "hook_type_id": "curiosity-gap",
       "status": "running"
     }
   ]

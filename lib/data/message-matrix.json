@@ -1,10 +1,10 @@
 {
-  "_note": "Leaply Variation Tree taxonomy. Sourced from HTML mockup (other Claude session) + hokuto.leaplyhub.com/message-matrix screenshot. Replace/extend as needed.",
+  "_note": "Leaply Hokuto Message × Format Matrix snapshot — extracted from screenshots of hokuto.leaplyhub.com (account: A7_Leaply, last refresh 23.05.2026 09:00). 17 Core Messages × 7 Visual Formats = max 119 cells; 71 active. Descriptions written to help AI map new hooks into the right CM/VF/PP/HT.",
   "core_messages": [
     {
       "id": "story-base-movie",
       "name": "Story Base Movie",
-      "description": "Storytelling-driven hook, narrative arc with character transformation.",
+      "description": "Narrative-driven hook unfolding like a short film. Character transformation arc — slow emotional build, payoff moment near end. Often opens with mundane situation, reveals deeper truth via personal journey. Uses real-life storytelling rhythm: setup → tension → discovery.",
       "examples": [
         "My mom carried this for 30 years before someone finally explained why.",
         "She came in for back pain. She left with the answer she'd been chasing for 8 years."
@@ -13,7 +13,7 @@
     {
       "id": "kids-view",
       "name": "Kids View",
-      "description": "Reframe through child's perspective — innocence reveals adult absurdity.",
+      "description": "Reframes adult body issue through a child's innocent perspective. Kid observes / points out / asks about a parent's hump, posture, pain — exposing what adults rationalize away. High emotional resonance for parents-as-buyers.",
       "examples": [
         "My daughter pointed at my neck and asked why I have a 'bump'.",
         "Kids see the truth grown-ups have been ignoring for years."
@@ -22,127 +22,136 @@
     {
       "id": "pattern-interrupt",
       "name": "Pattern Interrupt",
-      "description": "Stops scroll with unexpected angle, contrast, or visual jolt.",
+      "description": "Scroll-stopping unexpected opening. Visual jolt, contradiction, weird sound, unusual claim. Designed to break the autopilot scroll in the first 1-2 seconds. Often counter-intuitive framing.",
       "examples": [
         "Wait. Did you just feel that crackle in your neck?",
         "Don't keep scrolling if your shoulders are tight right now."
       ]
     },
     {
-      "id": "aging-not-cause",
-      "name": "Aging Is Not the Cause",
-      "description": "Reframes age-related symptoms as fixable, not inevitable.",
+      "id": "asian-approach",
+      "name": "Asian Approach",
+      "description": "Culture-specific framing leveraging Eastern medicine / TCM / ancient wisdom as authority. May feature Asian actors, imagery, references to longevity traditions. Positions Leaply technique as time-tested rather than 'new fad'.",
       "examples": [
-        "You're not getting old — your lymph is blocked.",
-        "Stop blaming age for what's actually fixable."
+        "What Japanese grandmothers have done for 1,000 years.",
+        "The Chinese discovered this 3,000 years ago. We just forgot."
       ]
     },
     {
-      "id": "blocked-lymph-flow",
-      "name": "Blocked Lymph Flow from long sitting",
-      "description": "Positions sedentary lifestyle as cause of lymph stagnation and symptoms.",
+      "id": "developmental-window",
+      "name": "Developmental Window",
+      "description": "Urgency around a critical age threshold — frames a window of opportunity that's closing. 'By 50, this is irreversible.' Combines age-anxiety with actionable now-or-never positioning.",
       "examples": [
-        "Sit 8 hours a day? Your lymph is screaming.",
-        "Your lymph nodes are blocked. And sitting all day makes it worse."
+        "By 50, this neck hump is irreversible.",
+        "There's a 7-year window. Most people miss it."
       ]
     },
     {
-      "id": "body-transformation",
-      "name": "Body transformation",
-      "description": "Visual before/after promise, body-level change in weeks.",
+      "id": "revealing",
+      "name": "Revealing",
+      "description": "Exposes hidden truths the mainstream / medical establishment overlooks. 'What doctors don't tell you' / 'Insider knowledge' / 'The real reason'. Combines authority claim with conspiracy-light framing.",
       "examples": [
-        "From bloated to slim — without diets.",
-        "See the change in 14 days."
+        "Your doctor won't tell you this about morning swelling.",
+        "What physical therapists know but never explain."
       ]
     },
     {
-      "id": "early-warning",
-      "name": "Early Body Warning Signals",
-      "description": "Reframes minor symptoms as early signals of bigger issues.",
+      "id": "success-story",
+      "name": "Success Story",
+      "description": "Testimonial-driven before/after with specific named individual + measurable result. Anchors credibility through tangible numbers, time periods, real transformations. Often UGC or staged-as-UGC format.",
       "examples": [
-        "If you wake up stiff, your body is sending you a warning.",
-        "The signs your body shows you decade before it gets serious."
+        "I lost 5cm of neck swelling in 14 days. Here's what I did.",
+        "30 days in, my hump is barely visible. Real photos."
       ]
     },
     {
-      "id": "expert-guided",
-      "name": "Expert-Guided Transformation",
-      "description": "Doctor/expert leads viewer through a transformation method.",
+      "id": "call-out",
+      "name": "Call-Out",
+      "description": "Direct, accusatory framing pointed at the viewer's specific behavior. 'You're sitting too long. Yes, YOU.' Confrontational tone forces self-recognition. High-tension hook, high stop-scroll.",
       "examples": [
-        "Physiotherapist of 20 years finally tells you the truth.",
-        "Trained at Mayo Clinic — here's what they don't teach you about your back."
+        "You sit 8 hours a day. Your lymph is screaming. Yes, YOU.",
+        "Stop pretending this neck pain is normal."
       ]
     },
     {
-      "id": "expert-relative-guided",
-      "name": "Expert-Relative-Guided Transformation",
-      "description": "Expert + family-member emotional anchor combined.",
+      "id": "the-urgent-appeal",
+      "name": "The Urgent Appeal",
+      "description": "Emotional plea with implied deadline. Soft urgency through care-framing rather than fear. 'Please don't wait until you can't move' — protective, almost maternal tone.",
       "examples": [
-        "My mom is a physio. She fixed my neck in 3 weeks.",
-        "Doctor sister told me — and I wish I'd listened sooner."
+        "Please. Don't wait until you can't turn your head.",
+        "Do this for yourself before it becomes a real problem."
       ]
     },
     {
-      "id": "lack-confidence",
-      "name": "Lack of confidence",
-      "description": "Body / posture issue creates social confidence problem.",
+      "id": "future-potential",
+      "name": "Future Potential",
+      "description": "Promise of better-self if action taken now. Vision-casting: 'In 6 months you could be...'. Combines aspirational identity with concrete change pathway. Less fear, more possibility.",
       "examples": [
-        "I stopped going to events because of my neck hump.",
-        "First photo in 3 years where I didn't ask to be cropped out."
+        "Imagine waking up without that neck stiffness in 60 days.",
+        "Your 55-year-old self will thank you for starting today."
       ]
     },
     {
-      "id": "relative-proof",
-      "name": "Relative-as-Proof Transformation",
-      "description": "Family member as proof of transformation success.",
+      "id": "parenting-approach",
+      "name": "Parenting Approach",
+      "description": "Frames Leaply through parental role — mom's stress / kid's posture / family wellbeing. Targets parent-as-buyer with empathetic 'you give to everyone except yourself' angle.",
       "examples": [
-        "I gave it to my husband who scoffed — now he won't shut up about it.",
-        "My mom did this for 30 days. The change is unreal."
+        "Mom of 3 here. I forgot what 'no pain' feels like.",
+        "Your toddler isn't the only one having a meltdown — your nervous system is too."
       ]
     },
     {
-      "id": "relative-proof-routine",
-      "name": "Relative-as-Proof Transformation Routine",
-      "description": "Family proof + replicable daily routine focus.",
+      "id": "fomo",
+      "name": "FOMO",
+      "description": "Social-proof + scarcity. '87% of women have this and don't know.' / 'Everyone is talking about this.' Leverages crowd validation + fear of being left out / behind.",
       "examples": [
-        "My grandma's morning routine — 5 minutes, 80 years young.",
-        "Watch my dad's evening 3-minute ritual."
+        "87% of women over 35 have blocked lymph and don't know it.",
+        "Everyone in my office is doing this 5-min ritual. I was the last."
       ]
     },
     {
-      "id": "root-cause",
-      "name": "Root Cause of Physical Symptoms",
-      "description": "Reveals 'real' cause vs surface symptom marketers usually target.",
+      "id": "stoic-kid",
+      "name": "Stoic Kid",
+      "description": "Child role-model framing — features a kid who handles discomfort, has good posture, sits straight, exhibits discipline. Inverts the parenting-approach: child shows the parent what's possible.",
       "examples": [
-        "POV: you finally figured out why your neck always hurts.",
-        "Your headaches aren't from screens. They're from this."
+        "My 8-year-old has better posture than I do. Here's why.",
+        "Watch how she sits. Adults forgot."
       ]
     },
     {
-      "id": "stress-stored",
-      "name": "Stress Stored in the Body",
-      "description": "Frames emotional stress as physical tension to release.",
+      "id": "other",
+      "name": "Other",
+      "description": "Catchall for hooks that don't cleanly fit one of the 16 specific Core Messages. Use sparingly — only when no other CM is a reasonable match. Often experimental angles.",
       "examples": [
-        "Your shoulders are holding 6 years of stress. Time to put it down.",
-        "Trauma lives in the body. Here's where yours is."
+        "Unconventional framing not covered by other CMs.",
+        "Cross-category mashups."
       ]
     },
     {
-      "id": "superficial-fix",
-      "name": "Superficial Fixes Don't Work",
-      "description": "Dismisses common 'band-aid' solutions to elevate product.",
+      "id": "inside-look",
+      "name": "Inside Look",
+      "description": "Behind-the-scenes / clinical insider perspective. Anatomical diagrams, mechanism explanation, 'here's exactly what's happening inside your body'. Combines education with authority. Less fear, more curiosity.",
       "examples": [
-        "Foam rollers don't work for this. Here's what does.",
-        "Stretching is treating the symptom. Treat the cause."
+        "Here's what your lymph actually does at 3am.",
+        "Inside view of why your shoulders hurt — anatomically."
       ]
     },
     {
-      "id": "time-spent-dumb",
+      "id": "time-spent-on-dumb-ways",
       "name": "Time spent on dumb ways",
-      "description": "Mocks time wasted on ineffective methods, positions efficient solution.",
+      "description": "Calls out wasted resources / failed methods. '$4K on massages, $2K on PT, this fixes it in 30 days for $X.' Mocks alternatives the viewer has already tried. Cathartic for 'I've tried everything' audience.",
       "examples": [
-        "I spent $4K on massages before realizing it was THIS the whole time.",
-        "10 years of physical therapy. The fix took 30 days."
+        "$4,000 on massages over 10 years. This took 30 days.",
+        "Foam roller, PT, chiro, expensive pillows — none worked. This did."
+      ]
+    },
+    {
+      "id": "expert-guided-transformation",
+      "name": "Expert-Guided Transformation",
+      "description": "Doctor / PT / certified specialist leads viewer step-by-step through method. Authority + structured pathway. Less fear, more competence. Often features credentials, lab coat, clinical setting.",
+      "examples": [
+        "Physiotherapist of 20 years walks you through the exact 5 steps.",
+        "Sports medicine doctor: here's the routine I give every patient."
       ]
     }
   ],
@@ -150,141 +159,136 @@
     {
       "id": "general",
       "name": "general",
-      "description": "Generic wellness / low energy / vague malaise"
+      "description": "Generic wellness / vague fatigue / 'something feels off' — not localized to a body part."
     },
     {
       "id": "legs",
       "name": "legs",
-      "description": "Leg swelling, heavy legs, varicose feel"
+      "description": "Leg swelling, heavy legs, varicose feel, end-of-day fluid retention."
     },
     {
       "id": "plantar-fasciitis",
       "name": "plantar fasciitis",
-      "description": "Foot pain, especially morning, heel sharp pain"
+      "description": "Foot pain, especially first steps in the morning, sharp heel pain."
     },
     {
       "id": "face",
       "name": "face",
-      "description": "Facial puffiness, jawline definition, sagging"
+      "description": "Facial puffiness, weak jawline, sagging cheeks, morning swelling."
     },
     {
       "id": "neck-shoulders",
       "name": "neck & shoulders",
-      "description": "Tension, stiffness, headaches from posture"
+      "description": "Tension, stiffness, tension headaches from desk posture."
     },
     {
       "id": "neck-hump",
       "name": "neck hump",
-      "description": "Buffalo hump / dowager hump, visible from side"
+      "description": "Buffalo hump / dowager's hump, visible from side, postural curve at base of neck."
     },
     {
       "id": "back",
       "name": "back",
-      "description": "Lower back tightness, sitting-induced pain"
+      "description": "Lower back tightness, sitting-induced pain, glute and hip stiffness."
     },
     {
       "id": "armpit",
       "name": "armpit",
-      "description": "Tender lymph nodes, side-of-chest fullness"
+      "description": "Tender lymph nodes, side-of-chest fullness, congestion under arms."
     },
     {
       "id": "stiffness-pain",
       "name": "stiffness & pain",
-      "description": "Morning stiffness, general body aches"
+      "description": "Morning stiffness, generalized body aches, takes a while to 'get going'."
     },
     {
       "id": "sciatic-nerve",
       "name": "sciatic nerve",
-      "description": "Shooting pain from lower back down leg"
+      "description": "Shooting / radiating pain from lower back down one leg."
     },
     {
       "id": "deep-hips",
       "name": "deep hips",
-      "description": "Hip flexor / deep glute tension, sitting-related"
+      "description": "Hip flexor tightness, deep glute / piriformis tension, sitting-related hip pain."
     }
   ],
   "visual_formats": [
     {
       "id": "visual-evidence",
       "name": "Visual Evidence",
-      "description": "Before/after, transformation reveal, data overlay"
+      "description": "Before/after splits, transformation reveals, data overlays, anatomical diagrams. Proof-driven composition where the visual IS the argument."
     },
     {
       "id": "text-centric",
       "name": "Text-Centric",
-      "description": "Large overlaid text drives the message; minimal action"
+      "description": "Large overlaid typography drives the message; subject minimal or simple. Negative space designed for words. Single dominant claim style."
     },
     {
       "id": "action-lifestyle",
       "name": "Action / Lifestyle",
-      "description": "Activity / movement / daily-life context backdrop"
+      "description": "Subject mid-activity in daily-life context (walking, sitting at desk, cooking, picking up child). Environmental, dynamic, grounded in real moment."
     },
     {
       "id": "professional-authority",
       "name": "Professional Authority",
-      "description": "Doctor / expert in clinical setting, lab coat, authoritative gaze"
+      "description": "Doctor / PT / expert in clinical setting, lab coat, soft directional clinical light, direct camera gaze. Gravitas + clinical aesthetic."
     },
     {
       "id": "native-ugc",
       "name": "Native / Raw UGC",
-      "description": "Selfie-style, real-person raw feel, no production polish"
+      "description": "Selfie-style, real-person raw feel, no studio polish, handheld camera angle, natural unfiltered lighting. Looks like organic Instagram post."
     },
     {
       "id": "social-interaction",
       "name": "Social Interaction",
-      "description": "Two people conversation, dialogue / advice format"
-    },
-    {
-      "id": "longread-story",
-      "name": "Longread (Storybased ads)",
-      "description": "Extended narrative arc, 30-60+ sec, story-driven"
+      "description": "Two people in a conversation moment — one teaching/advising/confiding to other. Candid intimate dynamic, soft indoor light."
     },
     {
       "id": "other",
       "name": "Other",
-      "description": "Outside the standard 7 formats"
+      "description": "Catchall for hybrid / experimental visual formats outside the 6 main categories."
     }
   ],
   "hook_types": [
     {
       "id": "problem-reveal",
       "name": "Problem-reveal",
-      "description": "Names a hidden problem viewer didn't know they had"
+      "description": "Names a hidden problem viewer didn't know they had. Diagnostic framing."
     },
     {
       "id": "authority-statement",
       "name": "Authority statement",
-      "description": "Expert delivers a definitive claim"
+      "description": "Expert delivers a definitive claim with full conviction. 'As a doctor of 20 years, I'm telling you...'"
     },
     {
       "id": "pattern-interrupt-hook",
       "name": "Pattern interrupt",
-      "description": "Unexpected visual or statement to stop scrolling"
+      "description": "Unexpected visual or statement to halt scroll. Counter-intuitive."
     },
     {
       "id": "curiosity-gap",
       "name": "Curiosity gap",
-      "description": "Promises a reveal — viewer must watch to find out"
+      "description": "Promises a reveal — viewer must watch to find out. 'You won't believe what...' but tasteful."
     },
     {
       "id": "fear-trigger",
       "name": "Fear trigger",
-      "description": "Health scare, urgency, consequence framing"
+      "description": "Health scare, urgency, irreversible consequence framing."
     },
     {
       "id": "social-proof",
       "name": "Social proof",
-      "description": "'Everyone is doing this' / testimonial drop-in"
+      "description": "Testimonial-style drop-in, 'everyone is doing X', crowd validation."
     },
     {
       "id": "dialogue-opener",
       "name": "Dialogue opener",
-      "description": "Two-person conversation grab"
+      "description": "Two-person conversation drop-in. Eavesdrop dynamic."
     },
     {
       "id": "frankenstein",
       "name": "Frankenstein",
-      "description": "Mash-up of multiple winning hook formats"
+      "description": "Mash-up of multiple winning hook formats combined into one ad."
     }
   ],
   "variation_types": [

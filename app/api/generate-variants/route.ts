@@ -66,10 +66,8 @@ const VF_STYLE_HINTS: Record<string, string> = {
     "Subject mid-activity (walking briskly, sitting at desk, picking up child, opening cabinet), environmental context fully visible, dynamic but grounded composition, motion blur in extremities, real apartment / office / street backdrop.",
   "text-centric":
     "Single dominant subject framed top-left or bottom-right, simple uncluttered single-tone background, generous negative space in opposite quadrant for designer typography overlay (DO NOT render any text in the image itself), high contrast.",
-  "longread-story":
-    "Cinematic intimate framing, soft cinematic color grade (warm shadows, cool highlights), shallow depth-of-field with creamy bokeh, story-opening mood that hints at deeper narrative, painterly composition.",
   other:
-    "Photorealistic editorial portrait, soft natural lighting from window-left, dignified composition with subject centered.",
+    "Photorealistic editorial portrait, soft natural lighting from window-left, dignified composition with subject centered, hybrid / experimental visual approach.",
 }
 
 function buildCoverPrompt(v: Variant, analysis: AnalysisResult): string {
