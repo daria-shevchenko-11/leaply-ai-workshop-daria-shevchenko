@@ -12,6 +12,9 @@ import { DemoModeToggle } from "@/components/demo-mode-toggle"
 import { PipelineVisualizer } from "@/components/pipeline-visualizer"
 import { ProgressStream } from "@/components/progress-stream"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { findCoreMessage } from "@/lib/fit-check"
+import type { Variant } from "@/lib/schemas/hook-schemas"
 import mockVariantsJson from "@/lib/data/mock-variants.json"
 import { buildApprovedZip, downloadBlob } from "@/lib/export-zip"
 import { downloadAEScript } from "@/lib/ae-script"
@@ -308,11 +311,7 @@ export default function VariantsPage() {
 
         {!loading && !error && variants.length > 0 && (
           <>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {variants.map((v) => (
-                <VariantCard key={v.id} variant={v} />
-              ))}
-            </div>
+            <VariantGroups variants={variants} />
             <div className="mt-6">
               <Button variant="outline" onClick={() => router.push("/analyze")}>
                 ← До аналізу
@@ -332,4 +331,76 @@ function progressStepStatus(
   if (progress > step) return "done"
   if (progress === step) return "active"
   return "pending"
+}
+
+// Groups variants by Core Message into folders. Frankensteins get their own
+// section at the bottom (each is fully specified with mix-and-match style).
+function VariantGroups({ variants }: { variants: Variant[] }) {
+  const regular = variants.filter((v) => !v.is_frankenstein)
+  const frankensteins = variants.filter((v) => v.is_frankenstein)
+
+  // Group regulars by core_message_id, preserve insertion order
+  const cmOrder: string[] = []
+  const byCm: Record<string, Variant[]> = {}
+  for (const v of regular) {
+    const cm = v.tags.core_message_id
+    if (!byCm[cm]) {
+      byCm[cm] = []
+      cmOrder.push(cm)
+    }
+    byCm[cm].push(v)
+  }
+
+  return (
+    <div className="space-y-6">
+      {cmOrder.map((cmId) => {
+        const cm = findCoreMessage(cmId)
+        const items = byCm[cmId]
+        return (
+          <section key={cmId} className="space-y-3">
+            <header className="flex flex-wrap items-baseline gap-3 border-b pb-2">
+              <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                Folder
+              </span>
+              <h2 className="text-lg font-bold">📁 {cm?.name ?? cmId}</h2>
+              <Badge variant="secondary">{items.length} variants</Badge>
+              <span className="text-xs text-muted-foreground">
+                same Core Message · different visual format
+              </span>
+            </header>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((v) => (
+                <VariantCard key={v.id} variant={v} />
+              ))}
+            </div>
+          </section>
+        )
+      })}
+
+      {frankensteins.length > 0 && (
+        <section className="space-y-3">
+          <header className="flex flex-wrap items-baseline gap-3 border-b border-purple-500/40 pb-2">
+            <span className="text-[10px] font-bold tracking-widest text-purple-600 uppercase dark:text-purple-400">
+              Folder
+            </span>
+            <h2 className="text-lg font-bold">🧩 Frankensteins</h2>
+            <Badge
+              variant="outline"
+              className="border-purple-500/40 text-purple-600 dark:text-purple-400"
+            >
+              {frankensteins.length} mix-and-match
+            </Badge>
+            <span className="text-xs text-muted-foreground">
+              кожен прописаний з готовим видом і всім іншим
+            </span>
+          </header>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {frankensteins.map((v) => (
+              <VariantCard key={v.id} variant={v} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  )
 }

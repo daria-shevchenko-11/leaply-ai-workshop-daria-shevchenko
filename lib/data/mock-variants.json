@@ -1,10 +1,10 @@
 {
-  "_note": "Demo Mode shape for /api/generate-variants. Mirrors Leaply taxonomy.",
+  "_note": "Demo Mode shape for /api/generate-variants. Mirrors Leaply taxonomy.\nIntentionally groups by Core Message so the UI demonstrates folder grouping:\n- 2 variants share 'blocked-lymph-flow' CM (different Visual Formats)\n- 1 variant has 'aging-not-cause' CM\n- 1 variant is a Frankenstein (mix-and-match)\n- 1 variant has 'root-cause' CM",
   "variants": [
     {
       "id": "v1",
       "hook_text": "Sitting 8 hours a day? Your lymph system is screaming.",
-      "cover_image_url": "https://picsum.photos/seed/leaply-v1/1080/1920",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v1-fear/1080/1920",
       "video_url": null,
       "video_job_id": null,
       "tags": {
@@ -13,26 +13,43 @@
         "pain_point_id": "legs",
         "hook_type_id": "fear-trigger"
       },
-      "ae_brief": "Energetic female trainer, 35, gym setting, direct camera. Quick cuts: office chair → swollen ankles → lymph diagram animation. Punchy text overlay on 'screaming'."
+      "ae_brief": "Energetic female trainer, 35, gym setting, direct camera. Quick cuts: office chair → swollen ankles → lymph diagram animation. Punchy text overlay on 'screaming'.",
+      "is_frankenstein": false
     },
     {
       "id": "v2",
+      "hook_text": "Your lymph nodes are blocked. Most people only realize it after years of swelling.",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v2-authority/1080/1920",
+      "video_url": null,
+      "video_job_id": null,
+      "tags": {
+        "core_message_id": "blocked-lymph-flow",
+        "visual_format_id": "professional-authority",
+        "pain_point_id": "general",
+        "hook_type_id": "authority-statement"
+      },
+      "ae_brief": "Woman 40-50, white coat, clinical setting, soft window light. Direct camera gaze, slight lean-in on 'blocked'. Calm clinical tone with subtle urgency.",
+      "is_frankenstein": false
+    },
+    {
+      "id": "v3",
       "hook_text": "My doctor said this was just aging. She was wrong.",
-      "cover_image_url": "https://picsum.photos/seed/leaply-v2/1080/1920",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v3-ugc/1080/1920",
       "video_url": null,
       "video_job_id": null,
       "tags": {
         "core_message_id": "aging-not-cause",
         "visual_format_id": "native-ugc",
         "pain_point_id": "stiffness-pain",
-        "hook_type_id": "authority-statement"
+        "hook_type_id": "myth-bust"
       },
-      "ae_brief": "Woman 55, soft lighting, sitting at home, no makeup. Talking head UGC style. Slow zoom in. Lower-third caption."
+      "ae_brief": "Woman 55, soft natural lighting, sitting at home, no makeup. Talking head UGC style, handheld camera. Slow zoom in. No phone visible.",
+      "is_frankenstein": false
     },
     {
-      "id": "v3",
+      "id": "v4",
       "hook_text": "POV: you finally figured out why your neck always hurts.",
-      "cover_image_url": "https://picsum.photos/seed/leaply-v3/1080/1920",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v4-story/1080/1920",
       "video_url": null,
       "video_job_id": null,
       "tags": {
@@ -41,35 +58,23 @@
         "pain_point_id": "neck-shoulders",
         "hook_type_id": "pattern-interrupt-hook"
       },
-      "ae_brief": "Woman 28, selfie cam angle, bedroom mirror. Vertical phone-shot vibe. Quick text reveal. Trendy music cue."
+      "ae_brief": "Woman 28, selfie cam angle, bedroom morning light. Vertical handheld framing. Quick reveal moment. Authentic candid energy.",
+      "is_frankenstein": false
     },
     {
-      "id": "v4",
-      "hook_text": "If you wake up stiff every morning, this 90-second routine will shock you.",
-      "cover_image_url": "https://picsum.photos/seed/leaply-v4/1080/1920",
+      "id": "v5-frank",
+      "hook_text": "I gave it to my mom — she stopped wearing scarves. Her own doctor was shocked.",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v5-frank/1080/1920",
       "video_url": null,
       "video_job_id": null,
       "tags": {
-        "core_message_id": "early-warning",
-        "visual_format_id": "visual-evidence",
-        "pain_point_id": "stiffness-pain",
-        "hook_type_id": "curiosity-gap"
-      },
-      "ae_brief": "Asian man 60, gentle expert energy, yoga mat. Before/after split screen. Stopwatch graphic. Clean medical aesthetic."
-    },
-    {
-      "id": "v5",
-      "hook_text": "I asked my mom why she had a hump. Her answer changed everything.",
-      "cover_image_url": "https://picsum.photos/seed/leaply-v5/1080/1920",
-      "video_url": null,
-      "video_job_id": null,
-      "tags": {
-        "core_message_id": "story-base-movie",
-        "visual_format_id": "longread-story",
+        "core_message_id": "relative-proof",
+        "visual_format_id": "social-interaction",
         "pain_point_id": "neck-hump",
-        "hook_type_id": "dialogue-opener"
+        "hook_type_id": "frankenstein"
       },
-      "ae_brief": "Black woman 35, talking about her mother, with old photos. Slow story-style. Family photos as B-roll. Subtle music build."
+      "ae_brief": "MIX-AND-MATCH: Opens UGC selfie style (daughter, 30, kitchen) saying first sentence → cut to clinical mid-shot of mother + doctor for second sentence. Two-shot story arc in 8s. Different lighting per cut: warm kitchen → cool clinic.",
+      "is_frankenstein": true
     }
   ]
 }

@@ -97,6 +97,10 @@ export const VariantSchema = z.object({
   video_job_id: z.string().nullable(),
   tags: VariantTagsSchema,
   ae_brief: z.string(),
+  // Frankensteins are mix-and-match variants pulling from multiple winning
+  // formats; they get their own folder in the export and are shown in a
+  // separate section in Step 4-5. Default false.
+  is_frankenstein: z.boolean().default(false),
 })
 export type Variant = z.infer<typeof VariantSchema>
 
