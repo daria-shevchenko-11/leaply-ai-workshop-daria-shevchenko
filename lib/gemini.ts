@@ -19,7 +19,6 @@ import {
 
 // ─── Models (swap if Google renames) ─────────────────────────────────────────
 const MODEL_TEXT_VISION = "gemini-3.5-flash"
-const MODEL_IMAGE = "gemini-3.0-flash-image-preview" // "Nano Banana 2"
 const MODEL_VIDEO = "veo-3.1-preview"
 
 // ─── Client factory ──────────────────────────────────────────────────────────
@@ -242,44 +241,62 @@ ${taxonomyBlock}`
 
 // ─── Image generation (Nano Banana 2) ────────────────────────────────────────
 
+// Image model fallback chain — try newest first, fall back if model doesn't exist
+const IMAGE_MODELS = [
+  "gemini-3.0-flash-image-preview", // "Nano Banana 2"
+  "gemini-2.5-flash-image-preview", // "Nano Banana 1"
+  "gemini-2.0-flash-exp-image-generation",
+]
+
+function uniqueSeed(prompt: string): string {
+  // Simple deterministic hash so each unique prompt → unique picsum image
+  let h = 5381
+  for (let i = 0; i < prompt.length; i++) {
+    h = (h * 33) ^ prompt.charCodeAt(i)
+  }
+  return Math.abs(h).toString(36)
+}
+
 export async function generateCoverImage(
   prompt: string,
   apiKeyOverride?: string
 ): Promise<string> {
-  // Returns a data URL or hosted URL for the generated image.
   const ai = getClient(apiKeyOverride)
-  try {
-    const response = await ai.models.generateContent({
-      model: MODEL_IMAGE,
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-    })
 
-    // Find image part in candidates
-    const candidates =
-      (
-        response as unknown as {
-          candidates?: {
-            content?: {
-              parts?: {
-                inlineData?: { mimeType: string; data: string }
-              }[]
-            }
-          }[]
-        }
-      ).candidates ?? []
-
-    for (const c of candidates) {
-      for (const part of c.content?.parts ?? []) {
-        if (part.inlineData?.data) {
-          return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`
+  for (const model of IMAGE_MODELS) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+      })
+      const candidates =
+        (
+          response as unknown as {
+            candidates?: {
+              content?: {
+                parts?: {
+                  inlineData?: { mimeType: string; data: string }
+                }[]
+              }
+            }[]
+          }
+        ).candidates ?? []
+      for (const c of candidates) {
+        for (const part of c.content?.parts ?? []) {
+          if (part.inlineData?.data) {
+            return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`
+          }
         }
       }
+      // Model returned no image — try next model
+    } catch {
+      // Model errored — try next
     }
-    // Fallback: picsum placeholder
-    return `https://picsum.photos/seed/${encodeURIComponent(prompt).slice(0, 30)}/1080/1920`
-  } catch {
-    return `https://picsum.photos/seed/${encodeURIComponent(prompt).slice(0, 30)}/1080/1920`
   }
+
+  // All models failed — fallback to picsum with UNIQUE deterministic seed
+  // so each variant gets a different placeholder photo.
+  return `https://picsum.photos/seed/${uniqueSeed(prompt)}/1080/1920`
 }
 
 // ─── Video generation (Veo via Gemini) ───────────────────────────────────────
