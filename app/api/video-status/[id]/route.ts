@@ -17,7 +17,18 @@ export async function GET(
 
     // Route to right provider based on job_id prefix
     if (rawJobId.startsWith("kling-direct:")) {
-      const taskId = rawJobId.slice("kling-direct:".length)
+      const rest = rawJobId.slice("kling-direct:".length)
+      // Newer format: "kling-direct:<kind>:<task_id>"
+      // Backwards-compat older: "kling-direct:<task_id>" — default to i2v
+      let kind: "i2v" | "t2v" = "i2v"
+      let taskId = rest
+      if (rest.startsWith("i2v:")) {
+        kind = "i2v"
+        taskId = rest.slice(4)
+      } else if (rest.startsWith("t2v:")) {
+        kind = "t2v"
+        taskId = rest.slice(4)
+      }
       const akOverride = req.headers.get("x-kling-access-key") || undefined
       const skOverride = req.headers.get("x-kling-secret-key") || undefined
       const ak = akOverride || env.KLING_ACCESS_KEY
@@ -33,7 +44,7 @@ export async function GET(
           { status: 200 }
         )
       }
-      const result = await pollKlingDirect(ak, sk, taskId)
+      const result = await pollKlingDirect(ak, sk, taskId, kind)
       return NextResponse.json({
         status: !result.done
           ? "processing"

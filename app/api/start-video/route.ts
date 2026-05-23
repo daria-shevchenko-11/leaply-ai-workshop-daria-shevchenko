@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const klingAk = klingAkOverride || env.KLING_ACCESS_KEY
     const klingSk = klingSkOverride || env.KLING_SECRET_KEY
     if (klingAk && klingSk) {
-      const taskId = await submitKlingDirect(klingAk, klingSk, {
+      const { task_id, kind } = await submitKlingDirect(klingAk, klingSk, {
         prompt,
         ...(variant.cover_image_url &&
         !variant.cover_image_url.startsWith("data:")
@@ -39,7 +39,9 @@ export async function POST(req: Request) {
         duration: 5,
         aspect_ratio: "9:16",
       })
-      return NextResponse.json({ job_id: `kling-direct:${taskId}` })
+      // Encode kind in job_id so /api/video-status routes the poll correctly.
+      // Format: "kling-direct:<kind>:<task_id>"  (kind = "i2v" | "t2v")
+      return NextResponse.json({ job_id: `kling-direct:${kind}:${task_id}` })
     }
 
     const replicateToken = replicateTokenOverride || env.REPLICATE_API_TOKEN

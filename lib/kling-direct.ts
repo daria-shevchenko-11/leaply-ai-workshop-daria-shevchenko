@@ -6,9 +6,13 @@
 //   payload: { iss: AK, exp: nowSec + 1800, nbf: nowSec - 5 }
 //   sign with SK using HMAC-SHA256
 //
-// Endpoints used:
-//   POST /v1/videos/image2video → submit → { data: { task_id, task_status } }
-//   GET  /v1/videos/image2video/{task_id} → poll → { task_status, task_result.videos[0].url }
+// Two endpoint families (selected by presence of image input):
+//   IMAGE-to-VIDEO (model kling-v2-1-master):
+//     POST /v1/videos/image2video    submit
+//     GET  /v1/videos/image2video/{id}  poll
+//   TEXT-to-VIDEO  (model kling-v1-6):
+//     POST /v1/videos/text2video     submit
+//     GET  /v1/videos/text2video/{id}   poll
 
 import "server-only"
 import { createHmac } from "node:crypto"
@@ -68,17 +72,26 @@ type KlingTaskResponse = {
   }
 }
 
+export type KlingTaskKind = "i2v" | "t2v"
+
 export async function submitKlingDirect(
   accessKey: string,
   secretKey: string,
   input: KlingImage2VideoInput
-): Promise<string> {
+): Promise<{ task_id: string; kind: KlingTaskKind }> {
   const jwt = buildJwt(accessKey, secretKey)
-  const url = `${KLING_BASE}/v1/videos/image2video`
+  const hasImage = !!input.image_url
+  const kind: KlingTaskKind = hasImage ? "i2v" : "t2v"
+
+  // Different model + endpoint per kind. text2video uses kling-v1-6 which
+  // supports text-to-video; image2video uses latest v2.1-master.
+  const path = hasImage ? "/v1/videos/image2video" : "/v1/videos/text2video"
+  const modelName = hasImage ? "kling-v2-1-master" : "kling-v1-6"
+
   const body = {
-    model_name: "kling-v2-1-master",
+    model_name: modelName,
     prompt: input.prompt,
-    ...(input.image_url ? { image: input.image_url } : {}),
+    ...(hasImage ? { image: input.image_url } : {}),
     ...(input.negative_prompt
       ? { negative_prompt: input.negative_prompt }
       : {}),
@@ -86,7 +99,7 @@ export async function submitKlingDirect(
     aspect_ratio: input.aspect_ratio ?? "9:16",
     cfg_scale: input.cfg_scale ?? 0.5,
   }
-  const res = await fetch(url, {
+  const res = await fetch(`${KLING_BASE}${path}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -105,21 +118,25 @@ export async function submitKlingDirect(
       `Kling submit returned no task_id: ${JSON.stringify(json).slice(0, 200)}`
     )
   }
-  return taskId
+  return { task_id: taskId, kind }
 }
 
 export async function pollKlingDirect(
   accessKey: string,
   secretKey: string,
-  taskId: string
+  taskId: string,
+  kind: KlingTaskKind = "i2v"
 ): Promise<{
   done: boolean
   video_url: string | null
   error: string | null
 }> {
   const jwt = buildJwt(accessKey, secretKey)
-  const url = `${KLING_BASE}/v1/videos/image2video/${encodeURIComponent(taskId)}`
-  const res = await fetch(url, {
+  const path =
+    kind === "i2v"
+      ? `/v1/videos/image2video/${encodeURIComponent(taskId)}`
+      : `/v1/videos/text2video/${encodeURIComponent(taskId)}`
+  const res = await fetch(`${KLING_BASE}${path}`, {
     headers: { Authorization: `Bearer ${jwt}` },
   })
   if (!res.ok) {
