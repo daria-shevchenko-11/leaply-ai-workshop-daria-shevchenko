@@ -7,13 +7,19 @@
 //   videos/variant-{id}.mp4  (if available)
 //   airtable-tasks.json      (full task draft with linked_task_ids + tags)
 
-import type { Variant, AnalysisResult, Brief } from "@/lib/schemas/hook-schemas"
+import type {
+  Variant,
+  AnalysisResult,
+  Brief,
+  KlingPrompts,
+} from "@/lib/schemas/hook-schemas"
 
 type ExportPayload = {
   brief: Brief
   analysis: AnalysisResult
   approved_variants: Variant[]
   generation_mode: "apply_existing_cm" | "propose_new_cm"
+  kling_prompts?: Record<string, KlingPrompts>
 }
 
 type JSZipInstance = {
@@ -79,6 +85,8 @@ export async function buildApprovedZip(payload: ExportPayload): Promise<Blob> {
     .join("\n")
   zip.file("README.md", readme)
 
+  const kp = payload.kling_prompts ?? {}
+
   // Helper to write one variant's assets to a given folder
   async function writeVariantToFolder(
     folder: string,
@@ -86,6 +94,53 @@ export async function buildApprovedZip(payload: ExportPayload): Promise<Blob> {
   ) {
     const vfSlug = safeSlug(v.tags.visual_format_id)
     const baseName = `variant-${v.id}-${vfSlug}`
+
+    // Kling / Nano Banana prompts (if generated for this variant)
+    const prompts = kp[v.id]
+    if (prompts) {
+      const promptsText = [
+        `# Kling / Nano Banana prompts — variant ${v.id}`,
+        ``,
+        `Hook text: ${v.hook_text}`,
+        `Visual format: ${v.tags.visual_format_id}`,
+        `Core message: ${v.tags.core_message_id}`,
+        `Pain point: ${v.tags.pain_point_id}`,
+        `Hook type: ${v.tags.hook_type_id}`,
+        ``,
+        `─────────────────────────────────────────────`,
+        `## 🖼 Nano Banana — image prompt (first frame)`,
+        `─────────────────────────────────────────────`,
+        ``,
+        prompts.image_prompt,
+        ``,
+        `─────────────────────────────────────────────`,
+        `## 🎬 Kling Omni — video prompt (motion + dialogue + ambience)`,
+        `─────────────────────────────────────────────`,
+        ``,
+        prompts.video_prompt,
+        ``,
+        ...(prompts.needs_split && prompts.split_video_prompt
+          ? [
+              `─────────────────────────────────────────────`,
+              `## ⚠ Split required — Shot 2 of 2 (continuity)`,
+              `─────────────────────────────────────────────`,
+              ``,
+              prompts.split_video_prompt,
+              ``,
+            ]
+          : []),
+        `─────────────────────────────────────────────`,
+        `## 🔊 Ambience note (for editor)`,
+        `─────────────────────────────────────────────`,
+        prompts.ambience_note,
+        ``,
+        `─────────────────────────────────────────────`,
+        `## 🎙 Voice direction (for ElevenLabs / VO actor)`,
+        `─────────────────────────────────────────────`,
+        prompts.voice_direction,
+      ].join("\n")
+      zip.file(`${folder}/${baseName}-kling-prompts.txt`, promptsText)
+    }
 
     // Meta JSON per variant
     const meta = {

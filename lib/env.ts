@@ -29,6 +29,28 @@ const EnvSchema = z.object({
       z.string().min(1).optional()
     )
     .optional(),
+
+  // Hokuto Message Matrix (live spend / ads / trend metrics).
+  // All three optional — if any missing, FitMatrix falls back to local
+  // creative-tasks count display without live metrics.
+  HOKUTO_API_BASE: z
+    .preprocess(
+      (v) => (typeof v === "string" && v.length === 0 ? undefined : v),
+      z.string().min(1).optional()
+    )
+    .optional(),
+  HOKUTO_API_TOKEN: z
+    .preprocess(
+      (v) => (typeof v === "string" && v.length === 0 ? undefined : v),
+      z.string().min(1).optional()
+    )
+    .optional(),
+  HOKUTO_ACCOUNT: z
+    .preprocess(
+      (v) => (typeof v === "string" && v.length === 0 ? undefined : v),
+      z.string().min(1).optional()
+    )
+    .optional(),
 })
 
 export const env = EnvSchema.parse(process.env)

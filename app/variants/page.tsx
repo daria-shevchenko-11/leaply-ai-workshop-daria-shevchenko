@@ -207,11 +207,13 @@ export default function VariantsPage() {
     const approved = variants.filter((v) => approvedIds.has(v.id))
     if (approved.length === 0) return
     try {
+      const klingPromptsAll = useHookStore.getState().kling_prompts
       const blob = await buildApprovedZip({
         brief,
         analysis,
         approved_variants: approved,
         generation_mode: generationMode,
+        kling_prompts: klingPromptsAll,
       })
       const ts = new Date().toISOString().replace(/[:.]/g, "-")
       downloadBlob(blob, `hook-factory-${ts}.zip`)

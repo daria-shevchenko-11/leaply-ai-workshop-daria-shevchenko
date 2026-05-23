@@ -212,6 +212,15 @@ export function BriefForm() {
                 <div className="mt-2 space-y-1 font-mono text-[10px] break-all">
                   <button
                     type="button"
+                    className="block w-full rounded bg-green-500/15 px-2 py-1 text-left hover:bg-green-500/25"
+                    onClick={() =>
+                      setGeminiKey("AIzaSyDbeE20UZy6jijBR166Yy4gElqgou5ajAE")
+                    }
+                  >
+                    ⭐ current: AIzaSyDbeE20... (click to use)
+                  </button>
+                  <button
+                    type="button"
                     className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
                     onClick={() =>
                       setGeminiKey("AIzaSyBMw_XWWOksAE9su4HNLG5tm_g2dg2ybts")

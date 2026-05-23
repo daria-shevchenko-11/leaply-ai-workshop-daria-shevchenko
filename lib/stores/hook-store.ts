@@ -12,6 +12,7 @@ import type {
   FitMapped,
   ProposedNewCM,
   VariationAxis,
+  KlingPrompts,
 } from "@/lib/schemas/hook-schemas"
 
 export type Step = "brief" | "analyze" | "sort" | "variants"
@@ -75,6 +76,10 @@ type HookState = {
   toggleApproved: (id: string) => void
   isApproved: (id: string) => boolean
 
+  // Kling/Nano Banana prompts per variant (lazy-loaded on Approve step)
+  kling_prompts: Record<string, KlingPrompts>
+  setKlingPrompts: (variant_id: string, p: KlingPrompts) => void
+
   // Video jobs
   video_jobs: Record<string, VideoJobState>
   setVideoJob: (variant_id: string, state: VideoJobState) => void
@@ -106,6 +111,7 @@ const initialState = {
   >,
   variants: [],
   approved_ids: new Set<string>(),
+  kling_prompts: {} as Record<string, KlingPrompts>,
   video_jobs: {} as Record<string, VideoJobState>,
   loading_message: null,
 }
@@ -204,6 +210,11 @@ export const useHookStore = create<HookState>()(
           return { approved_ids: next }
         }),
       isApproved: (id) => get().approved_ids.has(id),
+
+      setKlingPrompts: (variant_id, p) =>
+        set((state) => ({
+          kling_prompts: { ...state.kling_prompts, [variant_id]: p },
+        })),
 
       setVideoJob: (variant_id, state_) =>
         set((state) => ({

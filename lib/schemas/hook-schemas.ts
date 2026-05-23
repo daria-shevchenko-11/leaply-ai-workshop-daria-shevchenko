@@ -158,3 +158,37 @@ export const VideoStatusResponseSchema = z.object({
   error: z.string().nullable(),
 })
 export type VideoStatusResponse = z.infer<typeof VideoStatusResponseSchema>
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Kling / Nano Banana prompts per variant
+// (lite — single-shot for the 8-sec hook; full Production Sheet is Sprint C)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const KlingPromptsSchema = z.object({
+  // Nano Banana — static image (first frame). Vertical 9:16, no text/logos.
+  image_prompt: z.string(),
+  // Kling Omni — image-to-video, dialogue + motion + camera + ambience.
+  video_prompt: z.string(),
+  // Sound design cue (no background music — added in editor).
+  ambience_note: z.string().default(""),
+  // Voice direction (tone / register / pacing / emotion) — inline in video_prompt
+  // already, but exposed here for clarity.
+  voice_direction: z.string().default(""),
+  // Whether the hook fits in one 10s Kling shot or needs split (4.9+4.10).
+  needs_split: z.boolean().default(false),
+  // If needs_split — second-shot prompts.
+  split_video_prompt: z.string().nullable().default(null),
+})
+export type KlingPrompts = z.infer<typeof KlingPromptsSchema>
+
+export const KlingPromptsResponseSchema = z.object({
+  variant_id: z.string(),
+  prompts: KlingPromptsSchema,
+})
+export type KlingPromptsResponse = z.infer<typeof KlingPromptsResponseSchema>
+
+export const KlingPromptsRequestSchema = z.object({
+  variant: VariantSchema,
+  analysis: AnalysisResultSchema,
+})
+export type KlingPromptsRequest = z.infer<typeof KlingPromptsRequestSchema>

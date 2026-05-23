@@ -12,10 +12,14 @@ import voiceExamples from "@/lib/data/voice-examples.json"
 import {
   AnalysisResultSchema,
   VariantsResultSchema,
+  KlingPromptsSchema,
   type AnalysisResult,
   type Brief,
   type VariantsResult,
+  type Variant,
+  type KlingPrompts,
 } from "@/lib/schemas/hook-schemas"
+import { KLING_PROMPTS_SYSTEM } from "@/lib/prompts/kling-system"
 
 // ─── Models (swap if Google renames) ─────────────────────────────────────────
 const MODEL_TEXT_VISION = "gemini-3.5-flash"
@@ -293,6 +297,65 @@ ${taxonomyBlock}`
 
   const json = extractJson(raw)
   return VariantsResultSchema.parse(json)
+}
+
+// ─── Kling Omni + Nano Banana prompt generation per variant ──────────────────
+
+export async function generateKlingPrompts(
+  variant: Variant,
+  analysis: AnalysisResult,
+  apiKeyOverride?: string
+): Promise<KlingPrompts> {
+  const ai = getClient(apiKeyOverride)
+  const decomp = analysis.decomposition
+
+  const userText = `Generate Nano Banana + Kling Omni prompts for ONE 8-second vertical ad hook.
+
+HOOK TEXT (the line(s) the on-camera actor speaks):
+"${variant.hook_text}"
+
+VISUAL FORMAT: ${variant.tags.visual_format_id}
+CORE MESSAGE: ${variant.tags.core_message_id}
+PAIN POINT: ${variant.tags.pain_point_id}
+HOOK TYPE: ${variant.tags.hook_type_id}
+
+ACTOR / SETTING (use as character baseline; descriptor-in-parens it on first mention):
+${decomp.actor || "Not specified — infer from visual format"}
+
+TONE / TRIGGER FROM SOURCE:
+Tone: ${decomp.tone || "Not specified"}
+Trigger: ${decomp.trigger || "Not specified"}
+Tempo: ${decomp.tempo || "Not specified"}
+
+VARIANT DIRECTION (Daria's ae_brief for this specific variant):
+${variant.ae_brief}
+
+INFERRED AUDIENCE: ${decomp.inferred_audience || "Not specified"}
+INFERRED PAINS: ${decomp.inferred_pains || "Not specified"}
+
+Now produce the JSON per the system prompt rules. Remember:
+- image_prompt = static first frame (the moment before motion)
+- video_prompt = motion + camera + dialogue + ambience, with descriptor-in-parens on first character mention
+- Strip em-dashes / ellipsis / ALL-CAPS from the hook_text when quoting it in video_prompt
+- If hook dialogue would take >10 seconds spoken → set needs_split=true and provide split_video_prompt
+- Visual Format "${variant.tags.visual_format_id}" — if UGC/native/social, NEVER use the word "phone"
+- End video_prompt with: Duration: 8 seconds.
+`
+
+  const response = await ai.models.generateContent({
+    model: MODEL_TEXT_VISION,
+    contents: [{ role: "user", parts: [{ text: userText }] }],
+    config: {
+      systemInstruction: KLING_PROMPTS_SYSTEM,
+      responseMimeType: "application/json",
+    },
+  })
+
+  const raw = response.text
+  if (!raw) throw new Error("Empty response from Gemini Kling-prompts")
+
+  const json = extractJson(raw)
+  return KlingPromptsSchema.parse(json)
 }
 
 // ─── Image generation (Nano Banana 2) ────────────────────────────────────────
