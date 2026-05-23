@@ -18,7 +18,7 @@ export function BriefForm() {
   const setBrief = useHookStore((s) => s.setBrief)
   const goToStep = useHookStore((s) => s.goToStep)
 
-  const [referenceType, setReferenceType] = useState<"text" | "video">("text")
+  const [referenceType, setReferenceType] = useState<"text" | "video">("video")
   const [referenceText, setReferenceText] = useState("")
   const [referenceVideoDataUrl, setReferenceVideoDataUrl] = useState<
     string | undefined
@@ -27,7 +27,7 @@ export function BriefForm() {
   const [videoWarning, setVideoWarning] = useState<string | null>(null)
   const [audience, setAudience] = useState("")
   const [painContext, setPainContext] = useState("")
-  const [variantCount, setVariantCount] = useState(3)
+  const [variantCount, setVariantCount] = useState(5)
   const [error, setError] = useState<string | null>(null)
 
   function onVideoSelect(file: File | null) {
@@ -70,18 +70,19 @@ export function BriefForm() {
       variant_count: variantCount,
     }
 
-    const parsed = BriefSchema.safeParse(candidate)
-    if (!parsed.success) {
-      const first = parsed.error.issues[0]
-      setError(first?.message ?? "Перевір форму")
-      return
-    }
     if (referenceType === "text" && !referenceText.trim()) {
       setError("Опиши референс-хук текстом")
       return
     }
     if (referenceType === "video" && !referenceVideoDataUrl) {
       setError("Завантаж відео-референс (< 4 MB)")
+      return
+    }
+
+    const parsed = BriefSchema.safeParse(candidate)
+    if (!parsed.success) {
+      const first = parsed.error.issues[0]
+      setError(first?.message ?? "Перевір форму")
       return
     }
 
@@ -106,7 +107,7 @@ export function BriefForm() {
                 onClick={() => setReferenceType("text")}
                 size="sm"
               >
-                Текст
+                📝 Текст
               </Button>
               <Button
                 type="button"
@@ -114,7 +115,7 @@ export function BriefForm() {
                 onClick={() => setReferenceType("video")}
                 size="sm"
               >
-                Відео (&lt; 4 MB)
+                🎬 Відео (&lt; 4 MB)
               </Button>
             </div>
           </div>
@@ -131,9 +132,6 @@ export function BriefForm() {
                 onChange={(e) => setReferenceText(e.target.value)}
                 rows={4}
               />
-              <p className="text-xs text-muted-foreground">
-                Опиши, що відбувається на екрані, що говорить актор, який тон.
-              </p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -164,33 +162,6 @@ export function BriefForm() {
             </div>
           )}
 
-          {/* Audience */}
-          <div className="space-y-2">
-            <label htmlFor="audience" className="text-sm font-medium">
-              Цільова аудиторія
-            </label>
-            <Input
-              id="audience"
-              placeholder="Напр.: жінки 35-50, які працюють сидячи"
-              value={audience}
-              onChange={(e) => setAudience(e.target.value)}
-            />
-          </div>
-
-          {/* Pain context */}
-          <div className="space-y-2">
-            <label htmlFor="pains" className="text-sm font-medium">
-              Болі / контекст
-            </label>
-            <Textarea
-              id="pains"
-              placeholder="Напр.: біль у шиї, набряк обличчя зранку, відчуття «грудки» біля плечей"
-              value={painContext}
-              onChange={(e) => setPainContext(e.target.value)}
-              rows={3}
-            />
-          </div>
-
           {/* Variant count slider */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -202,15 +173,49 @@ export function BriefForm() {
             <Slider
               id="count"
               min={1}
-              max={5}
+              max={10}
               step={1}
               value={[variantCount]}
               onValueChange={(v) => setVariantCount(v[0])}
             />
             <p className="text-xs text-muted-foreground">
-              Орієнтовна вартість: ~${estimatedCost} (Gemini + Kling).
+              Орієнтовна вартість: ~${estimatedCost} (Gemini + Kling). Meta
+              recommends ≥ 5 different variants per batch.
             </p>
           </div>
+
+          {/* Optional audience + pain overrides */}
+          <details className="rounded-md border bg-muted/30 p-3">
+            <summary className="cursor-pointer text-sm font-medium">
+              ⚙️ Optional: пропиши audience / pains вручну (AI сам інферить з
+              відео, якщо лишити порожнім)
+            </summary>
+            <div className="mt-3 space-y-3">
+              <div className="space-y-1.5">
+                <label htmlFor="audience" className="text-xs font-medium">
+                  Цільова аудиторія (override)
+                </label>
+                <Input
+                  id="audience"
+                  placeholder="напр.: жінки 35-50, які працюють сидячи"
+                  value={audience}
+                  onChange={(e) => setAudience(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="pains" className="text-xs font-medium">
+                  Болі / контекст (override)
+                </label>
+                <Textarea
+                  id="pains"
+                  placeholder="напр.: біль у шиї, набряк обличчя зранку"
+                  value={painContext}
+                  onChange={(e) => setPainContext(e.target.value)}
+                  rows={2}
+                />
+              </div>
+            </div>
+          </details>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 

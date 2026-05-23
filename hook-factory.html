@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎣 Hook Factory · Leaply</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: #0a0a0f; color: #f0f0f0; }
+  input, textarea, button { font-family: inherit; }
+  input::placeholder, textarea::placeholder { color: #374151; }
+  code { font-family: 'SF Mono', Monaco, monospace; font-size: 11px; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0a0f; }
+  ::-webkit-scrollbar-thumb { background: #1e1e3a; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2a2a4e; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .pulse { animation: pulse 1.5s infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 1s linear infinite; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useRef } = React;
+
+// ─── LEAPLY PIPELINE DATA (from Variation Tree) ───────────────────────────────
+const CORE_MESSAGES = [
+  "Aging Is Not the Cause",
+  "Blocked Lymph Flow from long sitting",
+  "Body transformation",
+  "Early Body Warning Signals",
+  "Expert-Guided Transformation",
+  "Expert-Relative-Guided Transformation",
+  "Lack of confidence",
+  "Relative-as-Proof Transformation",
+  "Relative-as-Proof Transformation Routine",
+  "Root Cause of Physical Symptoms",
+  "Stress Stored in the Body",
+  "Superficial Fixes Don't Work",
+  "Time spent on dumb ways",
+];
+
+const PAIN_POINTS = [
+  "general", "legs", "plantar fasciitis", "face", "neck & shoulders",
+  "neck hump", "back", "armpit", "stiffness & pain", "sciatic nerve", "deep hips"
+];
+
+const VISUAL_FORMATS = [
+  "Professional Authority",
+  "Native / Raw UGC",
+  "Social Interaction",
+  "Visual Evidence",
+  "Action / Lifestyle",
+  "Text-Centric",
+  "Longread (Storybased ads)",
+  "Other",
+];
+
+const HOOK_TYPES = [
+  "Problem-reveal", "Authority statement", "Pattern interrupt",
+  "Curiosity gap", "Fear trigger", "Social proof", "Dialogue opener", "Frankenstein"
+];
+
+const VARIATION_TYPES_LIB = [
+  { id: "text", emoji: "📝", label: "Текст / месседж", desc: "Змінити слова зберігши структуру" },
+  { id: "audience", emoji: "👥", label: "Аудиторія", desc: "Різні болі / вікові групи" },
+  { id: "tone", emoji: "🎭", label: "Тон", desc: "Авторитетний / тривожний / дружній" },
+  { id: "character", emoji: "👤", label: "Персонаж", desc: "Стать, вік, архетип" },
+  { id: "pain", emoji: "💥", label: "Pain angle", desc: "Новий тригер, той самий месседж" },
+  { id: "format", emoji: "🎬", label: "Visual Format", desc: "UGC → Authority → Text-Centric..." },
+];
+
+const AT_FIELDS = [
+  { name: "Hook Text", type: "long text", from: "v.text" },
+  { name: "Variation Type", type: "select", from: "v.variation_type" },
+  { name: "Core Message", type: "select", from: "v.core_message", optionsKey: "CORE_MESSAGES" },
+  { name: "Pain Point", type: "multi select", from: "v.pain_point", optionsKey: "PAIN_POINTS" },
+  { name: "Visual Format", type: "select", from: "v.visual_format", optionsKey: "VISUAL_FORMATS" },
+  { name: "Hook Type", type: "select", from: "v.hook_type", optionsKey: "HOOK_TYPES" },
+  { name: "Actor Note", type: "text", from: "v.actor_note" },
+  { name: "AE Brief", type: "long text", from: "v.ae_note" },
+  { name: "Audience", type: "text", from: "v.audience" },
+  { name: "Status", type: "select", value: "To Design" },
+];
+
+// ─── LEAPLY FUNNEL PIPELINE ──────────────────────────────────────────────────
+const PIPELINE = [
+  { stage: "Creo", icon: "🎯", desc: "Hook + Body" },
+  { stage: "Quiz", icon: "❓", desc: "Marketing funnel" },
+  { stage: "Purchase", icon: "💳", desc: "Subscription" },
+  { stage: "Register", icon: "✍️", desc: "Account" },
+  { stage: "Upsells", icon: "📈", desc: "Add-ons" },
+  { stage: "App", icon: "📱", desc: "LMS / iOS" },
+];
+
+// ─── MOCK DATA FOR DEMO ──────────────────────────────────────────────────────
+const MOCK_ANALYSIS = {
+  hook_text: "Your lymph nodes are blocked. And if you sit all day, they get worse.",
+  tone: "Authoritative / alarming",
+  trigger: "Health fear + curiosity",
+  actor: "White woman, 40-50, expert-looking, medical aesthetic",
+  pace: "Slow buildup → punch in 5 sec",
+  hook_type: "Problem-reveal",
+  core_message: "Blocked Lymph Flow from long sitting",
+  pain_point: "general",
+  audience: "Sedentary office workers 35-55",
+  visual_format: "Professional Authority",
+  why_it_works: "Combines specific medical claim with relatable everyday behavior (sitting). The 'are blocked' creates immediate body awareness, while 'sit all day' implicates the viewer. Authority + fear + personal relevance = high stop-scroll.",
+};
+
+const MOCK_VARIANTS = [
+  {
+    id: 1, text: "Sitting 8 hours a day? Your lymph system is screaming.",
+    variation_type: "Pain angle", audience: "Office workers 30-45",
+    tone: "Urgent, accusatory", actor_note: "Energetic female trainer, 35, gym setting, direct camera",
+    ae_note: "Quick cuts: office chair → swollen ankles → lymph diagram animation. Punchy text overlay.",
+    core_message: "Blocked Lymph Flow from long sitting", pain_point: "legs",
+    visual_format: "Action / Lifestyle", hook_type: "Fear trigger"
+  },
+  {
+    id: 2, text: "My doctor said this was just aging. She was wrong.",
+    variation_type: "Character + tone", audience: "Women 50+",
+    tone: "Personal, intimate confession", actor_note: "White woman 55, soft lighting, sitting at home, no makeup",
+    ae_note: "Talking head UGC style. Slow zoom in. Lower-third caption.",
+    core_message: "Aging Is Not the Cause", pain_point: "stiffness & pain",
+    visual_format: "Native / Raw UGC", hook_type: "Authority statement"
+  },
+  {
+    id: 3, text: "POV: you finally figured out why your neck always hurts.",
+    variation_type: "Format shift (POV)", audience: "Gen Z / Millennials 25-35",
+    tone: "Casual, relatable, native-feeling", actor_note: "Latina woman 28, selfie cam angle, bedroom mirror",
+    ae_note: "Vertical phone-shot vibe. Quick text reveal. Trendy music cue.",
+    core_message: "Root Cause of Physical Symptoms", pain_point: "neck & shoulders",
+    visual_format: "Native / Raw UGC", hook_type: "Pattern interrupt"
+  },
+  {
+    id: 4, text: "If you wake up stiff every morning, this 90 second routine will shock you.",
+    variation_type: "Pain angle + audience", audience: "50+ with morning stiffness",
+    tone: "Promising, evidence-based", actor_note: "Asian man 60, gentle expert energy, yoga mat",
+    ae_note: "Before/after split screen. Stopwatch graphic. Clean medical aesthetic.",
+    core_message: "Early Body Warning Signals", pain_point: "stiffness & pain",
+    visual_format: "Visual Evidence", hook_type: "Curiosity gap"
+  },
+  {
+    id: 5, text: "I asked my mom why she had a hump. Her answer changed everything.",
+    variation_type: "Character + format (story)", audience: "Daughters 30-45 buying for parents",
+    tone: "Emotional, story-driven", actor_note: "Black woman 35, talking about her mother, with old photos",
+    ae_note: "Slow story-style. Family photos as B-roll. Subtle music build.",
+    core_message: "Relative-as-Proof Transformation", pain_point: "neck hump",
+    visual_format: "Longread (Storybased ads)", hook_type: "Dialogue opener"
+  },
+];
+
+// ─── SYSTEM PROMPT FOR CLAUDE ────────────────────────────────────────────────
+const LEAPLY_SYSTEM = `You are a senior performance creative strategist for Leaply — health & wellness subscription app (biohacking, lymph drainage, vagus nerve, pelvic health, body transformation).
+
+YOU MUST PICK ONLY FROM THESE LISTS:
+
+CORE MESSAGES (pick exactly one):
+${CORE_MESSAGES.map(m => `- ${m}`).join("\n")}
+
+PAIN POINTS (pick one or more):
+${PAIN_POINTS.join(", ")}
+
+VISUAL FORMATS (pick one):
+${VISUAL_FORMATS.map(f => `- ${f}`).join("\n")}
+
+HOOK TYPES (pick one):
+${HOOK_TYPES.join(", ")}
+
+META BATCHING RULE: Each variant must be VISUALLY DIFFERENT — different format, actor archetype, visual style. Never batch similar iterations.
+Hook = 1-3 sentences, 3-12 seconds spoken. Respond ONLY in valid JSON, no markdown fences.`;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAIN APP
+// ═══════════════════════════════════════════════════════════════════════════════
+function App() {
+  const [step, setStep] = useState(1);
+  const [demoMode, setDemoMode] = useState(true);
+  const [geminiKey, setGeminiKey] = useState("");
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoPreview, setVideoPreview] = useState(null);
+  const [hookText, setHookText] = useState("");
+  const [inputMode, setInputMode] = useState("video");
+  const [analysis, setAnalysis] = useState(null);
+  const [selectedVars, setSelectedVars] = useState([]);
+  const [varCount, setVarCount] = useState(5);
+  const [variants, setVariants] = useState([]);
+  const [approved, setApproved] = useState(new Set());
+  const [loading, setLoading] = useState(false);
+  const [loadingMsg, setLoadingMsg] = useState("");
+  const [airtableKey, setAirtableKey] = useState("");
+  const [showAT, setShowAT] = useState(false);
+  const fileRef = useRef();
+
+  const toBase64 = (file) => new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(",")[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+
+  const callClaude = async (messages) => {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        system: LEAPLY_SYSTEM,
+        messages,
+      }),
+    });
+    const data = await res.json();
+    const text = data.content?.find(b => b.type === "text")?.text || "{}";
+    return text.replace(/```json|```/g, "").trim();
+  };
+
+  // ── DEMO MODE ──────────────────────────────────────────────────────────────
+  const handleDemoAnalyze = () => {
+    setLoading(true);
+    setLoadingMsg("Demo: симулюємо аналіз...");
+    setTimeout(() => {
+      setAnalysis(MOCK_ANALYSIS);
+      setStep(2);
+      setLoading(false);
+    }, 1200);
+  };
+  const handleDemoGenerate = () => {
+    setLoading(true);
+    setLoadingMsg(`Demo: генеруємо ${varCount} варіантів...`);
+    setTimeout(() => {
+      setVariants(MOCK_VARIANTS.slice(0, varCount));
+      setApproved(new Set());
+      setStep(4);
+      setLoading(false);
+    }, 1500);
+  };
+
+  // ── REAL ANALYZE ───────────────────────────────────────────────────────────
+  const handleAnalyze = async () => {
+    if (demoMode) return handleDemoAnalyze();
+    setLoading(true);
+    let inputText = hookText;
+    try {
+      if (inputMode === "video" && videoFile) {
+        setLoadingMsg("Gemini читає відео...");
+        const b64 = await toBase64(videoFile);
+        const gRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+          { method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [
+                { inline_data: { mime_type: videoFile.type || "video/mp4", data: b64 } },
+                { text: 'Transcribe ALL spoken words. Describe visuals. Return: {"transcript":"...","visual":"...","mood":"..."}' }
+              ]}],
+              generationConfig: { temperature: 0.1 }
+            })
+          });
+        const gData = await gRes.json();
+        const raw = gData.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        try {
+          const p = JSON.parse(raw.replace(/```json|```/g, "").trim());
+          inputText = `SPOKEN: ${p.transcript}\nVISUALS: ${p.visual}\nMOOD: ${p.mood}`;
+        } catch { inputText = raw; }
+      }
+      setLoadingMsg("Claude аналізує...");
+      const raw = await callClaude([{
+        role: "user",
+        content: `Analyze this Leaply hook. Return JSON only:\n\n${inputText}\n\n{"hook_text":"...","tone":"...","trigger":"...","actor":"...","pace":"...","hook_type":"<from HOOK_TYPES list>","core_message":"<from CORE_MESSAGES list>","pain_point":"<from PAIN_POINTS list>","visual_format":"<from VISUAL_FORMATS list>","audience":"...","why_it_works":"2-3 sentences"}`
+      }]);
+      setAnalysis(JSON.parse(raw));
+      setStep(2);
+    } catch (e) {
+      console.error(e);
+      alert("Помилка: " + e.message);
+    }
+    setLoading(false);
+  };
+
+  const handleGenerate = async () => {
+    if (!selectedVars.length) return;
+    if (demoMode) return handleDemoGenerate();
+    setLoading(true);
+    setLoadingMsg(`Генеруємо ${varCount} варіантів...`);
+    try {
+      const raw = await callClaude([{
+        role: "user",
+        content: `Original analysis:\n${JSON.stringify(analysis, null, 2)}\n\nGenerate exactly ${varCount} VISUALLY DIFFERENT hook variations. Vary: ${selectedVars.join(", ")}.\n\nReturn JSON array only:\n[{"id":1,"text":"...","variation_type":"...","audience":"...","tone":"...","actor_note":"actor description","ae_note":"8-12 sec visual direction","core_message":"<from list>","pain_point":"<from list>","visual_format":"<from list>","hook_type":"<from list>"}]`
+      }]);
+      setVariants(JSON.parse(raw));
+      setApproved(new Set());
+      setStep(4);
+    } catch (e) {
+      console.error(e);
+      alert("Помилка: " + e.message);
+    }
+    setLoading(false);
+  };
+
+  // ── AE SCRIPT ──────────────────────────────────────────────────────────────
+  const generateAEScript = () => {
+    const list = variants.filter(v => approved.has(v.id));
+    if (!list.length) return;
+    const date = new Date().toLocaleDateString("uk-UA");
+    const jsx = `// 🎣 HOOK FACTORY — After Effects Script
+// Generated: ${date} · ${list.length} variants
+// HOW TO USE: File → Scripts → Run Script File
+
+(function() {
+  var proj = app.project;
+  var W = 1080, H = 1920, FPS = 30, DUR = 10;
+  var folder = proj.items.addFolder("HookFactory_${date.replace(/\./g, "_")}");
+  var variants = ${JSON.stringify(list.map(v => ({
+    id: v.id, text: v.text, variation_type: v.variation_type,
+    actor_note: v.actor_note || "", ae_note: v.ae_note || "",
+    visual_format: v.visual_format || "", pain_point: v.pain_point || "",
+    core_message: v.core_message || "", audience: v.audience || ""
+  })), null, 2)};
+
+  for (var i = 0; i < variants.length; i++) {
+    var v = variants[i];
+    var name = "Hook_v" + v.id + "_" + v.variation_type.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 25);
+    var comp = proj.items.addComp(name, W, H, 1, DUR, FPS);
+    comp.parentFolder = folder;
+    comp.bgColor = [0.05, 0.05, 0.05];
+
+    var tl = comp.layers.addText(v.text);
+    tl.name = "HOOK TEXT ← edit me";
+    var td = tl.property("Source Text").value;
+    td.font = "ArialMT"; td.fontSize = 68; td.fillColor = [1, 1, 1];
+    td.strokeColor = [0, 0, 0]; td.strokeWidth = 2; td.applyStroke = true;
+    td.justification = ParagraphJustification.CENTER_JUSTIFY; td.tracking = 5;
+    tl.property("Source Text").setValue(td);
+    tl.property("Transform").property("Position").setValue([W/2, H*0.72]);
+    tl.property("Transform").property("Scale").setValue([85, 85]);
+
+    var brief = "╔══ AE BRIEF — DELETE BEFORE RENDER ══╗\\n\\n" +
+      "Variant:    " + v.id + " / " + v.variation_type + "\\n" +
+      "Core msg:   " + v.core_message + "\\n" +
+      "Format:     " + v.visual_format + "\\n" +
+      "Pain:       " + v.pain_point + "\\n" +
+      "Audience:   " + v.audience + "\\n\\n" +
+      "ACTOR:\\n" + v.actor_note + "\\n\\n" +
+      "VISUAL DIRECTION:\\n" + v.ae_note + "\\n\\n" +
+      "╚════════════════════════════════════╝";
+    var bl = comp.layers.addText(brief);
+    bl.name = "⚠️ BRIEF — DELETE BEFORE RENDER"; bl.label = 2;
+    var bd = bl.property("Source Text").value;
+    bd.font = "CourierNewPSMT"; bd.fontSize = 22; bd.fillColor = [1, 0.4, 0.4];
+    bd.justification = ParagraphJustification.LEFT_JUSTIFY;
+    bl.property("Source Text").setValue(bd);
+    bl.property("Transform").property("Position").setValue([60, 200]);
+    bl.property("Transform").property("AnchorPoint").setValue([0, 0]);
+    bl.shy = true;
+  }
+  alert("✅ " + variants.length + " compositions created!\\n⚠️ Delete RED brief layers before render.");
+})();`;
+    const blob = new Blob([jsx], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `HookFactory_${Date.now()}.jsx`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const approvedList = variants.filter(v => approved.has(v.id));
+
+  return (
+    <div style={{ minHeight: "100vh" }}>
+      {/* Header */}
+      <div style={{
+        background: "linear-gradient(135deg,#0f0f1e,#141428)",
+        borderBottom: "1px solid #1e1e3a", padding: "18px 28px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        position: "sticky", top: 0, zIndex: 10
+      }}>
+        <div>
+          <div style={{ fontSize: 20, fontWeight: 800, display: "flex", alignItems: "center", gap: 8 }}>
+            🎣 Hook Factory
+            <span style={{ fontSize: 10, fontWeight: 700, color: "#818cf8", background: "rgba(129,140,248,0.15)", padding: "2px 8px", borderRadius: 20, letterSpacing: 1 }}>LEAPLY</span>
+            {demoMode && <span style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b", background: "rgba(245,158,11,0.15)", padding: "2px 8px", borderRadius: 20, letterSpacing: 1 }}>DEMO MODE</span>}
+          </div>
+          <div style={{ fontSize: 11, color: "#4b5563", marginTop: 2 }}>COLLECT → SORT → LAUNCH · Claude + Gemini</div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <button onClick={() => setDemoMode(!demoMode)} style={{
+            padding: "5px 12px", borderRadius: 20, border: "1px solid #1e1e3a",
+            background: demoMode ? "rgba(245,158,11,0.15)" : "transparent",
+            color: demoMode ? "#f59e0b" : "#6b7280", fontSize: 11, fontWeight: 700, cursor: "pointer"
+          }}>{demoMode ? "🎭 Demo ON" : "Demo OFF"}</button>
+          <StepBar step={step} />
+        </div>
+      </div>
+
+      {/* Pipeline visualizer */}
+      <div style={{ background: "#0a0a0f", borderBottom: "1px solid #141428", padding: "12px 28px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <div style={{ fontSize: 9, color: "#374151", fontWeight: 800, letterSpacing: 1.5, marginBottom: 8 }}>LEAPLY FUNNEL · WHERE THIS LIVES</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 4, overflowX: "auto" }}>
+            {PIPELINE.map((p, i) => (
+              <React.Fragment key={p.stage}>
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 6, padding: "5px 10px",
+                  borderRadius: 8, background: i === 0 ? "rgba(129,140,248,0.12)" : "#0f0f1e",
+                  border: "1px solid", borderColor: i === 0 ? "#818cf8" : "#1e1e3a",
+                  flexShrink: 0,
+                }}>
+                  <span style={{ fontSize: 13 }}>{p.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: i === 0 ? "#818cf8" : "#9ca3af" }}>{p.stage}</div>
+                    <div style={{ fontSize: 9, color: "#4b5563" }}>{p.desc}</div>
+                  </div>
+                </div>
+                {i < PIPELINE.length - 1 && <div style={{ color: "#374151", fontSize: 10 }}>→</div>}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 20px 64px" }}>
+        {step === 1 && <Step1 {...{ inputMode, setInputMode, videoFile, setVideoFile, videoPreview, setVideoPreview, hookText, setHookText, geminiKey, setGeminiKey, fileRef, onAnalyze: handleAnalyze, loading, loadingMsg, demoMode }} />}
+        {step === 2 && analysis && <Step2 {...{ analysis, onNext: () => setStep(3), onBack: () => setStep(1) }} />}
+        {step === 3 && <Step3 {...{ selectedVars, setSelectedVars, varCount, setVarCount, onGenerate: handleGenerate, onBack: () => setStep(2), loading, loadingMsg }} />}
+        {step === 4 && <Step4 {...{ variants, approved, setApproved, onNext: () => setStep(5), onBack: () => setStep(3), onRegenerate: handleGenerate, loading }} />}
+        {step === 5 && <Step5 {...{ approvedList, analysis, onAEScript: generateAEScript, airtableKey, setAirtableKey, showAT, setShowAT, onBack: () => setStep(4), onReset: () => { setStep(1); setVideoFile(null); setVideoPreview(null); setHookText(""); setAnalysis(null); setVariants([]); setApproved(new Set()); setSelectedVars([]); } }} />}
+      </div>
+    </div>
+  );
+}
+
+// ─── STEP BAR ─────────────────────────────────────────────────────────────────
+function StepBar({ step }) {
+  const labels = ["Input", "Аналіз", "Варіації", "Апрув", "Export"];
+  return (
+    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+      {labels.map((s, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div style={{
+              width: i+1 === step ? 32 : 8, height: 6, borderRadius: 3,
+              background: i+1 < step ? "#22c55e" : i+1 === step ? "#818cf8" : "#1e1e3a",
+              transition: "all 0.3s",
+            }} />
+            {i+1 === step && <div style={{ fontSize: 9, color: "#818cf8", fontWeight: 700, marginTop: 2 }}>{s}</div>}
+          </div>
+          {i < labels.length - 1 && <div style={{ width: 6, height: 1, background: "#1e1e3a", marginBottom: i+1 === step ? 12 : 0 }} />}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── STEP 1 ───────────────────────────────────────────────────────────────────
+function Step1({ inputMode, setInputMode, videoFile, setVideoFile, videoPreview, setVideoPreview, hookText, setHookText, geminiKey, setGeminiKey, fileRef, onAnalyze, loading, loadingMsg, demoMode }) {
+  const handleFile = (f) => { if (!f) return; setVideoFile(f); setVideoPreview(URL.createObjectURL(f)); };
+  const canGo = demoMode || (inputMode === "video" ? (videoFile && geminiKey.length > 10) : hookText.trim().length > 8);
+
+  return (
+    <div>
+      <StepHeader n="01" gear="COLLECT" title="Завантаж хук який працює" />
+
+      {demoMode && (
+        <div style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 12, padding: "12px 16px", marginBottom: 16, fontSize: 12, color: "#fbbf24" }}>
+          <strong>🎭 Demo mode активний</strong> — клікни "Аналізувати" аби побачити як працює тулза з мок-даними. Без API ключів.
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: 6, marginBottom: 20, background: "#0f0f1e", borderRadius: 12, padding: 4 }}>
+        {[["video", "🎬", "Відео"], ["text", "📝", "Текст"]].map(([m, ic, lbl]) => (
+          <button key={m} onClick={() => setInputMode(m)} style={{
+            flex: 1, padding: "9px 0", borderRadius: 9, border: "none",
+            background: inputMode === m ? "#1e1e3a" : "transparent",
+            color: inputMode === m ? "#818cf8" : "#4b5563",
+            fontWeight: 700, fontSize: 13, cursor: "pointer",
+          }}>{ic} {lbl}</button>
+        ))}
+      </div>
+
+      {inputMode === "video" ? (
+        <>
+          <div onClick={() => fileRef.current?.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+            style={{
+              border: "2px dashed", borderColor: videoFile ? "#22c55e" : "#1e1e3a",
+              borderRadius: 16, padding: "28px 20px", textAlign: "center",
+              cursor: "pointer", marginBottom: 16,
+              background: videoFile ? "rgba(34,197,94,0.04)" : "rgba(255,255,255,0.01)",
+            }}>
+            {videoPreview ? (
+              <video src={videoPreview} style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 10 }} controls muted playsInline />
+            ) : (
+              <>
+                <div style={{ fontSize: 36, marginBottom: 8 }}>📹</div>
+                <div style={{ color: "#6b7280", fontSize: 14 }}>Drag & drop або клікни</div>
+                <div style={{ color: "#374151", fontSize: 12, marginTop: 4 }}>MP4, MOV · 3-15 сек</div>
+              </>
+            )}
+            <input ref={fileRef} type="file" accept="video/*" style={{ display: "none" }} onChange={(e) => handleFile(e.target.files[0])} />
+          </div>
+
+          <label style={{ fontSize: 12, color: "#6b7280", display: "block", marginBottom: 6 }}>Gemini API Key</label>
+          <input value={geminiKey} onChange={(e) => setGeminiKey(e.target.value)} placeholder="AIzaSy..." type="password"
+            style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid #1e1e3a", background: "#0f0f1e", color: "#f0f0f0", fontSize: 13, marginBottom: 6 }} />
+          <div style={{ fontSize: 11, color: "#374151", marginBottom: 20 }}>
+            З воркшопу: <code style={{ color: "#4b5563" }}>AIzaSyCFc927nJzWwqmGeDT_QmG6-kwIh6VWBAU</code>
+          </div>
+        </>
+      ) : (
+        <>
+          <label style={{ fontSize: 12, color: "#6b7280", display: "block", marginBottom: 6 }}>Текст хука</label>
+          <textarea value={hookText} onChange={(e) => setHookText(e.target.value)}
+            placeholder="«Your lymph nodes are blocked. And sitting all day makes it worse.»"
+            rows={4}
+            style={{ width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid #1e1e3a", background: "#0f0f1e", color: "#f0f0f0", fontSize: 14, resize: "vertical", lineHeight: 1.6, marginBottom: 20 }} />
+        </>
+      )}
+
+      <Btn primary onClick={onAnalyze} disabled={!canGo || loading}>
+        {loading ? (loadingMsg || "Аналізуємо...") : "Аналізувати хук →"}
+      </Btn>
+    </div>
+  );
+}
+
+// ─── STEP 2 ───────────────────────────────────────────────────────────────────
+function Step2({ analysis, onNext, onBack }) {
+  const fields = [
+    ["📝 Текст", analysis.hook_text],
+    ["🎭 Тон", analysis.tone],
+    ["💥 Тригер", analysis.trigger],
+    ["👤 Актор", analysis.actor],
+    ["⚡ Темп", analysis.pace],
+    ["🎯 Hook type", analysis.hook_type],
+    ["🧠 Core message", analysis.core_message],
+    ["😣 Pain point", analysis.pain_point],
+    ["🎨 Visual format", analysis.visual_format],
+    ["👥 Аудиторія", analysis.audience],
+  ];
+  return (
+    <div>
+      <StepHeader n="02" gear="COLLECT" title="Що AI знайшов у хуку" />
+      {analysis.why_it_works && (
+        <div style={{ background: "rgba(129,140,248,0.07)", border: "1px solid rgba(129,140,248,0.2)", borderRadius: 14, padding: "14px 18px", marginBottom: 20 }}>
+          <div style={{ fontSize: 10, color: "#818cf8", fontWeight: 800, letterSpacing: 1.5, marginBottom: 6 }}>ЧОМУ ЦЕ ЧІПЛЯЄ</div>
+          <div style={{ fontSize: 14, color: "#d1d5db", lineHeight: 1.7 }}>{analysis.why_it_works}</div>
+        </div>
+      )}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 24 }}>
+        {fields.map(([lbl, val]) => val && (
+          <div key={lbl} style={{ background: "#0f0f1e", borderRadius: 10, padding: "11px 13px", border: "1px solid #1e1e3a" }}>
+            <div style={{ fontSize: 10, color: "#4b5563", marginBottom: 3 }}>{lbl}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#e5e7eb" }}>{val}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <Btn onClick={onBack}>← Назад</Btn>
+        <Btn primary onClick={onNext}>Обрати варіації →</Btn>
+      </div>
+    </div>
+  );
+}
+
+// ─── STEP 3 ───────────────────────────────────────────────────────────────────
+function Step3({ selectedVars, setSelectedVars, varCount, setVarCount, onGenerate, onBack, loading, loadingMsg }) {
+  const toggle = (id) => setSelectedVars(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
+  return (
+    <div>
+      <StepHeader n="03" gear="SORT" title="Що варіюємо?" />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 24 }}>
+        {VARIATION_TYPES_LIB.map(v => {
+          const on = selectedVars.includes(v.id);
+          return (
+            <button key={v.id} onClick={() => toggle(v.id)} style={{
+              padding: "14px", borderRadius: 12, border: "1.5px solid",
+              borderColor: on ? "#818cf8" : "#1e1e3a",
+              background: on ? "rgba(129,140,248,0.1)" : "#0f0f1e",
+              color: "#f0f0f0", cursor: "pointer", textAlign: "left",
+            }}>
+              <div style={{ fontSize: 22, marginBottom: 4 }}>{v.emoji}</div>
+              <div style={{ fontSize: 13, fontWeight: 700 }}>{v.label}</div>
+              <div style={{ fontSize: 11, color: "#4b5563", marginTop: 2, lineHeight: 1.4 }}>{v.desc}</div>
+            </button>
+          );
+        })}
+      </div>
+
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+          <label style={{ fontSize: 12, color: "#6b7280" }}>Кількість варіантів</label>
+          <span style={{ fontSize: 14, fontWeight: 800, color: "#818cf8" }}>{varCount}</span>
+        </div>
+        <input type="range" min={3} max={10} value={varCount} onChange={(e) => setVarCount(+e.target.value)}
+          style={{ width: "100%", accentColor: "#818cf8" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#374151", marginTop: 6 }}>
+          <span>3 мін</span>
+          <span style={{ color: varCount >= 5 ? "#22c55e" : "#f59e0b" }}>
+            {varCount >= 5 ? "✓ Meta rule: мін 5 різних для батчу" : "⚠ Meta рекомендує мін 5"}
+          </span>
+          <span>10 макс</span>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 8 }}>
+        <Btn onClick={onBack}>← Назад</Btn>
+        <Btn primary onClick={onGenerate} disabled={!selectedVars.length || loading}>
+          {loading ? (loadingMsg || "Генеруємо...") : `Генерувати ${varCount} варіантів →`}
+        </Btn>
+      </div>
+    </div>
+  );
+}
+
+// ─── STEP 4 ───────────────────────────────────────────────────────────────────
+function Step4({ variants, approved, setApproved, onNext, onBack, onRegenerate, loading }) {
+  const toggle = (id) => setApproved(p => {
+    const n = new Set(p);
+    n.has(id) ? n.delete(id) : n.add(id);
+    return n;
+  });
+  return (
+    <div>
+      <StepHeader n="04" gear="SORT → APPROVE" title={`Клікни щоб апрувнути · ${approved.size} обрано`} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
+        {variants.map(v => {
+          const on = approved.has(v.id);
+          return (
+            <div key={v.id} onClick={() => toggle(v.id)} style={{
+              background: "#0f0f1e", borderRadius: 14, padding: "16px 18px",
+              border: "1.5px solid", borderColor: on ? "#22c55e" : "#1e1e3a",
+              cursor: "pointer", transform: on ? "translateX(4px)" : "none",
+              transition: "all 0.15s",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", gap: 5, marginBottom: 8, flexWrap: "wrap" }}>
+                    <Chip color="#7c3aed">{v.variation_type}</Chip>
+                    {v.visual_format && <Chip color="#1d4ed8">{v.visual_format}</Chip>}
+                    {v.pain_point && <Chip color="#dc2626">{v.pain_point}</Chip>}
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#f9fafb", lineHeight: 1.55, marginBottom: 8 }}>
+                    "{v.text}"
+                  </div>
+                  {v.core_message && (
+                    <div style={{ fontSize: 11, color: "#818cf8", marginBottom: 4, fontWeight: 600 }}>🧠 {v.core_message}</div>
+                  )}
+                  {v.actor_note && <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 4 }}>👤 {v.actor_note}</div>}
+                  {v.ae_note && (
+                    <div style={{ fontSize: 12, color: "#4b5563", borderLeft: "2px solid #1e1e3a", paddingLeft: 8, marginTop: 4 }}>
+                      🎬 {v.ae_note}
+                    </div>
+                  )}
+                </div>
+                <div style={{
+                  width: 30, height: 30, borderRadius: "50%", flexShrink: 0,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: on ? "#22c55e" : "#1e1e3a", fontSize: 15,
+                  color: on ? "#000" : "#4b5563", fontWeight: 700,
+                }}>{on ? "✓" : "○"}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <Btn onClick={onBack}>← Назад</Btn>
+        <Btn onClick={onRegenerate} disabled={loading}>🔄 Регенерувати</Btn>
+        <Btn primary onClick={onNext} disabled={!approved.size}>Export ({approved.size}) →</Btn>
+      </div>
+    </div>
+  );
+}
+
+// ─── STEP 5 ───────────────────────────────────────────────────────────────────
+function Step5({ approvedList, analysis, onAEScript, airtableKey, setAirtableKey, showAT, setShowAT, onBack, onReset }) {
+  const [copied, setCopied] = useState(false);
+  const copyAll = () => {
+    const txt = approvedList.map((v, i) =>
+      `ВАРІАНТ ${i+1} · ${v.variation_type}\n"${v.text}"\n🧠 Core: ${v.core_message}\n📍 Pain: ${v.pain_point}\n🎨 Format: ${v.visual_format}\n👤 Актор: ${v.actor_note}\n🎬 AE: ${v.ae_note}`
+    ).join("\n\n────────────────────\n\n");
+    navigator.clipboard.writeText(txt);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div>
+      <StepHeader n="05" gear="LAUNCH" title={`${approvedList.length} варіантів готові`} />
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
+        {approvedList.map((v, i) => (
+          <div key={v.id} style={{ background: "#0f0f1e", borderRadius: 12, padding: "14px 16px", border: "1px solid #1e1e3a", borderLeft: "3px solid #22c55e" }}>
+            <div style={{ fontSize: 10, color: "#22c55e", fontWeight: 800, letterSpacing: 1, marginBottom: 6 }}>✓ ВАРІАНТ {i+1} · {v.variation_type}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#f9fafb", lineHeight: 1.55, marginBottom: 6 }}>"{v.text}"</div>
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 6 }}>
+              {v.core_message && <Chip color="#818cf8">{v.core_message}</Chip>}
+              {v.pain_point && <Chip color="#dc2626">{v.pain_point}</Chip>}
+              {v.visual_format && <Chip color="#1d4ed8">{v.visual_format}</Chip>}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+        <ExportCard icon="🎬" title="After Effects" sub="Завантажити .jsx → авто compositions" color="#7c3aed" onClick={onAEScript} />
+        <ExportCard icon={copied ? "✓" : "📋"} title={copied ? "Скопійовано!" : "Copy text"} sub="Тексти + AE брифи" color="#0369a1" onClick={copyAll} />
+      </div>
+
+      {/* Airtable section */}
+      <div style={{ border: "1.5px solid #1e1e3a", borderRadius: 14, overflow: "hidden", marginBottom: 24 }}>
+        <div onClick={() => setShowAT(!showAT)} style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", background: "#0f0f1e" }}>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700 }}>📊 Airtable інтеграція</div>
+            <div style={{ fontSize: 11, color: airtableKey ? "#22c55e" : "#4b5563", marginTop: 2 }}>
+              {airtableKey ? `✓ Готово створити ${approvedList.length} тасок` : "Поля з вашого Variation Tree уже мапнуті"}
+            </div>
+          </div>
+          <div style={{ color: "#4b5563", fontSize: 14 }}>{showAT ? "▲" : "▼"}</div>
+        </div>
+
+        {showAT && (
+          <div style={{ padding: "16px 18px", borderTop: "1px solid #1e1e3a" }}>
+            <label style={{ fontSize: 12, color: "#6b7280", display: "block", marginBottom: 6 }}>Airtable Personal Access Token</label>
+            <input value={airtableKey} onChange={(e) => setAirtableKey(e.target.value)} placeholder="pat..." type="password"
+              style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid #1e1e3a", background: "#0a0a0f", color: "#f0f0f0", fontSize: 13, marginBottom: 16 }} />
+
+            <div style={{ fontSize: 12, color: "#4b5563", marginBottom: 10, fontWeight: 700 }}>Поля з вашого Variation Tree:</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 16 }}>
+              {AT_FIELDS.map(f => (
+                <div key={f.name} style={{ background: "#0a0a0f", borderRadius: 8, padding: "8px 10px", border: "1px solid #1e1e3a", opacity: airtableKey ? 1 : 0.5 }}>
+                  <div style={{ fontSize: 9, color: "#4b5563", fontWeight: 700, letterSpacing: 0.5 }}>{f.type.toUpperCase()}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>{f.name}</div>
+                  {f.value && <div style={{ fontSize: 10, color: "#22c55e", marginTop: 1 }}>→ "{f.value}"</div>}
+                  {f.optionsKey === "CORE_MESSAGES" && <div style={{ fontSize: 9, color: "#818cf8", marginTop: 2 }}>{CORE_MESSAGES.length} опцій</div>}
+                  {f.optionsKey === "PAIN_POINTS" && <div style={{ fontSize: 9, color: "#dc2626", marginTop: 2 }}>{PAIN_POINTS.length} опцій</div>}
+                  {f.optionsKey === "VISUAL_FORMATS" && <div style={{ fontSize: 9, color: "#1d4ed8", marginTop: 2 }}>{VISUAL_FORMATS.length} опцій</div>}
+                  {f.optionsKey === "HOOK_TYPES" && <div style={{ fontSize: 9, color: "#7c3aed", marginTop: 2 }}>{HOOK_TYPES.length} опцій</div>}
+                </div>
+              ))}
+            </div>
+
+            <button disabled={!airtableKey} style={{
+              width: "100%", padding: "12px", borderRadius: 10, border: "none",
+              background: airtableKey ? "linear-gradient(135deg,#22c55e,#16a34a)" : "#1e1e3a",
+              color: airtableKey ? "#000" : "#4b5563", fontWeight: 800, fontSize: 14,
+              cursor: airtableKey ? "pointer" : "not-allowed",
+            }}>
+              {airtableKey ? `Створити ${approvedList.length} тасок → Airtable` : "Введи API ключ"}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Variation Tree Reference */}
+      <div style={{ background: "#0f0f1e", border: "1px solid #1e1e3a", borderRadius: 14, padding: "16px 18px", marginBottom: 24 }}>
+        <div style={{ fontSize: 11, color: "#4b5563", fontWeight: 800, letterSpacing: 1.5, marginBottom: 12 }}>📚 LEAPLY VARIATION TREE (uses these exclusively)</div>
+        
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 10, color: "#818cf8", fontWeight: 700, marginBottom: 6 }}>CORE MESSAGES ({CORE_MESSAGES.length})</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+            {CORE_MESSAGES.map(m => <Chip key={m} color="#818cf8">{m}</Chip>)}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 10, color: "#dc2626", fontWeight: 700, marginBottom: 6 }}>PAIN POINTS ({PAIN_POINTS.length})</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+            {PAIN_POINTS.map(p => <Chip key={p} color="#dc2626">{p}</Chip>)}
+          </div>
+        </div>
+
+        <div>
+          <div style={{ fontSize: 10, color: "#1d4ed8", fontWeight: 700, marginBottom: 6 }}>VISUAL FORMATS ({VISUAL_FORMATS.length})</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+            {VISUAL_FORMATS.map(f => <Chip key={f} color="#1d4ed8">{f}</Chip>)}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 8 }}>
+        <Btn onClick={onBack}>← Назад</Btn>
+        <Btn onClick={onReset}>🔄 Новий хук</Btn>
+      </div>
+    </div>
+  );
+}
+
+// ─── ATOMS ────────────────────────────────────────────────────────────────────
+function StepHeader({ n, gear, title }) {
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+        <span style={{ fontSize: 10, color: "#374151", fontWeight: 800 }}>STEP {n}</span>
+        <span style={{ fontSize: 10, color: "#818cf8", fontWeight: 800, letterSpacing: 1.5 }}>{gear}</span>
+      </div>
+      <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5, lineHeight: 1.3 }}>{title}</div>
+    </div>
+  );
+}
+
+function Chip({ children, color }) {
+  return (
+    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: color + "22", color, letterSpacing: 0.3, display: "inline-block" }}>
+      {children}
+    </span>
+  );
+}
+
+function ExportCard({ icon, title, sub, color, onClick }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <button onClick={onClick} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+      style={{
+        padding: "18px 14px", borderRadius: 14, border: `1.5px solid ${color}33`,
+        background: hover ? color + "1a" : color + "0d",
+        cursor: "pointer", textAlign: "left", transition: "all 0.15s",
+      }}>
+      <div style={{ fontSize: 26, marginBottom: 6 }}>{icon}</div>
+      <div style={{ fontSize: 14, fontWeight: 800, color: "#f9fafb" }}>{title}</div>
+      <div style={{ fontSize: 11, color: "#6b7280", marginTop: 3, lineHeight: 1.4 }}>{sub}</div>
+    </button>
+  );
+}
+
+function Btn({ children, onClick, disabled, primary }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <button onClick={onClick} disabled={disabled}
+      onMouseEnter={() => !disabled && setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        flex: primary ? 1 : undefined, padding: "12px 18px", borderRadius: 11,
+        border: primary ? "none" : "1.5px solid #1e1e3a",
+        background: disabled ? "#1e1e3a"
+          : primary ? (hover ? "linear-gradient(135deg,#9ca3f8,#818cf8)" : "linear-gradient(135deg,#818cf8,#6366f1)")
+          : (hover ? "#1e1e3a" : "#141428"),
+        color: disabled ? "#374151" : primary ? "#fff" : "#9ca3af",
+        fontWeight: 700, fontSize: 14, cursor: disabled ? "not-allowed" : "pointer",
+        whiteSpace: "nowrap", transition: "all 0.2s",
+      }}>
+      {children}
+    </button>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

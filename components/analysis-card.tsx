@@ -18,13 +18,75 @@ export function AnalysisCard() {
   const setMapped = useHookStore((s) => s.setMapped)
   const setFitStatus = useHookStore((s) => s.setFitStatus)
   const setProposedNewCM = useHookStore((s) => s.setProposedNewCM)
+  const setAnalysis = useHookStore((s) => s.setAnalysis)
 
   if (!analysis) return null
 
   const { decomposition, fit_check, linked_tasks } = analysis
 
+  function updateDecompField(
+    field: "inferred_audience" | "inferred_pains",
+    value: string
+  ) {
+    if (!analysis) return
+    setAnalysis({
+      ...analysis,
+      decomposition: { ...analysis.decomposition, [field]: value },
+    })
+  }
+
   return (
     <div className="space-y-4">
+      {/* Why it works — hero callout */}
+      {decomposition.why_it_works && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-bold tracking-widest uppercase">
+              ЧОМУ ЦЕ ЧІПЛЯЄ
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm leading-relaxed">
+            {decomposition.why_it_works}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* AI-inferred audience + pains — editable */}
+      <Card className="border-blue-500/40">
+        <CardHeader>
+          <CardTitle className="text-base">
+            AI-inferred (edit if wrong)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">
+              👥 Цільова аудиторія
+            </label>
+            <Input
+              value={decomposition.inferred_audience ?? ""}
+              onChange={(e) =>
+                updateDecompField("inferred_audience", e.target.value)
+              }
+              placeholder="напр.: Sedentary office workers 35-55"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">
+              💢 Болі / триггери
+            </label>
+            <Textarea
+              value={decomposition.inferred_pains ?? ""}
+              onChange={(e) =>
+                updateDecompField("inferred_pains", e.target.value)
+              }
+              placeholder="напр.: morning swelling, neck stiffness"
+              rows={2}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Decomposition */}
       <Card>
         <CardHeader>

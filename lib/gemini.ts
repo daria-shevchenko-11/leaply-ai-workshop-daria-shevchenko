@@ -38,7 +38,7 @@ function getClient(): GoogleGenAI {
 
 // ─── Hook analysis ───────────────────────────────────────────────────────────
 
-const ANALYZE_SYSTEM_PROMPT = `You are a senior performance-marketing strategist for Leaply, a lymph-drainage / wellness product. Your job: analyze an ad hook (3-12 sec video or text description) and (a) decompose its elements, (b) check fit against Leaply's existing Core Message taxonomy.
+const ANALYZE_SYSTEM_PROMPT = `You are a senior performance-marketing strategist for Leaply, a lymph-drainage / wellness product. Your job: analyze an ad hook (3-12 sec video or text description) and (a) decompose its elements + infer audience and pains from the video itself, (b) check fit against Leaply's existing Core Message taxonomy.
 
 ALWAYS reply with valid JSON ONLY, matching this exact shape:
 
@@ -49,7 +49,10 @@ ALWAYS reply with valid JSON ONLY, matching this exact shape:
     "trigger": "primary emotional/cognitive trigger (fear, curiosity, authority, etc.)",
     "actor": "demographic + archetype of speaker",
     "tempo": "pacing description",
-    "visual_summary": "what is shown on screen"
+    "visual_summary": "what is shown on screen",
+    "inferred_audience": "best guess of target audience based on tone + actor + visuals (e.g. 'Sedentary office workers 35-55')",
+    "inferred_pains": "best guess of pain points this hook targets (e.g. 'neck stiffness, morning swelling, lymph stagnation')",
+    "why_it_works": "2-3 sentences on WHY this hook stops the scroll — what specifically grabs attention"
   },
   "fit_check": {
     "status": "existing" | "new",
@@ -81,6 +84,7 @@ Rules:
 - Default to "existing" status if confidence > 0.7 — be generous about fit.
 - Use "new" status ONLY if the hook genuinely introduces a Core Message that has no reasonable match.
 - linked_tasks array stays EMPTY — server fills it from snapshot.
+- If user provided audience/pains in the brief, RESPECT them but still fill inferred_audience and inferred_pains based purely on the video.
 `
 
 export async function analyzeHook(brief: Brief): Promise<AnalysisResult> {
@@ -92,6 +96,13 @@ export async function analyzeHook(brief: Brief): Promise<AnalysisResult> {
     inlineData?: { mimeType: string; data: string }
   }[] = []
 
+  const audienceLine = brief.audience
+    ? `AUDIENCE (user override): ${brief.audience}`
+    : "AUDIENCE: (not provided — infer from video)"
+  const painLine = brief.pain_context
+    ? `PAIN CONTEXT (user override): ${brief.pain_context}`
+    : "PAIN CONTEXT: (not provided — infer from video)"
+
   if (brief.reference_type === "video" && brief.reference_video_data_url) {
     // Strip the "data:video/mp4;base64," prefix
     const match = brief.reference_video_data_url.match(
@@ -102,11 +113,11 @@ export async function analyzeHook(brief: Brief): Promise<AnalysisResult> {
       userParts.push({ inlineData: { mimeType, data: base64 } })
     }
     userParts.push({
-      text: `\n\nAUDIENCE: ${brief.audience}\nPAIN CONTEXT: ${brief.pain_context}\n\n${taxonomyBlock}\n\nAnalyze this video reference hook and return the JSON.`,
+      text: `\n\n${audienceLine}\n${painLine}\n\n${taxonomyBlock}\n\nAnalyze this video reference hook and return the JSON.`,
     })
   } else {
     userParts.push({
-      text: `REFERENCE HOOK (text description):\n${brief.reference_text}\n\nAUDIENCE: ${brief.audience}\nPAIN CONTEXT: ${brief.pain_context}\n\n${taxonomyBlock}\n\nAnalyze and return the JSON.`,
+      text: `REFERENCE HOOK (text description):\n${brief.reference_text}\n\n${audienceLine}\n${painLine}\n\n${taxonomyBlock}\n\nAnalyze and return the JSON.`,
     })
   }
 
@@ -167,7 +178,8 @@ Tags MUST use valid IDs from the taxonomy.
 export async function generateTextVariants(
   brief: Brief,
   analysis: AnalysisResult,
-  generationMode: "apply_existing_cm" | "propose_new_cm"
+  generationMode: "apply_existing_cm" | "propose_new_cm",
+  variationAxes: string[] = []
 ): Promise<VariantsResult> {
   const ai = getClient()
   const taxonomyBlock = formatTaxonomyForPrompt()
@@ -185,15 +197,26 @@ export async function generateTextVariants(
       ? `MODE: apply_existing_cm. Anchor variants on Core Message "${analysis.fit_check.mapped?.core_message_name}" (id: ${analysis.fit_check.mapped?.core_message_id}). Mix Visual Formats / Pain Points freely from taxonomy.`
       : `MODE: propose_new_cm. New Core Message: "${analysis.fit_check.proposed_new_cm?.suggested_name}". Closest existing: "${analysis.fit_check.proposed_new_cm?.closest_existing_name}". Reasoning: ${analysis.fit_check.proposed_new_cm?.reason}`
 
+  const axesBlock =
+    variationAxes.length > 0
+      ? `VARIATION AXES (vary these dimensions across variants — each variant must change at least one axis from the reference): ${variationAxes.join(", ")}`
+      : "VARIATION AXES: text, audience, tone"
+
+  const audienceLine =
+    brief.audience || analysis.decomposition.inferred_audience
+  const painLine = brief.pain_context || analysis.decomposition.inferred_pains
+
   const userText = `${modeBlock}
 
 REFERENCE HOOK:
 ${referenceText}
 
-AUDIENCE: ${brief.audience}
-PAIN CONTEXT: ${brief.pain_context}
+AUDIENCE: ${audienceLine}
+PAIN CONTEXT: ${painLine}
 
-GENERATE EXACTLY ${brief.variant_count} VARIANTS.
+${axesBlock}
+
+GENERATE EXACTLY ${brief.variant_count} VARIANTS. Each must be VISUALLY DIFFERENT from the others — different visual_format, actor archetype, or pain angle.
 
 ${taxonomyBlock}`
 

@@ -6,7 +6,10 @@
     "trigger": "Health fear + curiosity",
     "actor": "White woman, 40-50, expert-looking, medical aesthetic",
     "tempo": "Slow buildup → punch in 5 sec",
-    "visual_summary": "Mid-shot, woman in white coat, soft clinical lighting, direct camera gaze, lean-in on key word."
+    "visual_summary": "Mid-shot, woman in white coat, soft clinical lighting, direct camera gaze, lean-in on key word.",
+    "inferred_audience": "Sedentary office workers 35-55, predominantly women",
+    "inferred_pains": "general fatigue, morning swelling, neck & shoulder tension, lymph stagnation symptoms",
+    "why_it_works": "Combines specific medical claim with relatable everyday behavior (sitting). The 'are blocked' creates immediate body awareness, while 'sit all day' implicates the viewer. Authority + fear + personal relevance = high stop-scroll."
   },
   "fit_check": {
     "status": "existing",

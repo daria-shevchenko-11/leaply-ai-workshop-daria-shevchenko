@@ -9,6 +9,7 @@ import {
 } from "@/lib/schemas/hook-schemas"
 import { VariantCard } from "@/components/variant-card"
 import { DemoModeToggle } from "@/components/demo-mode-toggle"
+import { PipelineVisualizer } from "@/components/pipeline-visualizer"
 import { ProgressStream } from "@/components/progress-stream"
 import { Button } from "@/components/ui/button"
 import mockVariantsJson from "@/lib/data/mock-variants.json"
@@ -20,6 +21,7 @@ export default function VariantsPage() {
   const brief = useHookStore((s) => s.brief)
   const analysis = useHookStore((s) => s.analysis)
   const generationMode = useHookStore((s) => s.generation_mode)
+  const variationAxes = useHookStore((s) => s.variation_axes)
   const demoMode = useHookStore((s) => s.demo_mode)
   const variants = useHookStore((s) => s.variants)
   const setVariants = useHookStore((s) => s.setVariants)
@@ -68,6 +70,7 @@ export default function VariantsPage() {
               brief,
               analysis,
               generation_mode: generationMode,
+              variation_axes: variationAxes,
             }),
           })
           if (!res.ok) {
@@ -101,6 +104,7 @@ export default function VariantsPage() {
     analysis,
     demoMode,
     generationMode,
+    variationAxes,
     variants.length,
     setVariants,
     router,
@@ -241,14 +245,14 @@ export default function VariantsPage() {
   return (
     <div className="min-h-svh bg-background">
       <div className="mx-auto max-w-4xl px-4 py-8">
-        <header className="mb-6 flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              🎣 Hook Factory
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              Step 3 of 3 — Variants & Results
+        <header className="mb-4 flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+              Steps 4–5 of 5 · Approve & Launch
             </p>
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Варіанти готові — апрувай і експортуй
+            </h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -269,6 +273,10 @@ export default function VariantsPage() {
             </Button>
           </div>
         </header>
+
+        <div className="mb-4">
+          <PipelineVisualizer />
+        </div>
 
         <div className="mb-6">
           <DemoModeToggle />

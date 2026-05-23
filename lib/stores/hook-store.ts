@@ -10,9 +10,10 @@ import type {
   VariantTags,
   FitMapped,
   ProposedNewCM,
+  VariationAxis,
 } from "@/lib/schemas/hook-schemas"
 
-export type Step = "brief" | "analyze" | "variants"
+export type Step = "brief" | "analyze" | "sort" | "variants"
 
 type GenerationMode = "apply_existing_cm" | "propose_new_cm"
 
@@ -47,6 +48,11 @@ type HookState = {
 
   generation_mode: GenerationMode
   setGenerationMode: (m: GenerationMode) => void
+
+  // Step 3 — Sort (which axes to vary on)
+  variation_axes: VariationAxis[]
+  toggleAxis: (a: VariationAxis) => void
+  setVariationAxes: (a: VariationAxis[]) => void
 
   // Step 3 — Variants
   variants: Variant[]
@@ -83,6 +89,7 @@ const initialState = {
   brief: null,
   analysis: null,
   generation_mode: "apply_existing_cm" as GenerationMode,
+  variation_axes: ["text", "audience", "tone"] as VariationAxis[],
   variants: [],
   approved_ids: new Set<string>(),
   video_jobs: {} as Record<string, VideoJobState>,
@@ -123,6 +130,17 @@ export const useHookStore = create<HookState>()((set, get) => ({
   },
 
   setGenerationMode: (m) => set({ generation_mode: m }),
+
+  toggleAxis: (a) =>
+    set((state) => {
+      const has = state.variation_axes.includes(a)
+      return {
+        variation_axes: has
+          ? state.variation_axes.filter((x) => x !== a)
+          : [...state.variation_axes, a],
+      }
+    }),
+  setVariationAxes: (a) => set({ variation_axes: a }),
 
   setVariants: (vs) => set({ variants: vs }),
   updateVariantText: (id, text) =>

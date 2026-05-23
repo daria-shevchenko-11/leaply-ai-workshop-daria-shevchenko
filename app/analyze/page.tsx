@@ -7,6 +7,7 @@ import { AnalysisResultSchema } from "@/lib/schemas/hook-schemas"
 import { findLinkedTasks } from "@/lib/fit-check"
 import { AnalysisCard } from "@/components/analysis-card"
 import { DemoModeToggle } from "@/components/demo-mode-toggle"
+import { PipelineVisualizer } from "@/components/pipeline-visualizer"
 import { ProgressStream } from "@/components/progress-stream"
 import { Button } from "@/components/ui/button"
 import mockAnalysisJson from "@/lib/data/mock-analysis.json"
@@ -103,21 +104,25 @@ export default function AnalyzePage() {
 
   function onContinue(mode: "apply_existing_cm" | "propose_new_cm") {
     setGenerationMode(mode)
-    goToStep("variants")
-    router.push("/variants")
+    goToStep("sort")
+    router.push("/sort")
   }
 
   return (
     <div className="min-h-svh bg-background">
       <div className="mx-auto max-w-2xl px-4 py-8">
-        <header className="mb-6 space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            🎣 Hook Factory
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            Step 2 of 3 — Analyze + Fit-Check
+        <header className="mb-4 space-y-1">
+          <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+            Step 2 of 5 · Collect
           </p>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Що AI знайшов у хуку
+          </h1>
         </header>
+
+        <div className="mb-4">
+          <PipelineVisualizer />
+        </div>
 
         <div className="mb-6">
           <DemoModeToggle />
@@ -161,7 +166,7 @@ export default function AnalyzePage() {
                   size="lg"
                   onClick={() => onContinue("apply_existing_cm")}
                 >
-                  Generate variants for existing CM →
+                  Обрати варіації (existing CM) →
                 </Button>
               ) : (
                 <Button
@@ -169,7 +174,7 @@ export default function AnalyzePage() {
                   size="lg"
                   onClick={() => onContinue("propose_new_cm")}
                 >
-                  Propose as new CM + generate variants →
+                  Обрати варіації (new CM) →
                 </Button>
               )}
             </div>

@@ -8,9 +8,10 @@ export const BriefSchema = z.object({
   reference_type: z.enum(["text", "video"]),
   reference_text: z.string().optional(),
   reference_video_data_url: z.string().optional(),
-  audience: z.string().min(1, "Опиши цільову аудиторію"),
-  pain_context: z.string().min(1, "Опиши болі"),
-  variant_count: z.number().int().min(1).max(5),
+  // Optional — AI infers from video if missing. User can override on Step 2.
+  audience: z.string().optional().default(""),
+  pain_context: z.string().optional().default(""),
+  variant_count: z.number().int().min(1).max(10),
 })
 export type Brief = z.infer<typeof BriefSchema>
 
@@ -25,6 +26,10 @@ export const HookDecompositionSchema = z.object({
   actor: z.string(),
   tempo: z.string(),
   visual_summary: z.string(),
+  // AI-inferred (Step 2 fields the user can edit)
+  inferred_audience: z.string().default(""),
+  inferred_pains: z.string().default(""),
+  why_it_works: z.string().default(""),
 })
 export type HookDecomposition = z.infer<typeof HookDecompositionSchema>
 
@@ -107,10 +112,22 @@ export type VariantsResult = z.infer<typeof VariantsResultSchema>
 export const AnalyzeRequestSchema = BriefSchema
 export type AnalyzeRequest = z.infer<typeof AnalyzeRequestSchema>
 
+export const VariationAxisSchema = z.enum([
+  "text",
+  "audience",
+  "tone",
+  "character",
+  "pain",
+  "format",
+  "frankenstein",
+])
+export type VariationAxis = z.infer<typeof VariationAxisSchema>
+
 export const GenerateVariantsRequestSchema = z.object({
   brief: BriefSchema,
   analysis: AnalysisResultSchema,
   generation_mode: z.enum(["apply_existing_cm", "propose_new_cm"]),
+  variation_axes: z.array(VariationAxisSchema).default([]),
 })
 export type GenerateVariantsRequest = z.infer<
   typeof GenerateVariantsRequestSchema

@@ -11,14 +11,15 @@ export const maxDuration = 60
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { brief, analysis, generation_mode } =
+    const { brief, analysis, generation_mode, variation_axes } =
       GenerateVariantsRequestSchema.parse(body)
 
     // 1. Generate text variants
     const textResult = await generateTextVariants(
       brief,
       analysis,
-      generation_mode
+      generation_mode,
+      variation_axes
     )
 
     // 2. For each variant, generate a cover image in parallel
