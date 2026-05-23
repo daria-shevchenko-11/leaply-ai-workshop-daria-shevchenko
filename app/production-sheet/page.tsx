@@ -14,6 +14,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { CopyButton } from "@/components/copy-button"
+import { DemoModeToggle } from "@/components/demo-mode-toggle"
+import mockProductionSheetJson from "@/lib/data/mock-production-sheet.json"
 
 export default function ProductionSheetPage() {
   const geminiKey = useHookStore((s) => s.gemini_api_key)
@@ -29,11 +31,31 @@ export default function ProductionSheetPage() {
   const [sheet, setSheet] = useState<ProductionSheet | null>(null)
 
   async function onGenerate() {
+    setError(null)
+
+    // Demo Mode — skip API, load static mock for click-through
+    if (demoMode) {
+      setLoading(true)
+      setSheet(null)
+      // Simulate ~1.2 sec of processing for realistic feel
+      await new Promise((r) => setTimeout(r, 1200))
+      try {
+        const parsed = ProductionSheetSchema.parse(
+          mockProductionSheetJson as unknown
+        )
+        setSheet(parsed)
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Demo mock parse failed")
+      } finally {
+        setLoading(false)
+      }
+      return
+    }
+
     if (!scenario.trim()) {
       setError("Опиши сценарій (хоч би 2-3 речення)")
       return
     }
-    setError(null)
     setLoading(true)
     setSheet(null)
     try {
@@ -96,6 +118,10 @@ export default function ProductionSheetPage() {
             direction.
           </p>
         </header>
+
+        <div className="mb-6">
+          <DemoModeToggle />
+        </div>
 
         {!sheet && (
           <Card>
@@ -180,11 +206,19 @@ export default function ProductionSheetPage() {
 
               {error && <p className="text-sm text-destructive">{error}</p>}
 
+              {demoMode && (
+                <p className="rounded-md border border-yellow-500/40 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-700 dark:text-yellow-300">
+                  🎭 Demo Mode ON — можна тиснути «Згенерувати» без заповнення.
+                  Покажу mock «Mom&apos;s Neck Hump Reveal» — 4 шоти, 2
+                  Character Passports, повний sheet з усіма правилами.
+                </p>
+              )}
+
               <Button
                 size="lg"
                 className="w-full"
                 onClick={onGenerate}
-                disabled={loading || !scenario.trim()}
+                disabled={loading || (!demoMode && !scenario.trim())}
               >
                 {loading ? "⏳ Генерую production sheet..." : "Згенерувати →"}
               </Button>
