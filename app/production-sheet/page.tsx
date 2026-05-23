@@ -91,7 +91,7 @@ export default function ProductionSheetPage() {
     <div className="min-h-svh bg-background">
       <div className="mx-auto max-w-4xl px-4 py-8">
         {/* Top nav */}
-        <nav className="mb-6 flex items-center gap-2">
+        <nav className="mb-6 flex flex-wrap items-center gap-2">
           <Link
             href="/"
             className="rounded-md border border-muted bg-background px-3 py-1.5 text-xs font-medium hover:bg-accent"
@@ -102,6 +102,13 @@ export default function ProductionSheetPage() {
           <span className="rounded-md border border-primary bg-primary/10 px-3 py-1.5 text-xs font-medium">
             🎬 Production Sheet
           </span>
+          <span className="text-muted-foreground">·</span>
+          <Link
+            href="/kling-test"
+            className="rounded-md border border-muted bg-background px-3 py-1.5 text-xs font-medium hover:bg-accent"
+          >
+            🧪 Kling Test
+          </Link>
         </nav>
 
         <header className="mb-6 space-y-1">

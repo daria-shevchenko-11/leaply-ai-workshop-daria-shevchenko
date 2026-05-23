@@ -8,7 +8,7 @@ export default function Page() {
     <div className="min-h-svh bg-background">
       <div className="mx-auto max-w-2xl px-4 py-8">
         {/* Top nav between two tools */}
-        <nav className="mb-6 flex items-center gap-2">
+        <nav className="mb-6 flex flex-wrap items-center gap-2">
           <span className="rounded-md border border-primary bg-primary/10 px-3 py-1.5 text-xs font-medium">
             🎣 Hook Factory
           </span>
@@ -18,6 +18,13 @@ export default function Page() {
             className="rounded-md border border-muted bg-background px-3 py-1.5 text-xs font-medium hover:bg-accent"
           >
             🎬 Production Sheet
+          </Link>
+          <span className="text-muted-foreground">·</span>
+          <Link
+            href="/kling-test"
+            className="rounded-md border border-muted bg-background px-3 py-1.5 text-xs font-medium hover:bg-accent"
+          >
+            🧪 Kling Test
           </Link>
         </nav>
 
