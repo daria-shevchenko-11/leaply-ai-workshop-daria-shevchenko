@@ -11,7 +11,13 @@ const EnvSchema = z.object({
   // Google AI (Gemini 3.5 Flash + Nano Banana 2 image gen).
   // Used for hook analysis, transcription, text + image variant generation.
   // Workshop-provided keys available; pick one.
-  GOOGLE_AI_API_KEY: z.string().min(1),
+  // Optional at build time — API routes throw a helpful 500 if missing at runtime.
+  GOOGLE_AI_API_KEY: z
+    .preprocess(
+      (v) => (typeof v === "string" && v.length === 0 ? undefined : v),
+      z.string().min(1).optional()
+    )
+    .optional(),
 
   // Replicate (Kling v2.x video generation).
   // Create at https://replicate.com → API tokens.

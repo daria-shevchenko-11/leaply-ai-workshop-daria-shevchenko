@@ -26,6 +26,11 @@ const MODEL_VIDEO = "veo-3.1-preview"
 let client: GoogleGenAI | null = null
 function getClient(): GoogleGenAI {
   if (!client) {
+    if (!env.GOOGLE_AI_API_KEY) {
+      throw new Error(
+        "GOOGLE_AI_API_KEY is not set. Add it in Vercel → Project Settings → Environment Variables, then redeploy."
+      )
+    }
     client = new GoogleGenAI({ apiKey: env.GOOGLE_AI_API_KEY })
   }
   return client
