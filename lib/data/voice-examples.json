@@ -1,0 +1,25 @@
+{
+  "_note": "PLACEHOLDER — Daria provides 5-10 real examples of how she writes Kling/video prompts. Used as few-shot examples in generation prompt template.",
+  "kling_prompt_style": [
+    {
+      "description": "Female, 35-45, doctor archetype",
+      "kling_prompt": "Medium close-up of a woman in her late 30s, wearing a clinical white coat, soft indoor lighting from window-left, looking directly into camera with subtle concerned expression. She speaks calmly but with authority. Subtle natural skin texture, no makeup-heavy look. Background: blurred home office or clinic, neutral beige tones. Camera: static medium shot, eye-level. Mood: clinical but warm. Style: realistic, no stylization."
+    },
+    {
+      "description": "Native UGC, neck pain testimonial",
+      "kling_prompt": "Vertical 9:16 selfie-style shot of a 40-year-old woman in her bedroom, holding the phone slightly above eye level. Natural morning light. She's wearing a casual sweatshirt, hair slightly messy. Her tone is conversational, slightly conspiratorial — like sharing a secret with a friend. Camera handheld, very slight movement. Background: bed, slightly unmade, neutral. Style: realistic UGC, no filter, slightly imperfect framing."
+    },
+    {
+      "description": "Before-after reveal",
+      "kling_prompt": "Split-screen reveal: left side shows woman in dim lighting with visible posture slump and tired expression. Right side same woman, brighter lighting, straighter posture, brighter eyes, subtle smile. Transition is a single horizontal swipe at 4-second mark. Camera: static medium shot both sides. Mood: hopeful, transformative. Realistic style, no over-processing."
+    },
+    {
+      "description": "Doctor reveal — authority hook",
+      "kling_prompt": "Medium shot of a male doctor, 45-55, in clinic setting with subtle medical equipment in soft-focus background. He's looking directly at camera, voice low and serious. He leans slightly forward at the 2-second mark to emphasize the reveal. Lighting: clinical but flattering, slight shadow on left side of face. Wardrobe: white coat over button-up. Style: documentary-realistic."
+    },
+    {
+      "description": "Action / technique demo",
+      "kling_prompt": "Close-up overhead shot of hands performing a gentle massage technique on the neck/shoulder area. Hands are visible, recipient is from chest up, lying down or seated with eyes closed. Slow, deliberate hand movements. Soft natural lighting from above-right. Background: minimal, calm spa-adjacent feel without being branded. Camera: static overhead. Style: instructional, calm pacing."
+    }
+  ]
+}

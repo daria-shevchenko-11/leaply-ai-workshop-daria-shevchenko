@@ -1,0 +1,125 @@
+{
+  "_note": "PLACEHOLDER — Daria provides real export from Airtable creative tasks DB. Used by fit-check to suggest existing tasks where uploaded hook can be applied.",
+  "tasks": [
+    {
+      "id": 1247,
+      "title": "Lymph Reset 30s body",
+      "hook_text": "Your lymph nodes are blocked — here's the 30-second reset.",
+      "core_message_id": "blocked-lymph-flow",
+      "visual_format_id": "professional-authority",
+      "pain_point_id": "neck-shoulders",
+      "hook_type_id": "problem-reveal",
+      "status": "running"
+    },
+    {
+      "id": 1283,
+      "title": "Doctor reveal hook ×3",
+      "hook_text": "Doctors won't tell you this about your morning swelling.",
+      "core_message_id": "doctor-knows",
+      "visual_format_id": "professional-authority",
+      "pain_point_id": "face",
+      "hook_type_id": "authority-statement",
+      "status": "running"
+    },
+    {
+      "id": 1311,
+      "title": "Neck pain testimonial",
+      "hook_text": "I gave it to my mom — she stopped wearing scarves.",
+      "core_message_id": "social-proof-relative",
+      "visual_format_id": "native-ugc",
+      "pain_point_id": "neck-hump",
+      "hook_type_id": "testimonial-open",
+      "status": "running"
+    },
+    {
+      "id": 1352,
+      "title": "Energy restoration UGC",
+      "hook_text": "I haven't been this awake at 6am in 10 years.",
+      "core_message_id": "energy-restoration",
+      "visual_format_id": "native-ugc",
+      "pain_point_id": "fatigue",
+      "hook_type_id": "testimonial-open",
+      "status": "running"
+    },
+    {
+      "id": 1378,
+      "title": "Plantar fasciitis demo",
+      "hook_text": "If your foot hurts when you get up — watch this.",
+      "core_message_id": "pain-relief-fast",
+      "visual_format_id": "action",
+      "pain_point_id": "plantar-fasciitis",
+      "hook_type_id": "question-hook",
+      "status": "running"
+    },
+    {
+      "id": 1401,
+      "title": "Face puffiness reveal",
+      "hook_text": "Stop blaming aging. Your face is just puffy.",
+      "core_message_id": "aging-not-cause",
+      "visual_format_id": "talking-head",
+      "pain_point_id": "face",
+      "hook_type_id": "myth-bust",
+      "status": "paused"
+    },
+    {
+      "id": 1428,
+      "title": "Buffalo hump warning",
+      "hook_text": "By 50, this neck hump is irreversible.",
+      "core_message_id": "before-it-too-late",
+      "visual_format_id": "talking-head",
+      "pain_point_id": "neck-hump",
+      "hook_type_id": "urgency-warning",
+      "status": "running"
+    },
+    {
+      "id": 1455,
+      "title": "Posture confidence UGC",
+      "hook_text": "I walked into the meeting differently this morning.",
+      "core_message_id": "posture-confidence",
+      "visual_format_id": "native-ugc",
+      "pain_point_id": "neck-hump",
+      "hook_type_id": "testimonial-open",
+      "status": "running"
+    },
+    {
+      "id": 1472,
+      "title": "Natural method demo",
+      "hook_text": "No pills. No surgery. Just 3 minutes.",
+      "core_message_id": "natural-method",
+      "visual_format_id": "action",
+      "pain_point_id": "general",
+      "hook_type_id": "pattern-interrupt",
+      "status": "running"
+    },
+    {
+      "id": 1503,
+      "title": "Studies show shock stat",
+      "hook_text": "87% of women over 35 have this — and don't know it.",
+      "core_message_id": "scientific-backed",
+      "visual_format_id": "talking-head",
+      "pain_point_id": "general",
+      "hook_type_id": "shock-stat",
+      "status": "running"
+    },
+    {
+      "id": 1521,
+      "title": "Leg swelling lifestyle",
+      "hook_text": "I sit 8 hours. My legs were dead weight by 6pm.",
+      "core_message_id": "energy-restoration",
+      "visual_format_id": "lifestyle",
+      "pain_point_id": "legs",
+      "hook_type_id": "testimonial-open",
+      "status": "running"
+    },
+    {
+      "id": 1547,
+      "title": "Bloated belly self-care",
+      "hook_text": "5 minutes after dinner. That's it.",
+      "core_message_id": "self-care-ritual",
+      "visual_format_id": "action",
+      "pain_point_id": "stomach",
+      "hook_type_id": "pattern-interrupt",
+      "status": "running"
+    }
+  ]
+}

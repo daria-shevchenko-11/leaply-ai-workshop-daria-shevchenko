@@ -1,0 +1,44 @@
+{
+  "_note": "Demo Mode response shape for /api/analyze. Mirrors real Gemini output structure.",
+  "decomposition": {
+    "transcript": "Your lymph nodes are blocked, and you don't even know it. By the time you feel it, it's too late.",
+    "tone": "Authoritative / clinical, building urgency",
+    "trigger": "Health scare — hidden threat reveal",
+    "actor": "Female, 35-45, white-coat doctor archetype",
+    "tempo": "Slow opening word-by-word → sharp impact on 'too late'",
+    "visual_summary": "Mid-shot, woman in white coat, soft clinical lighting, direct camera gaze. Subtle lean-in on the 'reveal' moment."
+  },
+  "fit_check": {
+    "status": "existing",
+    "confidence": 0.87,
+    "mapped": {
+      "core_message_id": "blocked-lymph-flow",
+      "core_message_name": "Blocked Lymph Flow",
+      "visual_format_id": "professional-authority",
+      "visual_format_name": "Professional Authority",
+      "pain_point_id": "neck-shoulders",
+      "pain_point_name": "neck & shoulders",
+      "hook_type_id": "problem-reveal",
+      "hook_type_name": "Problem-reveal"
+    },
+    "reasoning": "Strong match on hidden-problem framing + doctor archetype + clinical tone. Mirrors task #1247 (Lymph Reset) and #1283 (Doctor reveal).",
+    "proposed_new_cm": null
+  },
+  "linked_tasks": [
+    {
+      "id": 1247,
+      "title": "Lymph Reset 30s body",
+      "match_reason": "Same core_message + visual_format"
+    },
+    {
+      "id": 1283,
+      "title": "Doctor reveal hook ×3",
+      "match_reason": "Same visual_format + hook_type"
+    },
+    {
+      "id": 1311,
+      "title": "Neck pain testimonial",
+      "match_reason": "Same pain_point"
+    }
+  ]
+}

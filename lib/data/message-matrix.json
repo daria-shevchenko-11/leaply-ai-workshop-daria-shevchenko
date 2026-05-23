@@ -1,0 +1,272 @@
+{
+  "_note": "PLACEHOLDER — Daria provides real values from https://hokuto.leaplyhub.com/message-matrix?account=A7_Leaply. Used as fallback taxonomy for fit-check. Replace with real export before live demo.",
+  "core_messages": [
+    {
+      "id": "aging-not-cause",
+      "name": "Aging Is Not the Cause",
+      "description": "Reframes age-related symptoms as fixable, not inevitable.",
+      "examples": [
+        "You're not getting old — your lymph is blocked.",
+        "Stop blaming age for what's actually fixable."
+      ]
+    },
+    {
+      "id": "blocked-lymph-flow",
+      "name": "Blocked Lymph Flow",
+      "description": "Positions blocked lymph as the root cause of swelling, pain, and aging.",
+      "examples": [
+        "Your lymph nodes are blocked.",
+        "Lymph stagnation is silently aging your body."
+      ]
+    },
+    {
+      "id": "body-transformation",
+      "name": "Body Transformation",
+      "description": "Visual before/after promise, body-level change in weeks.",
+      "examples": [
+        "See the change in 14 days.",
+        "From bloated to slim — without diets."
+      ]
+    },
+    {
+      "id": "doctor-knows",
+      "name": "Doctor Knows the Secret",
+      "description": "Authority figure reveals what mainstream medicine hides.",
+      "examples": [
+        "Doctors won't tell you this.",
+        "What your physiotherapist isn't telling you."
+      ]
+    },
+    {
+      "id": "natural-method",
+      "name": "Natural Method",
+      "description": "No pills, no surgery — just simple daily ritual.",
+      "examples": [
+        "3 minutes a day. No pills.",
+        "The natural way they don't want you to know."
+      ]
+    },
+    {
+      "id": "energy-restoration",
+      "name": "Energy Restoration",
+      "description": "Fatigue as symptom of stagnant lymph; promise of returning energy.",
+      "examples": [
+        "Wake up actually rested.",
+        "Get back the energy you had at 25."
+      ]
+    },
+    {
+      "id": "social-proof-relative",
+      "name": "Relative-as-Proof",
+      "description": "Family member transformation as social proof.",
+      "examples": [
+        "My mom did this for 30 days...",
+        "I gave it to my husband who scoffed — now he won't shut up about it."
+      ]
+    },
+    {
+      "id": "pain-relief-fast",
+      "name": "Fast Pain Relief",
+      "description": "Immediate physical relief as primary value prop.",
+      "examples": [
+        "Neck pain gone in 5 minutes.",
+        "Plantar fasciitis — finally something that works."
+      ]
+    },
+    {
+      "id": "self-care-ritual",
+      "name": "Self-Care Ritual",
+      "description": "Positions product as moment for self, not obligation.",
+      "examples": [
+        "The 5-min ritual that's saving my sanity.",
+        "Your daily reset."
+      ]
+    },
+    {
+      "id": "scientific-backed",
+      "name": "Scientific Authority",
+      "description": "Studies, percentages, research citations.",
+      "examples": [
+        "Studies show 87% improvement in...",
+        "Lymphology research finally confirms..."
+      ]
+    },
+    {
+      "id": "before-it-too-late",
+      "name": "Urgency / Before It's Too Late",
+      "description": "Warns of progressive damage if ignored.",
+      "examples": [
+        "By 50, it's irreversible.",
+        "Don't wait until you can't fix it."
+      ]
+    },
+    {
+      "id": "confidence-look",
+      "name": "Confidence Through Appearance",
+      "description": "Better look → social confidence → life change.",
+      "examples": [
+        "Walked into the room differently.",
+        "First time I felt seen in years."
+      ]
+    },
+    {
+      "id": "posture-confidence",
+      "name": "Posture-Confidence Loop",
+      "description": "Bad posture limits opportunities; fixing posture changes life.",
+      "examples": [
+        "Your neck hump is killing your confidence.",
+        "Posture before product."
+      ]
+    }
+  ],
+  "pain_points": [
+    {
+      "id": "general",
+      "name": "general",
+      "description": "Generic wellness / low energy / vague malaise"
+    },
+    {
+      "id": "legs",
+      "name": "legs",
+      "description": "Leg swelling, heavy legs, varicose feel"
+    },
+    {
+      "id": "plantar-fasciitis",
+      "name": "plantar fasciitis",
+      "description": "Foot pain, especially morning, heel sharp pain"
+    },
+    {
+      "id": "face",
+      "name": "face",
+      "description": "Facial puffiness, jawline definition, sagging"
+    },
+    {
+      "id": "neck-shoulders",
+      "name": "neck & shoulders",
+      "description": "Tension, stiffness, headaches from posture"
+    },
+    {
+      "id": "neck-hump",
+      "name": "neck hump",
+      "description": "Buffalo hump / dowager hump, visible from side"
+    },
+    {
+      "id": "back",
+      "name": "back",
+      "description": "Lower back tightness, sitting-induced pain"
+    },
+    {
+      "id": "armpit",
+      "name": "armpit",
+      "description": "Tender lymph nodes, side-of-chest fullness"
+    },
+    {
+      "id": "stomach",
+      "name": "stomach / bloat",
+      "description": "Bloating, slow digestion, belly puffiness"
+    },
+    {
+      "id": "fatigue",
+      "name": "chronic fatigue",
+      "description": "Daily tiredness, wake-up exhaustion"
+    },
+    {
+      "id": "sleep",
+      "name": "poor sleep",
+      "description": "Trouble falling/staying asleep, restless"
+    }
+  ],
+  "visual_formats": [
+    {
+      "id": "professional-authority",
+      "name": "Professional Authority",
+      "description": "Doctor / expert in clinical setting, lab coat, authoritative gaze"
+    },
+    {
+      "id": "native-ugc",
+      "name": "Native UGC",
+      "description": "Selfie-style, bedroom/kitchen background, raw lighting, real-person feel"
+    },
+    {
+      "id": "social-interaction",
+      "name": "Social Interaction",
+      "description": "Two people conversation, one teaching/advising the other"
+    },
+    {
+      "id": "visual-evidence",
+      "name": "Visual Evidence",
+      "description": "Before/after split, transformation reveal"
+    },
+    {
+      "id": "action",
+      "name": "Action / Demo",
+      "description": "Showing the technique or product in use, hands-focused"
+    },
+    {
+      "id": "talking-head",
+      "name": "Talking Head",
+      "description": "Direct-to-camera monologue, mid-shot, eye contact"
+    },
+    {
+      "id": "screen-record",
+      "name": "Screen / Phone Reveal",
+      "description": "Pointing at phone screen showing comments/reviews/studies"
+    },
+    {
+      "id": "lifestyle",
+      "name": "Lifestyle Context",
+      "description": "Activity background (driving, walking, working) — multi-tasking"
+    }
+  ],
+  "hook_types": [
+    {
+      "id": "problem-reveal",
+      "name": "Problem-reveal",
+      "description": "Names a hidden problem viewer didn't know they had"
+    },
+    {
+      "id": "authority-statement",
+      "name": "Authority statement",
+      "description": "Expert delivers a definitive claim"
+    },
+    {
+      "id": "pattern-interrupt",
+      "name": "Pattern interrupt",
+      "description": "Unexpected visual or statement to stop scrolling"
+    },
+    {
+      "id": "question-hook",
+      "name": "Question hook",
+      "description": "Opens with provocative question to viewer"
+    },
+    {
+      "id": "shock-stat",
+      "name": "Shock statistic",
+      "description": "Surprising number or percentage"
+    },
+    {
+      "id": "testimonial-open",
+      "name": "Testimonial opener",
+      "description": "Mid-result-story drop-in"
+    },
+    {
+      "id": "myth-bust",
+      "name": "Myth bust",
+      "description": "'You've been told X. Actually Y.'"
+    },
+    {
+      "id": "urgency-warning",
+      "name": "Urgency / warning",
+      "description": "'Don't do X anymore' / 'Stop doing X'"
+    }
+  ],
+  "variation_types": [
+    "New Hook",
+    "New Visual",
+    "New Angle",
+    "Full Hook Var",
+    "Character Var",
+    "Pain Angle Var",
+    "Format Shift"
+  ]
+}

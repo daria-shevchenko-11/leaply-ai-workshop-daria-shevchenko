@@ -1,21 +1,26 @@
-import { Button } from "@/components/ui/button"
+import { BriefForm } from "@/components/brief-form"
+import { DemoModeToggle } from "@/components/demo-mode-toggle"
 
 export default function Page() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-10 p-6">
-      <h1 className="text-center text-4xl font-bold tracking-tight sm:text-6xl">
-        My NEW website, I AM VIBE CODEr
-      </h1>
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h2 className="font-medium">Project ready!</h2>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
+    <div className="min-h-svh bg-background">
+      <div className="mx-auto max-w-2xl px-4 py-8">
+        <header className="mb-6 space-y-2">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            🎣 Hook Factory
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Strategic hook router for Leaply — analyze a reference, map to
+            existing Core Messages, generate new variants.
+          </p>
+          <p className="text-xs text-muted-foreground">Step 1 of 3 — Brief</p>
+        </header>
+
+        <div className="mb-6">
+          <DemoModeToggle />
         </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
+
+        <BriefForm />
       </div>
     </div>
   )

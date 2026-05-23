@@ -1,0 +1,47 @@
+{
+  "_note": "Demo Mode response shape for /api/generate-variants. Mirrors real generation output. Cover URLs are placeholders (picsum.photos); real Nano Banana 2 returns base64 or hosted URL.",
+  "variants": [
+    {
+      "id": "v1",
+      "hook_text": "Most women over 35 have blocked lymph — and blame everything else.",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v1/1080/1920",
+      "video_url": null,
+      "video_job_id": "mock-v1-job",
+      "tags": {
+        "core_message_id": "blocked-lymph-flow",
+        "visual_format_id": "professional-authority",
+        "pain_point_id": "general",
+        "hook_type_id": "shock-stat"
+      },
+      "ae_brief": "Female 35-45, clinical setting, talks to camera, soft authority. 9:16, 8s, sound design subtle reveal."
+    },
+    {
+      "id": "v2",
+      "hook_text": "You'll feel this neck stiffness for the rest of your life — unless someone tells you what it really is.",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v2/1080/1920",
+      "video_url": null,
+      "video_job_id": "mock-v2-job",
+      "tags": {
+        "core_message_id": "blocked-lymph-flow",
+        "visual_format_id": "professional-authority",
+        "pain_point_id": "neck-shoulders",
+        "hook_type_id": "urgency-warning"
+      },
+      "ae_brief": "Same archetype, more lean-in at midpoint. Sharp cut on 'really is'. 9:16, 8s."
+    },
+    {
+      "id": "v3",
+      "hook_text": "Your morning swelling isn't water weight. It's stagnant lymph.",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v3/1080/1920",
+      "video_url": null,
+      "video_job_id": "mock-v3-job",
+      "tags": {
+        "core_message_id": "blocked-lymph-flow",
+        "visual_format_id": "professional-authority",
+        "pain_point_id": "face",
+        "hook_type_id": "myth-bust"
+      },
+      "ae_brief": "Doctor in clinic, gestures at face, calm myth-bust tone. 9:16, 8s."
+    }
+  ]
+}
