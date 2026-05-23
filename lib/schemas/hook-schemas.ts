@@ -33,33 +33,43 @@ export const HookDecompositionSchema = z.object({
 })
 export type HookDecomposition = z.infer<typeof HookDecompositionSchema>
 
+// Forgiving preprocessor: empty string / undefined / {} → null,
+// otherwise pass through. Gemini sometimes returns "" instead of null for
+// the unused branch of fit_check.
+const tolerantNull = (v: unknown) => {
+  if (v === "" || v == null) return null
+  if (typeof v === "object" && !Array.isArray(v) && Object.keys(v).length === 0)
+    return null
+  return v
+}
+
 export const FitMappedSchema = z.object({
-  core_message_id: z.string(),
-  core_message_name: z.string(),
-  visual_format_id: z.string(),
-  visual_format_name: z.string(),
-  pain_point_id: z.string(),
-  pain_point_name: z.string(),
-  hook_type_id: z.string(),
-  hook_type_name: z.string(),
+  core_message_id: z.string().default(""),
+  core_message_name: z.string().default(""),
+  visual_format_id: z.string().default(""),
+  visual_format_name: z.string().default(""),
+  pain_point_id: z.string().default(""),
+  pain_point_name: z.string().default(""),
+  hook_type_id: z.string().default(""),
+  hook_type_name: z.string().default(""),
 })
 export type FitMapped = z.infer<typeof FitMappedSchema>
 
 export const ProposedNewCMSchema = z.object({
-  suggested_name: z.string(),
-  closest_existing_id: z.string(),
-  closest_existing_name: z.string(),
-  reason: z.string(),
-  recommended_visual_format_ids: z.array(z.string()),
+  suggested_name: z.string().default(""),
+  closest_existing_id: z.string().default(""),
+  closest_existing_name: z.string().default(""),
+  reason: z.string().default(""),
+  recommended_visual_format_ids: z.array(z.string()).default([]),
 })
 export type ProposedNewCM = z.infer<typeof ProposedNewCMSchema>
 
 export const FitCheckSchema = z.object({
-  status: z.enum(["existing", "new"]),
-  confidence: z.number().min(0).max(1),
-  mapped: FitMappedSchema.nullable(),
-  proposed_new_cm: ProposedNewCMSchema.nullable(),
-  reasoning: z.string(),
+  status: z.enum(["existing", "new"]).default("existing"),
+  confidence: z.number().min(0).max(1).default(0.5),
+  mapped: z.preprocess(tolerantNull, FitMappedSchema.nullable()),
+  proposed_new_cm: z.preprocess(tolerantNull, ProposedNewCMSchema.nullable()),
+  reasoning: z.string().default(""),
 })
 export type FitCheck = z.infer<typeof FitCheckSchema>
 

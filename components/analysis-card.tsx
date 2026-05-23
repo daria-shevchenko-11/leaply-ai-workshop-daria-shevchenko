@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { FitMatrix } from "@/components/fit-matrix"
 
 export function AnalysisCard() {
   const analysis = useHookStore((s) => s.analysis)
@@ -293,6 +294,11 @@ export function AnalysisCard() {
             </ul>
           </CardContent>
         </Card>
+      )}
+
+      {/* Matrix — where on Leaply CM × VF matrix this hook lands */}
+      {fit_check.status === "existing" && fit_check.mapped && (
+        <FitMatrix mapped={fit_check.mapped} />
       )}
     </div>
   )

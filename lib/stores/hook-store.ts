@@ -60,6 +60,10 @@ type HookState = {
   toggleAxis: (a: VariationAxis) => void
   setVariationAxes: (a: VariationAxis[]) => void
 
+  // Per-axis variant count (slider on each selected axis)
+  axis_counts: Partial<Record<VariationAxis, number>>
+  setAxisCount: (a: VariationAxis, n: number) => void
+
   // Step 3 — Variants
   variants: Variant[]
   setVariants: (vs: Variant[]) => void
@@ -97,6 +101,9 @@ const initialState = {
   analysis: null,
   generation_mode: "apply_existing_cm" as GenerationMode,
   variation_axes: ["text", "audience", "tone"] as VariationAxis[],
+  axis_counts: { text: 3, audience: 2, tone: 2 } as Partial<
+    Record<VariationAxis, number>
+  >,
   variants: [],
   approved_ids: new Set<string>(),
   video_jobs: {} as Record<string, VideoJobState>,
@@ -144,13 +151,30 @@ export const useHookStore = create<HookState>()(
       toggleAxis: (a) =>
         set((state) => {
           const has = state.variation_axes.includes(a)
+          if (has) {
+            // Remove from axes AND from counts
+            const nextCounts = { ...state.axis_counts }
+            delete nextCounts[a]
+            return {
+              variation_axes: state.variation_axes.filter((x) => x !== a),
+              axis_counts: nextCounts,
+            }
+          }
+          // Add to axes with default count = 2
           return {
-            variation_axes: has
-              ? state.variation_axes.filter((x) => x !== a)
-              : [...state.variation_axes, a],
+            variation_axes: [...state.variation_axes, a],
+            axis_counts: {
+              ...state.axis_counts,
+              [a]: state.axis_counts[a] ?? 2,
+            },
           }
         }),
       setVariationAxes: (a) => set({ variation_axes: a }),
+
+      setAxisCount: (axis, n) =>
+        set((state) => ({
+          axis_counts: { ...state.axis_counts, [axis]: n },
+        })),
 
       setVariants: (vs) => set({ variants: vs }),
       updateVariantText: (id, text) =>
@@ -219,6 +243,7 @@ export const useHookStore = create<HookState>()(
         demo_mode: state.demo_mode,
         gemini_api_key: state.gemini_api_key,
         variation_axes: state.variation_axes,
+        axis_counts: state.axis_counts,
       }),
     }
   )

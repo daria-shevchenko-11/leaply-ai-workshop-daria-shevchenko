@@ -69,6 +69,8 @@ export default function SortPage() {
   const analysis = useHookStore((s) => s.analysis)
   const variationAxes = useHookStore((s) => s.variation_axes)
   const toggleAxis = useHookStore((s) => s.toggleAxis)
+  const axisCounts = useHookStore((s) => s.axis_counts)
+  const setAxisCount = useHookStore((s) => s.setAxisCount)
   const setBrief = useHookStore((s) => s.setBrief)
   const goToStep = useHookStore((s) => s.goToStep)
   const setVariants = useHookStore((s) => s.setVariants)
@@ -81,22 +83,23 @@ export default function SortPage() {
 
   if (!brief || !analysis) return null
 
-  const count = brief.variant_count
-
-  function setCount(n: number) {
-    setBrief({ ...brief!, variant_count: n })
-  }
+  // Total = sum across selected axes
+  const totalCount = variationAxes.reduce(
+    (acc, a) => acc + (axisCounts[a] ?? 0),
+    0
+  )
 
   function onContinue() {
-    if (variationAxes.length === 0) return
-    // Reset variants so /variants regenerates with new axes
+    if (variationAxes.length === 0 || totalCount === 0) return
     setVariants([])
+    // Sync brief.variant_count = totalCount so generation uses the sum
+    setBrief({ ...brief!, variant_count: Math.min(totalCount, 10) })
     goToStep("variants")
     router.push("/variants")
   }
 
-  const estimatedCost = (count * 1.05).toFixed(2)
-  const metaOk = count >= 5
+  const estimatedCost = (totalCount * 1.05).toFixed(2)
+  const metaOk = totalCount >= 5
 
   return (
     <div className="min-h-svh bg-background">
@@ -106,7 +109,7 @@ export default function SortPage() {
             Step 3 of 5 · Sort
           </p>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Що варіюємо?
+            Що варіюємо? + скільки на кожній осі
           </h1>
         </header>
 
@@ -119,47 +122,77 @@ export default function SortPage() {
         </div>
 
         <Card>
-          <CardContent className="space-y-6 pt-6">
-            {/* Axis grid */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <CardContent className="space-y-4 pt-6">
+            {/* Per-axis cards: each has checkbox toggle + slider inside */}
+            <div className="space-y-3">
               {AXES.map((a) => {
                 const on = variationAxes.includes(a.id)
+                const count = axisCounts[a.id] ?? 0
                 return (
-                  <button
+                  <div
                     key={a.id}
-                    type="button"
-                    onClick={() => toggleAxis(a.id)}
-                    className={`flex flex-col items-start gap-1 rounded-md border-2 p-3 text-left transition-colors ${
+                    className={`rounded-md border-2 transition-colors ${
                       on
-                        ? "border-primary bg-primary/10"
-                        : "border-muted bg-muted/30 hover:bg-muted/60"
+                        ? "border-primary bg-primary/5"
+                        : "border-muted bg-muted/30"
                     }`}
                   >
-                    <span className="text-xl">{a.emoji}</span>
-                    <span className="text-sm font-semibold">{a.label}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {a.desc}
-                    </span>
-                  </button>
+                    {/* Header row — clickable to toggle */}
+                    <button
+                      type="button"
+                      onClick={() => toggleAxis(a.id)}
+                      className="flex w-full items-start gap-3 p-3 text-left"
+                    >
+                      <span className="text-xl">{a.emoji}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold">
+                            {a.label}
+                          </span>
+                          {on ? (
+                            <Badge variant="secondary">{count} variants</Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">
+                              + додати
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {a.desc}
+                        </p>
+                      </div>
+                    </button>
+                    {/* Slider — only shown when axis is on */}
+                    {on && (
+                      <div className="space-y-1.5 border-t border-primary/20 px-3 py-3">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">
+                            Скільки варіантів на цій осі?
+                          </span>
+                          <span className="font-bold">{count}</span>
+                        </div>
+                        <Slider
+                          min={1}
+                          max={10}
+                          step={1}
+                          value={[count]}
+                          onValueChange={(v) => setAxisCount(a.id, v[0])}
+                        />
+                      </div>
+                    )}
+                  </div>
                 )
               })}
             </div>
 
-            {/* Count slider */}
-            <div className="space-y-2">
+            {/* Total summary */}
+            <div className="space-y-2 rounded-md border bg-muted/40 p-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium">
-                  Кількість варіантів
-                </label>
-                <Badge variant="secondary">{count}</Badge>
+                <span className="text-sm font-medium">Всього варіантів</span>
+                <Badge variant="default" className="text-base">
+                  {totalCount}
+                </Badge>
               </div>
-              <Slider
-                min={1}
-                max={10}
-                step={1}
-                value={[count]}
-                onValueChange={(v) => setCount(v[0])}
-              />
               <div className="flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">1 мін</span>
                 <span
@@ -178,6 +211,12 @@ export default function SortPage() {
               <p className="text-xs text-muted-foreground">
                 Орієнтовна вартість: ~${estimatedCost} (Gemini + Kling)
               </p>
+              {totalCount > 10 && (
+                <p className="text-xs text-yellow-600 dark:text-yellow-400">
+                  ⚠ Понад 10 — згенеруємо перші 10 (Gemini ліміт за один
+                  прогін).
+                </p>
+              )}
             </div>
 
             {/* Buttons */}
@@ -192,10 +231,10 @@ export default function SortPage() {
               <Button
                 className="flex-1"
                 size="lg"
-                disabled={variationAxes.length === 0}
+                disabled={variationAxes.length === 0 || totalCount === 0}
                 onClick={onContinue}
               >
-                Генерувати {count} варіантів →
+                Генерувати {Math.min(totalCount, 10)} варіантів →
               </Button>
             </div>
           </CardContent>
