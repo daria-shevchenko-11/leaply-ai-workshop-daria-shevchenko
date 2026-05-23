@@ -192,3 +192,66 @@ export const KlingPromptsRequestSchema = z.object({
   analysis: AnalysisResultSchema,
 })
 export type KlingPromptsRequest = z.infer<typeof KlingPromptsRequestSchema>
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Production Sheet (multi-shot, Character Passports, per Daria's full template)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const CharacterPassportSchema = z.object({
+  name: z.string(),
+  descriptor: z.string(), // short visual descriptor used in parens (e.g. "the pale pink kitten in pastel blue floral dress")
+  passport_prompt: z.string(), // frontal full-body, neutral backdrop, full outfit — for Nano Banana identity ref
+})
+export type CharacterPassport = z.infer<typeof CharacterPassportSchema>
+
+export const ShotSchema = z.object({
+  id: z.string(), // s1, s2, s3...
+  title: z.string(), // short scene name
+  duration_sec: z.number().min(1).max(20),
+  characters_in_shot: z.array(z.string()).default([]), // character names
+  dialogue: z.string().default(""), // exact line(s) — or "no dialogue / [diegetic note]"
+  on_camera: z.boolean().default(true), // true=lip-sync counts to 10s limit, false=VO-only
+  image_prompt: z.string(), // Nano Banana — static first frame, all hard rules
+  video_prompt: z.string(), // Kling Omni — motion + dialogue + ambience
+  ambience_note: z.string().default(""),
+  voice_direction: z.string().default(""),
+  editor_overlay_note: z.string().default(""), // text overlays / CTA cards / day markers
+  needs_split: z.boolean().default(false),
+  split_video_prompt: z.string().nullable().default(null),
+})
+export type Shot = z.infer<typeof ShotSchema>
+
+export const ProductionSheetSchema = z.object({
+  title: z.string(),
+  scenario_summary: z.string(),
+  visual_style: z.string(),
+  characters: z.array(CharacterPassportSchema),
+  shots: z.array(ShotSchema),
+  totals: z
+    .object({
+      total_duration_sec: z.number().default(0),
+      scene_count: z.number().default(0),
+      character_count: z.number().default(0),
+      shot_count: z.number().default(0),
+    })
+    .default({
+      total_duration_sec: 0,
+      scene_count: 0,
+      character_count: 0,
+      shot_count: 0,
+    }),
+  voice_casting_note: z.string().default(""), // ElevenLabs reco + character voice lock note
+  music_cue_note: z.string().default(""),
+  subtitle_spec: z.string().default(""),
+})
+export type ProductionSheet = z.infer<typeof ProductionSheetSchema>
+
+export const ProductionSheetRequestSchema = z.object({
+  scenario: z.string().min(10),
+  characters_brief: z.string().default(""),
+  visual_style: z.string().default(""),
+  target_duration_sec: z.number().min(8).max(180).default(30),
+})
+export type ProductionSheetRequest = z.infer<
+  typeof ProductionSheetRequestSchema
+>

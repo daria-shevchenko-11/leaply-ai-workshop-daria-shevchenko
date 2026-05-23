@@ -13,13 +13,17 @@ import {
   AnalysisResultSchema,
   VariantsResultSchema,
   KlingPromptsSchema,
+  ProductionSheetSchema,
   type AnalysisResult,
   type Brief,
   type VariantsResult,
   type Variant,
   type KlingPrompts,
+  type ProductionSheet,
+  type ProductionSheetRequest,
 } from "@/lib/schemas/hook-schemas"
 import { KLING_PROMPTS_SYSTEM } from "@/lib/prompts/kling-system"
+import { PRODUCTION_SHEET_SYSTEM } from "@/lib/prompts/production-sheet-system"
 
 // ─── Models (swap if Google renames) ─────────────────────────────────────────
 const MODEL_TEXT_VISION = "gemini-3.5-flash"
@@ -356,6 +360,77 @@ Now produce the JSON per the system prompt rules. Remember:
 
   const json = extractJson(raw)
   return KlingPromptsSchema.parse(json)
+}
+
+// ─── Production Sheet (multi-shot + Character Passports) ───────────────────
+
+export async function generateProductionSheet(
+  req: ProductionSheetRequest,
+  apiKeyOverride?: string
+): Promise<ProductionSheet> {
+  const ai = getClient(apiKeyOverride)
+
+  const userText = `Generate a complete production sheet for this scenario.
+
+SCENARIO:
+${req.scenario}
+
+${req.characters_brief ? `CHARACTERS (described by user — use as baseline, refine into Character Passports):\n${req.characters_brief}\n` : "CHARACTERS: (infer from scenario)"}
+
+${req.visual_style ? `VISUAL STYLE: ${req.visual_style}` : "VISUAL STYLE: (infer from scenario)"}
+
+TARGET DURATION: ${req.target_duration_sec} seconds total across all shots.
+
+Now produce the JSON per the system prompt rules. Remember:
+- One Character Passport per unique character (frontal full-body, neutral backdrop)
+- 3-8 shots typically, summing to target duration (±2 sec OK)
+- Each shot: image_prompt (static first frame) + video_prompt (motion + dialogue + ambience)
+- Descriptor-in-parens on first character mention in EACH video_prompt
+- 10s split rule for on-camera lip-sync (split into s3.1+s3.2 if needed)
+- UGC trap: if visual_style is UGC/Native — no 'phone' word anywhere
+- Dialogue cleanup: no em-dashes / ellipsis / ALL-CAPS
+- editor_overlay_note for any text/CTA overlays (not in image_prompt)
+- Every video_prompt: "no background music" + ambience + "Duration: N seconds."
+
+Return valid JSON only.
+`
+
+  const response = await ai.models.generateContent({
+    model: MODEL_TEXT_VISION,
+    contents: [{ role: "user", parts: [{ text: userText }] }],
+    config: {
+      systemInstruction: PRODUCTION_SHEET_SYSTEM,
+      responseMimeType: "application/json",
+    },
+  })
+
+  const raw = response.text
+  if (!raw) throw new Error("Empty response from Gemini production-sheet")
+
+  const json = extractJson(raw) as Record<string, unknown>
+
+  // Server-side totals sanity check — recompute in case AI miscounted
+  const shots = Array.isArray(json.shots)
+    ? (json.shots as Array<{
+        duration_sec?: number
+        characters_in_shot?: string[]
+      }>)
+    : []
+  const characters = Array.isArray(json.characters)
+    ? (json.characters as unknown[])
+    : []
+  const totalDur = shots.reduce((s, x) => s + (x.duration_sec ?? 0), 0)
+  const sceneCount = new Set(
+    shots.map((s) => (s.characters_in_shot ?? []).join(","))
+  ).size
+  json.totals = {
+    total_duration_sec: totalDur,
+    scene_count: Math.max(1, sceneCount),
+    character_count: characters.length,
+    shot_count: shots.length,
+  }
+
+  return ProductionSheetSchema.parse(json)
 }
 
 // ─── Image generation (Nano Banana 2) ────────────────────────────────────────
