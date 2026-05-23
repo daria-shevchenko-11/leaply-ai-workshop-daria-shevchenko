@@ -239,6 +239,16 @@ export default function ProductionSheetPage() {
   )
 }
 
+type RevealStep = "locations" | "characters" | "establishing" | "shots" | "all"
+
+const STEP_ORDER: RevealStep[] = [
+  "locations",
+  "characters",
+  "establishing",
+  "shots",
+  "all",
+]
+
 function SheetView({
   sheet,
   onReset,
@@ -246,8 +256,81 @@ function SheetView({
   sheet: ProductionSheet
   onReset: () => void
 }) {
+  const [revealedStep, setRevealedStep] = useState<RevealStep>("locations")
+
+  function approveAndContinue(next: RevealStep) {
+    setRevealedStep(next)
+    // Scroll to the newly-revealed section
+    setTimeout(() => {
+      const anchor =
+        next === "characters"
+          ? "characters"
+          : next === "establishing"
+            ? "establishing"
+            : next === "shots"
+              ? "shots"
+              : next === "all"
+                ? "footer-notes"
+                : "locations"
+      document.getElementById(anchor)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }, 100)
+  }
+
+  const currentStepIndex = STEP_ORDER.indexOf(revealedStep)
+  const showLocations = currentStepIndex >= 0
+  const showCharacters = currentStepIndex >= 1
+  const showEstablishing = currentStepIndex >= 2
+  const showShots = currentStepIndex >= 3
+  const showFooter = currentStepIndex >= 4
+
   return (
     <div className="space-y-6">
+      {/* Step progress indicator */}
+      <Card className="border-primary/40">
+        <CardContent className="space-y-2 pt-4">
+          <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase">
+            <StepDot
+              label="Locations"
+              active={revealedStep === "locations"}
+              done={currentStepIndex > 0}
+            />
+            <span className="text-muted-foreground">→</span>
+            <StepDot
+              label="Characters"
+              active={revealedStep === "characters"}
+              done={currentStepIndex > 1}
+            />
+            <span className="text-muted-foreground">→</span>
+            <StepDot
+              label="Establishing"
+              active={revealedStep === "establishing"}
+              done={currentStepIndex > 2}
+            />
+            <span className="text-muted-foreground">→</span>
+            <StepDot
+              label="Shots"
+              active={revealedStep === "shots"}
+              done={currentStepIndex > 3}
+            />
+            <span className="text-muted-foreground">→</span>
+            <StepDot
+              label="Done"
+              active={revealedStep === "all"}
+              done={false}
+            />
+          </div>
+          {revealedStep !== "all" && (
+            <p className="text-xs text-muted-foreground">
+              Перевір цей крок, натисни «Apply & Continue» — наступний крок
+              з&apos;явиться нижче.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <StatCard label="Total" value={`${sheet.totals.total_duration_sec}s`} />
@@ -314,46 +397,18 @@ function SheetView({
         </CardContent>
       </Card>
 
-      {/* Character Passports */}
-      <section id="characters" className="space-y-3">
-        <h2 className="text-lg font-bold">👥 Character References</h2>
-        <p className="text-xs text-muted-foreground">
-          Згенеруй цих у Nano Banana ПЕРШИМ ділом, потім додавай як
-          identity-refs до кожного shot-prompt. Запобігає face/outfit drift.
-        </p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {sheet.characters.map((c) => (
-            <Card key={c.name}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">{c.name}</CardTitle>
-                <p className="text-xs text-muted-foreground">
-                  Descriptor (used in parens): &quot;{c.descriptor}&quot;
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-                    🖼 Passport prompt
-                  </span>
-                  <CopyButton text={c.passport_prompt} label="Copy" />
-                </div>
-                <pre className="max-h-40 overflow-y-auto rounded bg-muted/40 p-2 font-mono text-[10px] whitespace-pre-wrap">
-                  {c.passport_prompt}
-                </pre>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Location Passports */}
-      {sheet.locations.length > 0 && (
+      {/* STEP 1 — Location Passports (first reveal) */}
+      {showLocations && sheet.locations.length > 0 && (
         <section id="locations" className="space-y-3">
-          <h2 className="text-lg font-bold">📍 Location References</h2>
+          <h2 className="text-lg font-bold">
+            📍 Location References{" "}
+            <span className="text-xs font-normal text-muted-foreground">
+              · крок 1 of 4
+            </span>
+          </h2>
           <p className="text-xs text-muted-foreground">
-            Empty wide shots of each setting (no characters). Designer generує
-            ці ДРУГИМИ після Character Passports — attach як setting-ref до
-            кожного shot prompt у цій локації. Запобігає location drift.
+            Empty wide shots кожної локації (без персонажів). Згенеруй в Nano
+            Banana — потім attach як setting-ref до кожного shot цієї сцени.
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {sheet.locations.map((loc) => (
@@ -378,17 +433,79 @@ function SheetView({
               </Card>
             ))}
           </div>
+          {revealedStep === "locations" && (
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => approveAndContinue("characters")}
+            >
+              ✓ Apply Locations → next: Character References
+            </Button>
+          )}
         </section>
       )}
 
-      {/* Establishing Shots */}
-      {sheet.establishing_shots.length > 0 && (
+      {/* STEP 2 — Character Passports */}
+      {showCharacters && (
+        <section id="characters" className="space-y-3">
+          <h2 className="text-lg font-bold">
+            👥 Character References{" "}
+            <span className="text-xs font-normal text-muted-foreground">
+              · крок 2 of 4
+            </span>
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Згенеруй цих в Nano Banana — використовуй як identity-refs для
+            наступних кроків. Запобігає face/outfit drift між кадрами.
+          </p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {sheet.characters.map((c) => (
+              <Card key={c.name}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{c.name}</CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    Descriptor (used in parens): &quot;{c.descriptor}&quot;
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                      🖼 Passport prompt
+                    </span>
+                    <CopyButton text={c.passport_prompt} label="Copy" />
+                  </div>
+                  <pre className="max-h-40 overflow-y-auto rounded bg-muted/40 p-2 font-mono text-[10px] whitespace-pre-wrap">
+                    {c.passport_prompt}
+                  </pre>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          {revealedStep === "characters" && (
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => approveAndContinue("establishing")}
+            >
+              ✓ Apply Characters → next: Establishing Shots
+            </Button>
+          )}
+        </section>
+      )}
+
+      {/* STEP 3 — Establishing Shots */}
+      {showEstablishing && sheet.establishing_shots.length > 0 && (
         <section id="establishing" className="space-y-3">
-          <h2 className="text-lg font-bold">🎭 Establishing Shots</h2>
+          <h2 className="text-lg font-bold">
+            🎭 Establishing Shots{" "}
+            <span className="text-xs font-normal text-muted-foreground">
+              · крок 3 of 4
+            </span>
+          </h2>
           <p className="text-xs text-muted-foreground">
             Master wide frame per scene — всі персонажі цієї сцени в їх локації.
-            Designer attach-ить ОБИДВА Character Passports + Location Passport
-            як identity refs. Anchor для всіх close-up shots у цій сцені.
+            Attach ОБИДВА Character Passports + Location Passport як identity
+            refs. Anchor для всіх close-up shots у цій сцені.
           </p>
           <div className="grid grid-cols-1 gap-3">
             {sheet.establishing_shots.map((est) => (
@@ -431,45 +548,111 @@ function SheetView({
               </Card>
             ))}
           </div>
+          {revealedStep === "establishing" && (
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => approveAndContinue("shots")}
+            >
+              ✓ Apply Establishing → next: Per-shot breakdown
+            </Button>
+          )}
         </section>
       )}
 
-      {/* Shots */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold">🎬 Shots</h2>
-        <div className="space-y-4">
-          {sheet.shots.map((shot, i) => (
-            <ShotCard key={shot.id} shot={shot} index={i + 1} />
-          ))}
-        </div>
-      </section>
+      {/* STEP 4 — Shots */}
+      {showShots && (
+        <section id="shots" className="space-y-3">
+          <h2 className="text-lg font-bold">
+            🎬 Shots{" "}
+            <span className="text-xs font-normal text-muted-foreground">
+              · крок 4 of 4
+            </span>
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Окремі shot prompts з діалогом — використовуй Establishing Shot як
+            continuity reference. Діалог збережено точно як ти писала в сценарії
+            (без перефразування).
+          </p>
+          <div className="space-y-4">
+            {sheet.shots.map((shot, i) => (
+              <ShotCard key={shot.id} shot={shot} index={i + 1} />
+            ))}
+          </div>
+          {revealedStep === "shots" && (
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => approveAndContinue("all")}
+            >
+              ✓ Apply Shots → next: Production Notes (footer)
+            </Button>
+          )}
+        </section>
+      )}
 
       {/* Footer notes */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm">📦 Production Notes</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-xs">
-          <FooterRow
-            label="🎙 Voice casting"
-            value={sheet.voice_casting_note}
-          />
-          <FooterRow label="🎵 Music cue" value={sheet.music_cue_note} />
-          <FooterRow label="📺 Subtitles" value={sheet.subtitle_spec} />
-          <p className="mt-2 text-[10px] text-muted-foreground">
-            ⚠ Kling 10s limit per on-camera lip-sync shot. Shots з needs_split:
-            true означають що репліка довша за 10s — другий шот зі
-            split_video_prompt.
-          </p>
-        </CardContent>
-      </Card>
+      {showFooter && (
+        <Card id="footer-notes">
+          <CardHeader>
+            <CardTitle className="text-sm">📦 Production Notes</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-xs">
+            <FooterRow
+              label="🎙 Voice casting"
+              value={sheet.voice_casting_note}
+            />
+            <FooterRow label="🎵 Music cue" value={sheet.music_cue_note} />
+            <FooterRow label="📺 Subtitles" value={sheet.subtitle_spec} />
+            <p className="mt-2 text-[10px] text-muted-foreground">
+              ⚠ Kling 10s limit per on-camera lip-sync shot. Shots з
+              needs_split: true означають що репліка довша за 10s — другий шот
+              зі split_video_prompt.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Button variant="outline" onClick={onReset}>
           ← Новий sheet
         </Button>
+        {revealedStep !== "all" && (
+          <Button
+            variant="ghost"
+            onClick={() => setRevealedStep("all")}
+            className="text-xs"
+          >
+            Skip steps → show everything
+          </Button>
+        )}
       </div>
     </div>
+  )
+}
+
+function StepDot({
+  label,
+  active,
+  done,
+}: {
+  label: string
+  active: boolean
+  done: boolean
+}) {
+  return (
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] ${
+        active
+          ? "bg-primary text-primary-foreground"
+          : done
+            ? "bg-green-500/20 text-green-700 dark:text-green-300"
+            : "bg-muted text-muted-foreground"
+      }`}
+    >
+      {done ? "✓ " : ""}
+      {label}
+    </span>
   )
 }
 

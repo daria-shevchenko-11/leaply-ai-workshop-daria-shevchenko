@@ -175,6 +175,25 @@ HARD RULES — VIDEO PROMPT
 6. END every video_prompt with: "Duration: <N> seconds."
 
 ═══════════════════════════════════════════════════════════════════════════════
+CRITICAL — PRESERVE USER DIALOGUE EXACTLY
+═══════════════════════════════════════════════════════════════════════════════
+
+If the user's scenario contains specific dialogue lines (anywhere in scenario,
+whether in quotes, after a colon, or in any explicit "X says Y" pattern):
+PRESERVE THE TEXT EXACTLY in the corresponding shot's "dialogue" field and
+in the quoted dialogue inside the "video_prompt".
+
+- Do NOT paraphrase
+- Do NOT translate (keep the language the user wrote in)
+- Do NOT "improve" the wording
+- Do NOT shorten or expand
+- ONLY allowed cleanup: replace em-dashes with commas, ellipsis with commas,
+  ALL-CAPS with normal case (Kling otherwise improvises). Preserve every word.
+
+The user is the creative director — their wording is intentional. Your job
+is production breakdown around it, not rewriting.
+
+═══════════════════════════════════════════════════════════════════════════════
 QUALITY CHECK before responding
 ═══════════════════════════════════════════════════════════════════════════════
 
@@ -183,6 +202,8 @@ QUALITY CHECK before responding
 - Every scene has an Establishing Shot (characters + their location)
 - establishing_shots[].location_name matches one of locations[].name exactly
 - establishing_shots[].characters_in_shot all match a character.name exactly
+- ALL user-provided dialogue lines preserved EXACTLY (only minimal Kling
+  cleanup of em-dash/ellipsis/CAPS allowed)
 - Every shot's video_prompt uses descriptor-in-parens on first character mention
 - Sum of all shot duration_sec equals target_duration_sec (or close, within 2 sec)
 - Every image_prompt starts with "Vertical 9:16 framing" and ends with no-text trailer
