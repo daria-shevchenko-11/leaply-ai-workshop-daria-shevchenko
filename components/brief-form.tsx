@@ -17,6 +17,7 @@ export function BriefForm() {
   const router = useRouter()
   const setBrief = useHookStore((s) => s.setBrief)
   const goToStep = useHookStore((s) => s.goToStep)
+  const demoMode = useHookStore((s) => s.demo_mode)
 
   const [referenceType, setReferenceType] = useState<"text" | "video">("video")
   const [referenceText, setReferenceText] = useState("")
@@ -59,6 +60,23 @@ export function BriefForm() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+
+    // In Demo Mode, allow proceeding without a real reference — use placeholder
+    if (demoMode) {
+      const demoBrief: Brief = {
+        reference_type: "text",
+        reference_text:
+          referenceText.trim() ||
+          "DEMO: Жінка-лікар каже: «Ваші лімфовузли заблоковані»",
+        audience: audience || "",
+        pain_context: painContext || "",
+        variant_count: variantCount,
+      }
+      setBrief(demoBrief)
+      goToStep("analyze")
+      router.push("/analyze")
+      return
+    }
 
     const candidate: Brief = {
       reference_type: referenceType,
@@ -218,6 +236,13 @@ export function BriefForm() {
           </details>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
+
+          {demoMode && (
+            <p className="rounded-md border border-yellow-500/40 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-700 dark:text-yellow-300">
+              🎭 Demo Mode ON — можна тиснути «Аналізувати» без заповнення.
+              Покажу mock з реальної Leaply таксономії.
+            </p>
+          )}
 
           <Button type="submit" className="w-full" size="lg">
             Аналізувати →
