@@ -35,6 +35,62 @@ function getClient(overrideKey?: string): GoogleGenAI {
   return new GoogleGenAI({ apiKey })
 }
 
+// Robust JSON extractor — Gemini sometimes wraps in markdown ```json ... ```
+// or appends trailing text. Find the first balanced `{...}` and parse it.
+function extractJson(raw: string): unknown {
+  // Strip leading/trailing whitespace and common markdown fences
+  let s = raw.trim()
+  // Remove ```json or ``` opening fence
+  s = s.replace(/^```(?:json|JSON)?\s*\n?/, "")
+  // Remove trailing ```
+  s = s.replace(/\n?```\s*$/, "")
+
+  // Find first '{' and walk forward, tracking braces and strings, to find
+  // the matching closing brace. This survives trailing junk after the object.
+  const start = s.indexOf("{")
+  if (start === -1) {
+    // Maybe an array at top level
+    const arrStart = s.indexOf("[")
+    if (arrStart === -1) throw new Error("No JSON object/array in response")
+    return JSON.parse(s.slice(arrStart))
+  }
+
+  let depth = 0
+  let end = -1
+  let inString = false
+  let escape = false
+  for (let i = start; i < s.length; i++) {
+    const c = s[i]
+    if (escape) {
+      escape = false
+      continue
+    }
+    if (inString) {
+      if (c === "\\") {
+        escape = true
+        continue
+      }
+      if (c === '"') inString = false
+      continue
+    }
+    if (c === '"') {
+      inString = true
+      continue
+    }
+    if (c === "{") depth++
+    else if (c === "}") {
+      depth--
+      if (depth === 0) {
+        end = i + 1
+        break
+      }
+    }
+  }
+  if (end === -1) throw new Error("Unterminated JSON object in response")
+
+  return JSON.parse(s.slice(start, end))
+}
+
 // ─── Hook analysis ───────────────────────────────────────────────────────────
 
 const ANALYZE_SYSTEM_PROMPT = `You are a senior performance-marketing strategist for Leaply, a lymph-drainage / wellness product. Your job: analyze an ad hook (3-12 sec video or text description) and (a) decompose its elements + infer audience and pains from the video itself, (b) check fit against Leaply's existing Core Message taxonomy.
@@ -135,7 +191,7 @@ export async function analyzeHook(
   const raw = response.text
   if (!raw) throw new Error("Empty response from Gemini analyze")
 
-  const json = JSON.parse(raw)
+  const json = extractJson(raw) as Record<string, unknown>
   // Server augments linked_tasks separately — keep array empty here
   if (!Array.isArray(json.linked_tasks)) json.linked_tasks = []
   return AnalysisResultSchema.parse(json)
@@ -235,7 +291,7 @@ ${taxonomyBlock}`
   const raw = response.text
   if (!raw) throw new Error("Empty response from Gemini variants")
 
-  const json = JSON.parse(raw)
+  const json = extractJson(raw)
   return VariantsResultSchema.parse(json)
 }
 
