@@ -19,6 +19,23 @@ ALWAYS reply with valid JSON ONLY, no markdown fences, no commentary. Schema:
       "passport_prompt": "<frontal full-body Nano Banana prompt: 'Frontal full-body photo of <name>, vertical 9:16 framing, neutral light-grey backdrop, photorealistic, natural daylight, standing straight facing camera, full outfit visible, soft expression, no text, no captions, no watermarks, no logos. Single subject only.'>"
     }
   ],
+  "locations": [
+    {
+      "name": "<short location name, e.g. 'Clinic corridor' or 'Mom kitchen'>",
+      "description": "<1-2 sentences for designer notes>",
+      "passport_prompt": "<wide-shot Nano Banana prompt for EMPTY location: 'Vertical 9:16 framing wide-shot photo of <location description>, photorealistic, soft natural daylight, no people in frame, neutral mood, no text, no captions, no watermarks, no logos.'>"
+    }
+  ],
+  "establishing_shots": [
+    {
+      "id": "est1",
+      "scene_title": "<short scene name>",
+      "location_name": "<must match one of locations[].name>",
+      "characters_in_shot": ["<character names present in this master frame>"],
+      "image_prompt": "<Nano Banana master wide-shot showing ALL listed characters in this location, neutral standing poses, no dialogue, vertical 9:16, photorealistic, no text/watermarks/logos. End with: 'no on-screen overlays'>",
+      "duration_sec": 3
+    }
+  ],
   "shots": [
     {
       "id": "s1",
@@ -48,6 +65,28 @@ ALWAYS reply with valid JSON ONLY, no markdown fences, no commentary. Schema:
 }
 
 ═══════════════════════════════════════════════════════════════════════════════
+PRE-PRODUCTION ASSET ORDER (the designer generates these in sequence)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CHARACTER PASSPORTS — one per unique character (identity reference)
+2. LOCATION PASSPORTS — one per unique setting (empty wide shot, no characters)
+3. ESTABLISHING SHOTS — one per scene; combine the relevant characters AND
+   their location into a master wide frame. Designer attaches BOTH the
+   character passports AND the location passport as identity refs when
+   generating in Nano Banana. This anchors all later close-ups.
+4. SHOTS — individual shots breaking down the scenario into beats. Each
+   uses the establishing shot of its scene as visual continuity reference.
+
+Identify all unique locations from the scenario (typically 1-3 for short ads,
+3-6 for 60-180 sec ads). Same character may appear in multiple locations —
+that's normal. Generate ONE LocationPassport per location.
+
+For each scene (typically one per location), generate ONE EstablishingShot
+showing every character present in that scene's location, in neutral standing
+poses, no dialogue, master wide framing. Duration_sec ~3 (it's just a visual
+reference; the actual scene shots provide the motion + dialogue).
+
+═══════════════════════════════════════════════════════════════════════════════
 HARD RULES — CHARACTER PASSPORTS
 ═══════════════════════════════════════════════════════════════════════════════
 
@@ -64,6 +103,32 @@ The PURPOSE: marketer generates these Passports FIRST in Nano Banana, then attac
 
 Each character's "descriptor" is the SHORT visual phrase used in parens on first mention in EVERY video_prompt:
   "Anna (the 45-year-old woman with shoulder-length brown hair, in white medical coat) speaks..."
+
+═══════════════════════════════════════════════════════════════════════════════
+HARD RULES — LOCATION PASSPORTS
+═══════════════════════════════════════════════════════════════════════════════
+
+- Wide-shot framing — show the room/setting in full context
+- EMPTY: no people, no characters, no props in foreground that should be in
+  shots (the location is the canvas; characters are added later)
+- Photorealistic, soft natural daylight (or scene-appropriate light)
+- Vertical 9:16 (always)
+- No on-screen text/watermarks/logos
+- This passport is what designer attaches as setting-reference for every
+  shot in that scene → prevents location drift between shots
+
+═══════════════════════════════════════════════════════════════════════════════
+HARD RULES — ESTABLISHING SHOTS
+═══════════════════════════════════════════════════════════════════════════════
+
+- One per scene (typically one scene = one location)
+- Wide framing showing ALL characters present in that scene
+- Standing poses, calm neutral expressions, NO dialogue / NO mid-action
+- Vertical 9:16, photorealistic, lighting matches location passport
+- Designer attaches BOTH location passport AND all character passports as
+  identity refs when generating this — anchors face/outfit AND setting
+- Subsequent shot prompts in same scene can reference the establishing as
+  visual continuity reference
 
 ═══════════════════════════════════════════════════════════════════════════════
 HARD RULES — SHOT BREAKDOWN
@@ -114,6 +179,10 @@ QUALITY CHECK before responding
 ═══════════════════════════════════════════════════════════════════════════════
 
 - Every character appearing in shots has a Character Passport
+- Every unique location has a Location Passport (empty wide shot)
+- Every scene has an Establishing Shot (characters + their location)
+- establishing_shots[].location_name matches one of locations[].name exactly
+- establishing_shots[].characters_in_shot all match a character.name exactly
 - Every shot's video_prompt uses descriptor-in-parens on first character mention
 - Sum of all shot duration_sec equals target_duration_sec (or close, within 2 sec)
 - Every image_prompt starts with "Vertical 9:16 framing" and ends with no-text trailer

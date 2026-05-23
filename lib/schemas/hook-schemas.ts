@@ -204,6 +204,23 @@ export const CharacterPassportSchema = z.object({
 })
 export type CharacterPassport = z.infer<typeof CharacterPassportSchema>
 
+export const LocationPassportSchema = z.object({
+  name: z.string(), // short location name, e.g. "Clinic corridor", "Mom's kitchen"
+  description: z.string(), // 1-2 sentences for designer notes
+  passport_prompt: z.string(), // empty wide shot of the location, NO characters — Nano Banana setting ref
+})
+export type LocationPassport = z.infer<typeof LocationPassportSchema>
+
+export const EstablishingShotSchema = z.object({
+  id: z.string(), // est1, est2...
+  scene_title: z.string(),
+  location_name: z.string(), // must match a LocationPassport.name
+  characters_in_shot: z.array(z.string()).default([]), // character names present in the establishing master frame
+  image_prompt: z.string(), // Nano Banana wide master frame — all characters in their location, neutral pose, no dialogue
+  duration_sec: z.number().default(3),
+})
+export type EstablishingShot = z.infer<typeof EstablishingShotSchema>
+
 export const ShotSchema = z.object({
   id: z.string(), // s1, s2, s3...
   title: z.string(), // short scene name
@@ -226,6 +243,8 @@ export const ProductionSheetSchema = z.object({
   scenario_summary: z.string(),
   visual_style: z.string(),
   characters: z.array(CharacterPassportSchema),
+  locations: z.array(LocationPassportSchema).default([]),
+  establishing_shots: z.array(EstablishingShotSchema).default([]),
   shots: z.array(ShotSchema),
   totals: z
     .object({

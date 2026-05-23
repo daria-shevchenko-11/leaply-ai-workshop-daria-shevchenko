@@ -277,16 +277,34 @@ function SheetView({
       <Card>
         <CardHeader>
           <CardTitle className="text-sm">📑 Table of Contents</CardTitle>
+          <p className="text-[10px] text-muted-foreground">
+            Pre-production order: Characters → Locations → Establishing Shots →
+            Per-shot breakdown
+          </p>
         </CardHeader>
         <CardContent>
           <ol className="space-y-1 text-xs">
             <li>
               <a href="#characters" className="hover:underline">
-                Character References ({sheet.characters.length})
+                1. Character References ({sheet.characters.length})
               </a>
             </li>
+            {sheet.locations.length > 0 && (
+              <li>
+                <a href="#locations" className="hover:underline">
+                  2. Location References ({sheet.locations.length})
+                </a>
+              </li>
+            )}
+            {sheet.establishing_shots.length > 0 && (
+              <li>
+                <a href="#establishing" className="hover:underline">
+                  3. Establishing Shots ({sheet.establishing_shots.length})
+                </a>
+              </li>
+            )}
             {sheet.shots.map((s) => (
-              <li key={s.id}>
+              <li key={s.id} className="ml-3">
                 <a href={`#${s.id}`} className="hover:underline">
                   {s.id} · {s.title} ({s.duration_sec}s)
                 </a>
@@ -327,6 +345,94 @@ function SheetView({
           ))}
         </div>
       </section>
+
+      {/* Location Passports */}
+      {sheet.locations.length > 0 && (
+        <section id="locations" className="space-y-3">
+          <h2 className="text-lg font-bold">📍 Location References</h2>
+          <p className="text-xs text-muted-foreground">
+            Empty wide shots of each setting (no characters). Designer generує
+            ці ДРУГИМИ після Character Passports — attach як setting-ref до
+            кожного shot prompt у цій локації. Запобігає location drift.
+          </p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {sheet.locations.map((loc) => (
+              <Card key={loc.name}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{loc.name}</CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    {loc.description}
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                      🖼 Location passport
+                    </span>
+                    <CopyButton text={loc.passport_prompt} label="Copy" />
+                  </div>
+                  <pre className="max-h-40 overflow-y-auto rounded bg-muted/40 p-2 font-mono text-[10px] whitespace-pre-wrap">
+                    {loc.passport_prompt}
+                  </pre>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Establishing Shots */}
+      {sheet.establishing_shots.length > 0 && (
+        <section id="establishing" className="space-y-3">
+          <h2 className="text-lg font-bold">🎭 Establishing Shots</h2>
+          <p className="text-xs text-muted-foreground">
+            Master wide frame per scene — всі персонажі цієї сцени в їх локації.
+            Designer attach-ить ОБИДВА Character Passports + Location Passport
+            як identity refs. Anchor для всіх close-up shots у цій сцені.
+          </p>
+          <div className="grid grid-cols-1 gap-3">
+            {sheet.establishing_shots.map((est) => (
+              <Card key={est.id} id={est.id}>
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-base">
+                      <Badge variant="outline" className="mr-2 font-mono">
+                        {est.id}
+                      </Badge>
+                      {est.scene_title}
+                    </CardTitle>
+                    <Badge variant="secondary">{est.duration_sec}s</Badge>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    📍 Location:{" "}
+                    <span className="font-medium">{est.location_name}</span>
+                    {est.characters_in_shot.length > 0 && (
+                      <>
+                        {" · "}
+                        Characters:{" "}
+                        <span className="font-medium">
+                          {est.characters_in_shot.join(", ")}
+                        </span>
+                      </>
+                    )}
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                      🖼 Establishing master frame
+                    </span>
+                    <CopyButton text={est.image_prompt} label="Copy" />
+                  </div>
+                  <pre className="max-h-40 overflow-y-auto rounded bg-muted/40 p-2 font-mono text-[10px] whitespace-pre-wrap">
+                    {est.image_prompt}
+                  </pre>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Shots */}
       <section className="space-y-3">

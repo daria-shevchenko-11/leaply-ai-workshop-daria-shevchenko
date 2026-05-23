@@ -1,7 +1,7 @@
 {
-  "_note": "Demo Mode static example for /production-sheet. Realistic Leaply lymph-drainage ad scenario.",
+  "_note": "Demo Mode static example for /production-sheet. Now includes Character Passports + Location Passports + Establishing Shots + per-shot breakdown.",
   "title": "Mom's Neck Hump Reveal",
-  "scenario_summary": "Adult daughter (35) talks to camera UGC-style about realizing her mother carried a neck hump for 30 years. Cut to mother in soft afternoon kitchen lighting, then to before-after reveal. Closes on UGC of mother walking confidently.",
+  "scenario_summary": "Adult daughter (35) talks to camera UGC-style in her home about realizing her mother carried a neck hump for 30 years. Cut to mother in afternoon kitchen, then to before-after reveal, closes on UGC payoff in same home setting.",
   "visual_style": "UGC + warm afternoon family Authority hybrid",
   "characters": [
     {
@@ -15,6 +15,36 @@
       "passport_prompt": "Frontal full-body photo of Mom, vertical 9:16 framing, neutral light-grey backdrop, photorealistic, natural daylight, standing straight facing camera, wearing a cream wool cardigan over light blue linen blouse and dove-grey trousers and beige loafers, silver short hair softly styled, gentle warm expression with soft smile lines. Single subject only. No text, no captions, no watermarks, no logos."
     }
   ],
+  "locations": [
+    {
+      "name": "Anna's home hallway",
+      "description": "Anna's softly-lit modern apartment hallway. Used for s1 and s4 UGC selfie shots — warm earthy palette, blurred living room beyond.",
+      "passport_prompt": "Vertical 9:16 framing wide-shot photo of a softly-lit modern apartment hallway in warm earth tones, beige walls, oak parquet floor, a glimpse of a blurred living room through an open archway, soft afternoon window light streaming from the right, no people in frame, neutral mood, photorealistic. No text, no captions, no watermarks, no logos."
+    },
+    {
+      "name": "Mom's kitchen",
+      "description": "Warm afternoon kitchen with eggshell-white cabinets and cream curtains. Used for s2 side-profile and s3 before-after split.",
+      "passport_prompt": "Vertical 9:16 framing wide-shot photo of a warm afternoon kitchen with eggshell-white shaker cabinets, cream linen curtains, stainless steel kitchen counter with a small terracotta pot of fresh basil, soft afternoon sunlight from a window on the left, no people in frame, photorealistic. No text, no captions, no watermarks, no logos."
+    }
+  ],
+  "establishing_shots": [
+    {
+      "id": "est1",
+      "scene_title": "Anna in her home hallway",
+      "location_name": "Anna's home hallway",
+      "characters_in_shot": ["Anna"],
+      "image_prompt": "Vertical 9:16 framing wide-shot photo of Anna (the 35-year-old daughter with dark wavy hair in a beige knit sweater) standing calmly in the middle of her softly-lit modern apartment hallway, full-body visible, neutral standing pose, calm friendly expression, soft afternoon window light from camera-right, no dialogue, no on-screen overlays. Photorealistic. No text, no captions, no watermarks, no logos.",
+      "duration_sec": 3
+    },
+    {
+      "id": "est2",
+      "scene_title": "Mom in her kitchen",
+      "location_name": "Mom's kitchen",
+      "characters_in_shot": ["Mom"],
+      "image_prompt": "Vertical 9:16 framing wide-shot photo of Mom (the 65-year-old mother with silver short hair in cream cardigan) standing calmly in her warm afternoon kitchen with eggshell-white cabinets and cream curtains, full-body visible, neutral standing pose, gentle warm expression, soft afternoon sunlight from window on the left, no dialogue, no on-screen overlays. Photorealistic. No text, no captions, no watermarks, no logos.",
+      "duration_sec": 3
+    }
+  ],
   "shots": [
     {
       "id": "s1",
@@ -23,7 +53,7 @@
       "characters_in_shot": ["Anna"],
       "dialogue": "My mom carried this for 30 years before anyone explained why.",
       "on_camera": true,
-      "image_prompt": "Vertical 9:16 framing, photorealistic. Anna stands in a softly lit home hallway, mid-shot from chest up, leaning slightly toward the camera, holding the camera at slight upward angle (selfie style). Soft afternoon window light from camera-right. Beige knit sweater, dark wavy hair. Mouth closed in calm anticipation, eyes locked with the lens. Slightly imperfect framing, handheld feel. Background: blurred living room beyond, warm earth tones. No text, no captions, no watermarks, no logos, no UI elements.",
+      "image_prompt": "Vertical 9:16 framing, photorealistic. Anna stands in her softly lit home hallway (see Anna's home hallway location passport), mid-shot from chest up, leaning slightly toward the camera, holding the camera at slight upward angle (selfie style). Soft afternoon window light from camera-right. Beige knit sweater, dark wavy hair. Mouth closed in calm anticipation, eyes locked with the lens. Slightly imperfect framing, handheld feel. No text, no captions, no watermarks, no logos, no UI elements.",
       "video_prompt": "Anna (the 35-year-old daughter with dark wavy hair in a beige knit sweater) holds the camera at selfie distance and steps half a pace toward the lens. She speaks in a confiding, slightly emotional tone, mid-low register, deliberate pacing: \"My mom carried this for 30 years before anyone explained why.\" Camera: handheld with very slight shake, subtle warmth in skin tones. Ambience: warm afternoon home tone, distant clock tick, faint refrigerator hum, no background music. Duration: 5 seconds.",
       "ambience_note": "Soft home room tone, distant clock tick, warm afternoon air. No music.",
       "voice_direction": "Female, 30-40, US English, confiding intimate tone, mid-low register, soft natural pacing with slight emotional weight on \"30 years\".",
@@ -38,7 +68,7 @@
       "characters_in_shot": ["Mom"],
       "dialogue": "no dialogue / [diegetic ambient room tone]",
       "on_camera": false,
-      "image_prompt": "Vertical 9:16 framing, photorealistic. Mom stands in a softly lit kitchen, side-profile shot from chest up, her face turned three-quarters away from camera so the back of her neck and upper back curve is clearly visible. Soft afternoon window light from camera-left highlights the curve. Cream cardigan, silver short hair. Gentle wistful expression visible at the edge of her face. Background: warm kitchen with eggshell-white cabinets, soft cream curtains. Composition emphasizes the postural curve at the base of her neck without being clinical. No text, no captions, no watermarks, no logos.",
+      "image_prompt": "Vertical 9:16 framing, photorealistic. Mom stands in her warm afternoon kitchen (see Mom's kitchen location passport), side-profile shot from chest up, her face turned three-quarters away from camera so the back of her neck and upper back curve is clearly visible. Soft afternoon window light from camera-left highlights the curve. Cream cardigan, silver short hair. Gentle wistful expression visible at the edge of her face. Composition emphasizes the postural curve at the base of her neck without being clinical. No text, no captions, no watermarks, no logos.",
       "video_prompt": "Mom (the 65-year-old mother with silver short hair in cream cardigan) stands still in three-quarter side profile, breathing slowly. Subtle micro-movement: she turns her head a fraction of a degree toward the window, eyes softening. Camera: slow gentle dolly-in from her side, ~10cm closer over 4 seconds, very smooth. No dialogue. Ambience: quiet afternoon kitchen, distant kettle whistle just barely audible, soft tick of a wall clock, no background music. Duration: 4 seconds.",
       "ambience_note": "Quiet kitchen room tone, faint kettle, soft wall clock tick. No music. VO will overlay from s1 emotional reveal.",
       "voice_direction": "VO-only beat — no on-camera dialogue. Voice direction inherits from s1.",
@@ -53,7 +83,7 @@
       "characters_in_shot": ["Mom"],
       "dialogue": "no dialogue / [VO reveals product mechanism]",
       "on_camera": false,
-      "image_prompt": "Vertical 9:16 framing, photorealistic. Split-screen composition with clear vertical seam down the middle. Left half: Mom side-profile in cooler lighting, shoulders slumped slightly forward, posture rounded, tired expression. Right half: same Mom, same outfit, same framing, but warmer lighting, shoulders rolled back, upright posture, softly smiling. Identical camera angle both halves. Cream cardigan, silver hair. Background: same soft kitchen both sides, just lighting shift. The transformation reads via lighting + posture, no text on screen. No text, no captions, no watermarks, no logos.",
+      "image_prompt": "Vertical 9:16 framing, photorealistic. Split-screen composition with clear vertical seam down the middle. Left half: Mom side-profile in cooler lighting, shoulders slumped slightly forward, posture rounded, tired expression. Right half: same Mom, same outfit, same framing, but warmer lighting, shoulders rolled back, upright posture, softly smiling. Identical camera angle both halves. Cream cardigan, silver hair. Background: same Mom's kitchen both sides, just lighting shift. The transformation reads via lighting + posture, no text on screen. No text, no captions, no watermarks, no logos.",
       "video_prompt": "Mom (the 65-year-old mother with silver short hair in cream cardigan) split-screen. The seam between left and right halves softly wipes left-to-right over the 4 seconds, revealing the right half (transformed posture) as the dominant frame. No motion of subject — only the split-line itself transitions. No dialogue. Ambience: subtle whoosh as transition moves, soft kitchen room tone underneath, no background music. Duration: 4 seconds.",
       "ambience_note": "Subtle whoosh on the split transition, kitchen room tone bed. No music.",
       "voice_direction": "VO-only. Editor will overlay calm explanatory line about lymph circulation here in AE.",
@@ -68,7 +98,7 @@
       "characters_in_shot": ["Anna"],
       "dialogue": "Yesterday she stopped wearing scarves.",
       "on_camera": true,
-      "image_prompt": "Vertical 9:16 framing, photorealistic. Anna in the same softly lit home hallway as s1, slightly tighter close-up from shoulders up. She's just smiled — the smile is fading into something more emotional. Soft afternoon window light from camera-right, eyes slightly glassy with warmth. Beige knit sweater. Handheld selfie angle, slightly tilted, intimate. Background: warm earth-toned blur. No text, no captions, no watermarks, no logos.",
+      "image_prompt": "Vertical 9:16 framing, photorealistic. Anna in the same softly lit home hallway as s1 (see Anna's home hallway location passport), slightly tighter close-up from shoulders up. She's just smiled — the smile is fading into something more emotional. Soft afternoon window light from camera-right, eyes slightly glassy with warmth. Beige knit sweater. Handheld selfie angle, slightly tilted, intimate. No text, no captions, no watermarks, no logos.",
       "video_prompt": "Anna (the 35-year-old daughter with dark wavy hair in a beige knit sweater) holds the camera close, mouth opens softly to speak. She delivers the line with quiet emotional weight, slight smile fading into vulnerability, mid-low register: \"Yesterday she stopped wearing scarves.\" Camera: handheld, very slight push-in over 4 seconds. Ambience: soft home tone, faint outdoor birds through window, no background music. Duration: 4 seconds.",
       "ambience_note": "Soft home tone, faint outdoor birds through window, gentle warm air. No music.",
       "voice_direction": "Female, 30-40, US English, soft emotional payoff, mid-low register, deliberate pause before \"scarves\", slight vulnerability.",
