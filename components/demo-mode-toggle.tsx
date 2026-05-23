@@ -5,6 +5,15 @@ import { useHookStore } from "@/lib/stores/hook-store"
 export function DemoModeToggle() {
   const demo = useHookStore((s) => s.demo_mode)
   const setDemo = useHookStore((s) => s.setDemoMode)
+  const setAnalysis = useHookStore((s) => s.setAnalysis)
+  const setVariants = useHookStore((s) => s.setVariants)
+
+  function onToggle() {
+    // Clear stale analysis + variants when mode changes
+    setAnalysis(null)
+    setVariants([])
+    setDemo(!demo)
+  }
 
   return (
     <div
@@ -24,7 +33,7 @@ export function DemoModeToggle() {
       </div>
       <button
         type="button"
-        onClick={() => setDemo(!demo)}
+        onClick={onToggle}
         className={`rounded-md border px-3 py-1 text-xs font-medium transition-colors ${
           demo
             ? "border-yellow-700 bg-yellow-200 hover:bg-yellow-300 dark:border-yellow-300 dark:bg-yellow-800 dark:hover:bg-yellow-700"

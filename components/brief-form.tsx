@@ -16,6 +16,8 @@ const MAX_VIDEO_BYTES = 4 * 1024 * 1024 // 4 MB Vercel function body limit
 export function BriefForm() {
   const router = useRouter()
   const setBrief = useHookStore((s) => s.setBrief)
+  const setAnalysis = useHookStore((s) => s.setAnalysis)
+  const setVariants = useHookStore((s) => s.setVariants)
   const goToStep = useHookStore((s) => s.goToStep)
   const demoMode = useHookStore((s) => s.demo_mode)
 
@@ -60,6 +62,11 @@ export function BriefForm() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+
+    // Always clear stale analysis + variants before a fresh run.
+    // Otherwise switching Demo Mode or re-submitting shows cached old data.
+    setAnalysis(null)
+    setVariants([])
 
     // In Demo Mode, allow proceeding without a real reference — use placeholder
     if (demoMode) {

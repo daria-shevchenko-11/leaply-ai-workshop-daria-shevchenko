@@ -39,7 +39,7 @@ type HookState = {
 
   // Step 2 — Analysis
   analysis: AnalysisResult | null
-  setAnalysis: (a: AnalysisResult) => void
+  setAnalysis: (a: AnalysisResult | null) => void
   // Editable overrides for inline correction
   setMapped: (m: FitMapped) => void
   setProposedNewCM: (p: ProposedNewCM) => void
