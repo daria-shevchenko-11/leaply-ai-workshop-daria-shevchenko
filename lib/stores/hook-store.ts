@@ -36,9 +36,16 @@ type HookState = {
   gemini_api_key: string
   setGeminiApiKey: (k: string) => void
 
-  // Replicate API token — for Kling video auto-render. Stored in localStorage.
+  // Replicate API token — for Kling video auto-render via Replicate proxy.
   replicate_api_token: string
   setReplicateApiToken: (k: string) => void
+
+  // Official Kling API keys (api-singapore.klingai.com — direct, no Replicate).
+  // Needs BOTH Access Key + Secret Key for JWT auth.
+  kling_access_key: string
+  setKlingAccessKey: (k: string) => void
+  kling_secret_key: string
+  setKlingSecretKey: (k: string) => void
 
   // View mode — split UI between marketer (simple) and designer (full).
   view_mode: "marketer" | "designer"
@@ -110,6 +117,8 @@ const initialState = {
   demo_mode: false,
   gemini_api_key: "",
   replicate_api_token: "",
+  kling_access_key: "",
+  kling_secret_key: "",
   view_mode: "marketer" as "marketer" | "designer",
   step: "brief" as Step,
   brief: null,
@@ -134,6 +143,8 @@ export const useHookStore = create<HookState>()(
       setDemoMode: (v) => set({ demo_mode: v }),
       setGeminiApiKey: (k) => set({ gemini_api_key: k }),
       setReplicateApiToken: (k) => set({ replicate_api_token: k }),
+      setKlingAccessKey: (k) => set({ kling_access_key: k }),
+      setKlingSecretKey: (k) => set({ kling_secret_key: k }),
       setViewMode: (m) => set({ view_mode: m }),
       goToStep: (s) => set({ step: s }),
 
@@ -266,6 +277,8 @@ export const useHookStore = create<HookState>()(
         demo_mode: state.demo_mode,
         gemini_api_key: state.gemini_api_key,
         replicate_api_token: state.replicate_api_token,
+        kling_access_key: state.kling_access_key,
+        kling_secret_key: state.kling_secret_key,
         view_mode: state.view_mode,
         variation_axes: state.variation_axes,
         axis_counts: state.axis_counts,

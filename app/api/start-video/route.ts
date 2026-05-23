@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { StartVideoRequestSchema } from "@/lib/schemas/hook-schemas"
 import { submitVeoVideo } from "@/lib/gemini"
 import { submitKlingPrediction } from "@/lib/replicate"
+import { submitKlingDirect } from "@/lib/kling-direct"
 import { env } from "@/lib/env"
 
 export const runtime = "nodejs"
@@ -12,21 +13,39 @@ export const maxDuration = 30
 
 export async function POST(req: Request) {
   try {
-    // Client can override Replicate token via header (same pattern as Gemini key)
+    // Header-based token overrides (same pattern as Gemini key)
     const replicateTokenOverride =
       req.headers.get("x-replicate-token") || undefined
+    const klingAkOverride = req.headers.get("x-kling-access-key") || undefined
+    const klingSkOverride = req.headers.get("x-kling-secret-key") || undefined
+
     const body = await req.json()
     const { variant } = StartVideoRequestSchema.parse(body)
-
     const prompt = buildVideoPrompt(variant)
 
-    // Prefer Replicate Kling when token is available — better video quality
-    // and async pattern fits Vercel timeouts cleanly.
+    // Provider priority:
+    //   1. Official Kling direct API (AK + SK) — best quality, no proxy
+    //   2. Replicate-hosted Kling — easy fallback
+    //   3. Veo via Gemini — workshop-key compatible last resort
+    const klingAk = klingAkOverride || env.KLING_ACCESS_KEY
+    const klingSk = klingSkOverride || env.KLING_SECRET_KEY
+    if (klingAk && klingSk) {
+      const taskId = await submitKlingDirect(klingAk, klingSk, {
+        prompt,
+        ...(variant.cover_image_url &&
+        !variant.cover_image_url.startsWith("data:")
+          ? { image_url: variant.cover_image_url }
+          : {}),
+        duration: 5,
+        aspect_ratio: "9:16",
+      })
+      return NextResponse.json({ job_id: `kling-direct:${taskId}` })
+    }
+
     const replicateToken = replicateTokenOverride || env.REPLICATE_API_TOKEN
     if (replicateToken) {
       const predictionId = await submitKlingPrediction(replicateToken, {
         prompt,
-        // Nano Banana cover frame as first frame (if it's a URL, not data:)
         ...(variant.cover_image_url &&
         !variant.cover_image_url.startsWith("data:")
           ? { start_image: variant.cover_image_url }
@@ -37,7 +56,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ job_id: `replicate:${predictionId}` })
     }
 
-    // Fallback: Veo via Gemini (requires workshop key with Veo access)
     const operationName = await submitVeoVideo(prompt)
     return NextResponse.json({ job_id: `veo:${operationName}` })
   } catch (e) {

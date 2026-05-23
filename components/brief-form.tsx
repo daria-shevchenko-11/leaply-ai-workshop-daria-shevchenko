@@ -24,6 +24,10 @@ export function BriefForm() {
   const setGeminiKey = useHookStore((s) => s.setGeminiApiKey)
   const replicateToken = useHookStore((s) => s.replicate_api_token)
   const setReplicateToken = useHookStore((s) => s.setReplicateApiToken)
+  const klingAk = useHookStore((s) => s.kling_access_key)
+  const setKlingAk = useHookStore((s) => s.setKlingAccessKey)
+  const klingSk = useHookStore((s) => s.kling_secret_key)
+  const setKlingSk = useHookStore((s) => s.setKlingSecretKey)
 
   const [referenceType, setReferenceType] = useState<"text" | "video">("video")
   const [referenceText, setReferenceText] = useState("")
@@ -216,10 +220,19 @@ export function BriefForm() {
                     type="button"
                     className="block w-full rounded bg-green-500/15 px-2 py-1 text-left hover:bg-green-500/25"
                     onClick={() =>
+                      setGeminiKey("AIzaSyBWvRGhXtqgPkobyipqGJWcAu1vzG26wGo")
+                    }
+                  >
+                    ⭐ current (Gemini-4.5): AIzaSyBWvRGh... (click to use)
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
+                    onClick={() =>
                       setGeminiKey("AIzaSyDbeE20UZy6jijBR166Yy4gElqgou5ajAE")
                     }
                   >
-                    ⭐ current: AIzaSyDbeE20... (click to use)
+                    prev: AIzaSyDbeE20... (click to use)
                   </button>
                   <button
                     type="button"
@@ -293,13 +306,66 @@ export function BriefForm() {
             </div>
           )}
 
-          {/* Replicate token — optional, for Kling video auto-render */}
+          {/* Kling DIRECT API — preferred when both keys present */}
+          {!demoMode && (
+            <div className="space-y-2 rounded-md border border-emerald-500/40 bg-emerald-500/5 p-3">
+              <label className="text-sm font-medium">
+                🎬 Kling Direct API{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  (preferred — Kuaishou official)
+                </span>
+              </label>
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="kling-ak"
+                  className="text-[10px] font-medium text-muted-foreground"
+                >
+                  Access Key (AK)
+                </label>
+                <Input
+                  id="kling-ak"
+                  type="password"
+                  placeholder="AN8ATDy..."
+                  value={klingAk}
+                  onChange={(e) => setKlingAk(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="kling-sk"
+                  className="text-[10px] font-medium text-muted-foreground"
+                >
+                  Secret Key (SK) — needed for JWT signing
+                </label>
+                <Input
+                  id="kling-sk"
+                  type="password"
+                  placeholder="нагенерувала разом з AK..."
+                  value={klingSk}
+                  onChange={(e) => setKlingSk(e.target.value)}
+                />
+              </div>
+              {klingAk && !klingSk && (
+                <p className="text-[10px] text-yellow-600 dark:text-yellow-400">
+                  ⚠ Access Key є, але без Secret Key Kling direct API не підпише
+                  JWT. Згенеруй обидва на https://klingai.com/dev/api-key
+                  (Manage Keys → Create — там одразу буде пара AK+SK).
+                </p>
+              )}
+              <p className="text-[10px] text-muted-foreground">
+                Якщо обидва ключі стоять — використається Kling direct API.
+                Інакше fallback на Replicate (нижче). Зберігається в браузері.
+              </p>
+            </div>
+          )}
+
+          {/* Replicate token — fallback, for Kling video via Replicate proxy */}
           {!demoMode && (
             <div className="space-y-2 rounded-md border border-purple-500/40 bg-purple-500/5 p-3">
               <label htmlFor="replicate-key" className="text-sm font-medium">
                 🎬 Replicate API Token{" "}
                 <span className="text-xs font-normal text-muted-foreground">
-                  (optional — для auto-render Kling-відео)
+                  (fallback — якщо немає Kling direct)
                 </span>
               </label>
               <Input

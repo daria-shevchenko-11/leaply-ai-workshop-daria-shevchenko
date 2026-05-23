@@ -51,6 +51,22 @@ const EnvSchema = z.object({
       z.string().min(1).optional()
     )
     .optional(),
+
+  // Kling AI direct API (api-singapore.klingai.com). Needs BOTH AK + SK
+  // for JWT HS256 auth. Optional — falls back to Replicate-hosted Kling,
+  // then to Veo via Gemini.
+  KLING_ACCESS_KEY: z
+    .preprocess(
+      (v) => (typeof v === "string" && v.length === 0 ? undefined : v),
+      z.string().min(1).optional()
+    )
+    .optional(),
+  KLING_SECRET_KEY: z
+    .preprocess(
+      (v) => (typeof v === "string" && v.length === 0 ? undefined : v),
+      z.string().min(1).optional()
+    )
+    .optional(),
 })
 
 export const env = EnvSchema.parse(process.env)

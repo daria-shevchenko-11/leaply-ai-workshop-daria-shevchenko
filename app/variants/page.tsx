@@ -35,6 +35,8 @@ export default function VariantsPage() {
   const updateVideoJobStatus = useHookStore((s) => s.updateVideoJobStatus)
   const viewMode = useHookStore((s) => s.view_mode)
   const replicateToken = useHookStore((s) => s.replicate_api_token)
+  const klingAk = useHookStore((s) => s.kling_access_key)
+  const klingSk = useHookStore((s) => s.kling_secret_key)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -117,6 +119,8 @@ export default function VariantsPage() {
     generationMode,
     variationAxes,
     geminiKey,
+    klingAk,
+    klingSk,
     variants.length,
     setVariants,
     router,
@@ -126,8 +130,13 @@ export default function VariantsPage() {
     async (variantId: string, jobId: string) => {
       const MAX_POLLS = 60 // ~5 min at 5s interval
       const headers: Record<string, string> = {}
-      const tok = useHookStore.getState().replicate_api_token
-      if (tok) headers["x-replicate-token"] = tok
+      const state = useHookStore.getState()
+      if (state.replicate_api_token)
+        headers["x-replicate-token"] = state.replicate_api_token
+      if (state.kling_access_key)
+        headers["x-kling-access-key"] = state.kling_access_key
+      if (state.kling_secret_key)
+        headers["x-kling-secret-key"] = state.kling_secret_key
       for (let i = 0; i < MAX_POLLS; i++) {
         await new Promise((r) => setTimeout(r, 5000))
         try {
@@ -213,7 +222,16 @@ export default function VariantsPage() {
     return () => {
       cancelled = true
     }
-  }, [demoMode, variants, setVideoJob, updateVideoJobStatus, pollVideoJob])
+  }, [
+    demoMode,
+    variants,
+    setVideoJob,
+    updateVideoJobStatus,
+    pollVideoJob,
+    replicateToken,
+    klingAk,
+    klingSk,
+  ])
 
   async function onDownloadZip() {
     if (!brief || !analysis) return
