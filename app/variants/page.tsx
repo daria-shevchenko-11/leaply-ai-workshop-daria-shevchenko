@@ -23,6 +23,7 @@ export default function VariantsPage() {
   const generationMode = useHookStore((s) => s.generation_mode)
   const variationAxes = useHookStore((s) => s.variation_axes)
   const demoMode = useHookStore((s) => s.demo_mode)
+  const geminiKey = useHookStore((s) => s.gemini_api_key)
   const variants = useHookStore((s) => s.variants)
   const setVariants = useHookStore((s) => s.setVariants)
   const approvedIds = useHookStore((s) => s.approved_ids)
@@ -63,9 +64,13 @@ export default function VariantsPage() {
           }
         } else {
           setProgressStep(1)
+          const headers: Record<string, string> = {
+            "content-type": "application/json",
+          }
+          if (geminiKey) headers["x-google-ai-key"] = geminiKey
           const res = await fetch("/api/generate-variants", {
             method: "POST",
-            headers: { "content-type": "application/json" },
+            headers,
             body: JSON.stringify({
               brief,
               analysis,
@@ -105,6 +110,7 @@ export default function VariantsPage() {
     demoMode,
     generationMode,
     variationAxes,
+    geminiKey,
     variants.length,
     setVariants,
     router,

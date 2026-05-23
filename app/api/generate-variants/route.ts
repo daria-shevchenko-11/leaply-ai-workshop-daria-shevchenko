@@ -10,6 +10,7 @@ export const maxDuration = 60
 
 export async function POST(req: Request) {
   try {
+    const apiKeyOverride = req.headers.get("x-google-ai-key") || undefined
     const body = await req.json()
     const { brief, analysis, generation_mode, variation_axes } =
       GenerateVariantsRequestSchema.parse(body)
@@ -19,14 +20,15 @@ export async function POST(req: Request) {
       brief,
       analysis,
       generation_mode,
-      variation_axes
+      variation_axes,
+      apiKeyOverride
     )
 
     // 2. For each variant, generate a cover image in parallel
     const variantsWithCovers = await Promise.all(
       textResult.variants.map(async (v) => {
         const coverPrompt = buildCoverPrompt(v)
-        const coverUrl = await generateCoverImage(coverPrompt)
+        const coverUrl = await generateCoverImage(coverPrompt, apiKeyOverride)
         return { ...v, cover_image_url: coverUrl }
       })
     )

@@ -22,18 +22,18 @@ const MODEL_TEXT_VISION = "gemini-3.5-flash"
 const MODEL_IMAGE = "gemini-3.0-flash-image-preview" // "Nano Banana 2"
 const MODEL_VIDEO = "veo-3.1-preview"
 
-// ─── Singleton client ────────────────────────────────────────────────────────
-let client: GoogleGenAI | null = null
-function getClient(): GoogleGenAI {
-  if (!client) {
-    if (!env.GOOGLE_AI_API_KEY) {
-      throw new Error(
-        "GOOGLE_AI_API_KEY is not set. Add it in Vercel → Project Settings → Environment Variables, then redeploy."
-      )
-    }
-    client = new GoogleGenAI({ apiKey: env.GOOGLE_AI_API_KEY })
+// ─── Client factory ──────────────────────────────────────────────────────────
+// Priority: caller-supplied key (from request header) > env var GOOGLE_AI_API_KEY.
+// User pastes their workshop key in the app UI; it's sent per-request as
+// `x-google-ai-key` header. No key is stored on the server.
+function getClient(overrideKey?: string): GoogleGenAI {
+  const apiKey = overrideKey || env.GOOGLE_AI_API_KEY
+  if (!apiKey) {
+    throw new Error(
+      "Gemini API key missing. Paste a workshop key on Step 1 (the «Gemini API Key» field), or set GOOGLE_AI_API_KEY in Vercel env vars."
+    )
   }
-  return client
+  return new GoogleGenAI({ apiKey })
 }
 
 // ─── Hook analysis ───────────────────────────────────────────────────────────
@@ -87,8 +87,11 @@ Rules:
 - If user provided audience/pains in the brief, RESPECT them but still fill inferred_audience and inferred_pains based purely on the video.
 `
 
-export async function analyzeHook(brief: Brief): Promise<AnalysisResult> {
-  const ai = getClient()
+export async function analyzeHook(
+  brief: Brief,
+  apiKeyOverride?: string
+): Promise<AnalysisResult> {
+  const ai = getClient(apiKeyOverride)
   const taxonomyBlock = formatTaxonomyForPrompt()
 
   const userParts: {
@@ -179,9 +182,10 @@ export async function generateTextVariants(
   brief: Brief,
   analysis: AnalysisResult,
   generationMode: "apply_existing_cm" | "propose_new_cm",
-  variationAxes: string[] = []
+  variationAxes: string[] = [],
+  apiKeyOverride?: string
 ): Promise<VariantsResult> {
-  const ai = getClient()
+  const ai = getClient(apiKeyOverride)
   const taxonomyBlock = formatTaxonomyForPrompt()
 
   const referenceText =
@@ -238,9 +242,12 @@ ${taxonomyBlock}`
 
 // ─── Image generation (Nano Banana 2) ────────────────────────────────────────
 
-export async function generateCoverImage(prompt: string): Promise<string> {
+export async function generateCoverImage(
+  prompt: string,
+  apiKeyOverride?: string
+): Promise<string> {
   // Returns a data URL or hosted URL for the generated image.
-  const ai = getClient()
+  const ai = getClient(apiKeyOverride)
   try {
     const response = await ai.models.generateContent({
       model: MODEL_IMAGE,

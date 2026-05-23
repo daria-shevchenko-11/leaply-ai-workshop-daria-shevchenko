@@ -16,6 +16,7 @@ export default function AnalyzePage() {
   const router = useRouter()
   const brief = useHookStore((s) => s.brief)
   const demoMode = useHookStore((s) => s.demo_mode)
+  const geminiKey = useHookStore((s) => s.gemini_api_key)
   const analysis = useHookStore((s) => s.analysis)
   const setAnalysis = useHookStore((s) => s.setAnalysis)
   const setGenerationMode = useHookStore((s) => s.setGenerationMode)
@@ -49,9 +50,13 @@ export default function AnalyzePage() {
           if (!cancelled) setAnalysis(parsed)
         } else {
           setProgressStep(1)
+          const headers: Record<string, string> = {
+            "content-type": "application/json",
+          }
+          if (geminiKey) headers["x-google-ai-key"] = geminiKey
           const res = await fetch("/api/analyze", {
             method: "POST",
-            headers: { "content-type": "application/json" },
+            headers,
             body: JSON.stringify(brief),
           })
           if (!res.ok) {
@@ -84,7 +89,7 @@ export default function AnalyzePage() {
     return () => {
       cancelled = true
     }
-  }, [brief, demoMode, analysis, router, setAnalysis])
+  }, [brief, demoMode, geminiKey, analysis, router, setAnalysis])
 
   if (!brief) return null
 

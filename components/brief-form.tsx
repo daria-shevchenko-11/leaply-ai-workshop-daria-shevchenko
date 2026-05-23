@@ -20,6 +20,8 @@ export function BriefForm() {
   const setVariants = useHookStore((s) => s.setVariants)
   const goToStep = useHookStore((s) => s.goToStep)
   const demoMode = useHookStore((s) => s.demo_mode)
+  const geminiKey = useHookStore((s) => s.gemini_api_key)
+  const setGeminiKey = useHookStore((s) => s.setGeminiApiKey)
 
   const [referenceType, setReferenceType] = useState<"text" | "video">("video")
   const [referenceText, setReferenceText] = useState("")
@@ -184,6 +186,99 @@ export function BriefForm() {
                   className="mt-2 max-h-64 w-full rounded-md border"
                 />
               )}
+            </div>
+          )}
+
+          {/* Gemini API key — required for Real Mode, ignored in Demo */}
+          {!demoMode && (
+            <div className="space-y-2 rounded-md border border-yellow-500/40 bg-yellow-500/5 p-3">
+              <label htmlFor="gemini-key" className="text-sm font-medium">
+                🔑 Gemini API Key
+              </label>
+              <Input
+                id="gemini-key"
+                type="password"
+                placeholder="AIzaSy..."
+                value={geminiKey}
+                onChange={(e) => setGeminiKey(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Workshop keys (paste any one):
+              </p>
+              <details className="text-xs">
+                <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                  Показати workshop keys
+                </summary>
+                <div className="mt-2 space-y-1 font-mono text-[10px] break-all">
+                  <button
+                    type="button"
+                    className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
+                    onClick={() =>
+                      setGeminiKey("AIzaSyBMw_XWWOksAE9su4HNLG5tm_g2dg2ybts")
+                    }
+                  >
+                    new-1: AIzaSyBMw_XWW... (click to use)
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
+                    onClick={() =>
+                      setGeminiKey("AIzaSyBJKJ5S3Mm7rIFlZggZhH3tj0lvQ2A3qNQ")
+                    }
+                  >
+                    new-2: AIzaSyBJKJ5S3... (click to use)
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
+                    onClick={() =>
+                      setGeminiKey("AIzaSyDxhAMXkMtJjrRrsfQ-YFidqsS2qY5r9ys")
+                    }
+                  >
+                    new-3: AIzaSyDxhAMXk... (click to use)
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
+                    onClick={() =>
+                      setGeminiKey("AIzaSyCOMr2G8TIwcYDeZSoi4jzt7j94CLoQCMk")
+                    }
+                  >
+                    new-4: AIzaSyCOMr2G8... (click to use)
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
+                    onClick={() =>
+                      setGeminiKey("AIzaSyAp5Eu-t8qPamjrhRCyc_8vCu_5DmwbnIY")
+                    }
+                  >
+                    new-5: AIzaSyAp5Eu-t... (click to use)
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
+                    onClick={() =>
+                      setGeminiKey("AIzaSyAaLM1U46F8RZMCyyZW4MyArR8aZxJdbdk")
+                    }
+                  >
+                    new-6: AIzaSyAaLM1U4... (click to use)
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full rounded bg-muted/40 px-2 py-1 text-left hover:bg-muted"
+                    onClick={() =>
+                      setGeminiKey("AIzaSyAJswoMHonhuyIFIXF248R5UhTDaeYsg18")
+                    }
+                  >
+                    new-7: AIzaSyAJswoMH... (click to use)
+                  </button>
+                </div>
+              </details>
+              <p className="text-[10px] text-muted-foreground">
+                Якщо один задушений rate-limit-ом — клікни на інший.
+                Зберігається лише у твоєму браузері (localStorage).
+              </p>
             </div>
           )}
 

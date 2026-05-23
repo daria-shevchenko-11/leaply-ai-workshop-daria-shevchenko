@@ -8,10 +8,11 @@ export const maxDuration = 60 // Vercel Hobby: 10s; Pro: 60s
 
 export async function POST(req: Request) {
   try {
+    const apiKeyOverride = req.headers.get("x-google-ai-key") || undefined
     const body = await req.json()
     const brief = BriefSchema.parse(body)
 
-    const analysis = await analyzeHook(brief)
+    const analysis = await analyzeHook(brief, apiKeyOverride)
 
     // Server-side augment linked_tasks from creative-tasks.json snapshot
     if (analysis.fit_check.status === "existing" && analysis.fit_check.mapped) {
