@@ -1,19 +1,19 @@
 {
-  "_note": "Demo Mode response shape for /api/analyze. Mirrors real Gemini output structure.",
+  "_note": "Demo Mode shape for /api/analyze.",
   "decomposition": {
-    "transcript": "Your lymph nodes are blocked, and you don't even know it. By the time you feel it, it's too late.",
-    "tone": "Authoritative / clinical, building urgency",
-    "trigger": "Health scare — hidden threat reveal",
-    "actor": "Female, 35-45, white-coat doctor archetype",
-    "tempo": "Slow opening word-by-word → sharp impact on 'too late'",
-    "visual_summary": "Mid-shot, woman in white coat, soft clinical lighting, direct camera gaze. Subtle lean-in on the 'reveal' moment."
+    "transcript": "Your lymph nodes are blocked. And if you sit all day, they get worse.",
+    "tone": "Authoritative / alarming",
+    "trigger": "Health fear + curiosity",
+    "actor": "White woman, 40-50, expert-looking, medical aesthetic",
+    "tempo": "Slow buildup → punch in 5 sec",
+    "visual_summary": "Mid-shot, woman in white coat, soft clinical lighting, direct camera gaze, lean-in on key word."
   },
   "fit_check": {
     "status": "existing",
     "confidence": 0.87,
     "mapped": {
       "core_message_id": "blocked-lymph-flow",
-      "core_message_name": "Blocked Lymph Flow",
+      "core_message_name": "Blocked Lymph Flow from long sitting",
       "visual_format_id": "professional-authority",
       "visual_format_name": "Professional Authority",
       "pain_point_id": "neck-shoulders",
@@ -21,7 +21,7 @@
       "hook_type_id": "problem-reveal",
       "hook_type_name": "Problem-reveal"
     },
-    "reasoning": "Strong match on hidden-problem framing + doctor archetype + clinical tone. Mirrors task #1247 (Lymph Reset) and #1283 (Doctor reveal).",
+    "reasoning": "Combines specific medical claim with relatable everyday behavior. Authority + fear + personal relevance = high stop-scroll. Mirrors tasks #1247 and #1283.",
     "proposed_new_cm": null
   },
   "linked_tasks": [
@@ -34,6 +34,11 @@
       "id": 1283,
       "title": "Doctor reveal hook ×3",
       "match_reason": "Same visual_format + hook_type"
+    },
+    {
+      "id": 1521,
+      "title": "Leg swelling lifestyle",
+      "match_reason": "Same core_message"
     },
     {
       "id": 1311,

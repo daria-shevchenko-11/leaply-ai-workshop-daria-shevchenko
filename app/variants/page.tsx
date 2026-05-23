@@ -13,6 +13,7 @@ import { ProgressStream } from "@/components/progress-stream"
 import { Button } from "@/components/ui/button"
 import mockVariantsJson from "@/lib/data/mock-variants.json"
 import { buildApprovedZip, downloadBlob } from "@/lib/export-zip"
+import { downloadAEScript } from "@/lib/ae-script"
 
 export default function VariantsPage() {
   const router = useRouter()
@@ -208,6 +209,12 @@ export default function VariantsPage() {
     }
   }
 
+  function onDownloadAE() {
+    const approved = variants.filter((v) => approvedIds.has(v.id))
+    if (approved.length === 0) return
+    downloadAEScript(approved)
+  }
+
   const approvedCount = variants.filter((v) => approvedIds.has(v.id)).length
 
   if (!brief || !analysis) return null
@@ -243,14 +250,24 @@ export default function VariantsPage() {
               Step 3 of 3 — Variants & Results
             </p>
           </div>
-          <Button
-            onClick={onDownloadZip}
-            disabled={approvedCount === 0}
-            size="sm"
-          >
-            📦 Download {approvedCount > 0 ? `${approvedCount} approved` : ""}{" "}
-            as ZIP
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={onDownloadAE}
+              disabled={approvedCount === 0}
+              size="sm"
+              title="Download After Effects JSX script"
+            >
+              🎬 AE Script
+            </Button>
+            <Button
+              onClick={onDownloadZip}
+              disabled={approvedCount === 0}
+              size="sm"
+            >
+              📦 ZIP ({approvedCount})
+            </Button>
+          </div>
         </header>
 
         <div className="mb-6">

@@ -22,9 +22,8 @@ type JSZipInstance = {
 }
 
 export async function buildApprovedZip(payload: ExportPayload): Promise<Blob> {
-  // @ts-expect-error — jszip resolved at runtime after npm install
   const mod = await import("jszip")
-  const JSZip = (mod as { default: new () => JSZipInstance }).default
+  const JSZip = (mod as unknown as { default: new () => JSZipInstance }).default
   const zip = new JSZip()
 
   // --- text-variants.csv

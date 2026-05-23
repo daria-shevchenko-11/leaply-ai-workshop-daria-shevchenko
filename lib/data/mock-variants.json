@@ -1,47 +1,75 @@
 {
-  "_note": "Demo Mode response shape for /api/generate-variants. Mirrors real generation output. Cover URLs are placeholders (picsum.photos); real Nano Banana 2 returns base64 or hosted URL.",
+  "_note": "Demo Mode shape for /api/generate-variants. Mirrors Leaply taxonomy.",
   "variants": [
     {
       "id": "v1",
-      "hook_text": "Most women over 35 have blocked lymph — and blame everything else.",
+      "hook_text": "Sitting 8 hours a day? Your lymph system is screaming.",
       "cover_image_url": "https://picsum.photos/seed/leaply-v1/1080/1920",
       "video_url": null,
-      "video_job_id": "mock-v1-job",
+      "video_job_id": null,
       "tags": {
         "core_message_id": "blocked-lymph-flow",
-        "visual_format_id": "professional-authority",
-        "pain_point_id": "general",
-        "hook_type_id": "shock-stat"
+        "visual_format_id": "action-lifestyle",
+        "pain_point_id": "legs",
+        "hook_type_id": "fear-trigger"
       },
-      "ae_brief": "Female 35-45, clinical setting, talks to camera, soft authority. 9:16, 8s, sound design subtle reveal."
+      "ae_brief": "Energetic female trainer, 35, gym setting, direct camera. Quick cuts: office chair → swollen ankles → lymph diagram animation. Punchy text overlay on 'screaming'."
     },
     {
       "id": "v2",
-      "hook_text": "You'll feel this neck stiffness for the rest of your life — unless someone tells you what it really is.",
+      "hook_text": "My doctor said this was just aging. She was wrong.",
       "cover_image_url": "https://picsum.photos/seed/leaply-v2/1080/1920",
       "video_url": null,
-      "video_job_id": "mock-v2-job",
+      "video_job_id": null,
       "tags": {
-        "core_message_id": "blocked-lymph-flow",
-        "visual_format_id": "professional-authority",
-        "pain_point_id": "neck-shoulders",
-        "hook_type_id": "urgency-warning"
+        "core_message_id": "aging-not-cause",
+        "visual_format_id": "native-ugc",
+        "pain_point_id": "stiffness-pain",
+        "hook_type_id": "authority-statement"
       },
-      "ae_brief": "Same archetype, more lean-in at midpoint. Sharp cut on 'really is'. 9:16, 8s."
+      "ae_brief": "Woman 55, soft lighting, sitting at home, no makeup. Talking head UGC style. Slow zoom in. Lower-third caption."
     },
     {
       "id": "v3",
-      "hook_text": "Your morning swelling isn't water weight. It's stagnant lymph.",
+      "hook_text": "POV: you finally figured out why your neck always hurts.",
       "cover_image_url": "https://picsum.photos/seed/leaply-v3/1080/1920",
       "video_url": null,
-      "video_job_id": "mock-v3-job",
+      "video_job_id": null,
       "tags": {
-        "core_message_id": "blocked-lymph-flow",
-        "visual_format_id": "professional-authority",
-        "pain_point_id": "face",
-        "hook_type_id": "myth-bust"
+        "core_message_id": "root-cause",
+        "visual_format_id": "native-ugc",
+        "pain_point_id": "neck-shoulders",
+        "hook_type_id": "pattern-interrupt-hook"
       },
-      "ae_brief": "Doctor in clinic, gestures at face, calm myth-bust tone. 9:16, 8s."
+      "ae_brief": "Woman 28, selfie cam angle, bedroom mirror. Vertical phone-shot vibe. Quick text reveal. Trendy music cue."
+    },
+    {
+      "id": "v4",
+      "hook_text": "If you wake up stiff every morning, this 90-second routine will shock you.",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v4/1080/1920",
+      "video_url": null,
+      "video_job_id": null,
+      "tags": {
+        "core_message_id": "early-warning",
+        "visual_format_id": "visual-evidence",
+        "pain_point_id": "stiffness-pain",
+        "hook_type_id": "curiosity-gap"
+      },
+      "ae_brief": "Asian man 60, gentle expert energy, yoga mat. Before/after split screen. Stopwatch graphic. Clean medical aesthetic."
+    },
+    {
+      "id": "v5",
+      "hook_text": "I asked my mom why she had a hump. Her answer changed everything.",
+      "cover_image_url": "https://picsum.photos/seed/leaply-v5/1080/1920",
+      "video_url": null,
+      "video_job_id": null,
+      "tags": {
+        "core_message_id": "story-base-movie",
+        "visual_format_id": "longread-story",
+        "pain_point_id": "neck-hump",
+        "hook_type_id": "dialogue-opener"
+      },
+      "ae_brief": "Black woman 35, talking about her mother, with old photos. Slow story-style. Family photos as B-roll. Subtle music build."
     }
   ]
 }

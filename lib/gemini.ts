@@ -5,7 +5,6 @@
 // Model IDs are constants — swap if Google changes names.
 
 import "server-only"
-// @ts-expect-error — resolved at runtime after `npm install @google/genai`
 import { GoogleGenAI } from "@google/genai"
 import { env } from "@/lib/env"
 import { formatTaxonomyForPrompt } from "@/lib/fit-check"

@@ -16,7 +16,13 @@ const EnvSchema = z.object({
   // Replicate (Kling v2.x video generation).
   // Create at https://replicate.com → API tokens.
   // Requires billing topup (~$20 for testing).
-  REPLICATE_API_TOKEN: z.string().min(1).optional(),
+  // Empty string treated as undefined.
+  REPLICATE_API_TOKEN: z
+    .preprocess(
+      (v) => (typeof v === "string" && v.length === 0 ? undefined : v),
+      z.string().min(1).optional()
+    )
+    .optional(),
 })
 
 export const env = EnvSchema.parse(process.env)

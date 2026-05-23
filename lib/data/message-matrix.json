@@ -1,6 +1,33 @@
 {
-  "_note": "PLACEHOLDER — Daria provides real values from https://hokuto.leaplyhub.com/message-matrix?account=A7_Leaply. Used as fallback taxonomy for fit-check. Replace with real export before live demo.",
+  "_note": "Leaply Variation Tree taxonomy. Sourced from HTML mockup (other Claude session) + hokuto.leaplyhub.com/message-matrix screenshot. Replace/extend as needed.",
   "core_messages": [
+    {
+      "id": "story-base-movie",
+      "name": "Story Base Movie",
+      "description": "Storytelling-driven hook, narrative arc with character transformation.",
+      "examples": [
+        "My mom carried this for 30 years before someone finally explained why.",
+        "She came in for back pain. She left with the answer she'd been chasing for 8 years."
+      ]
+    },
+    {
+      "id": "kids-view",
+      "name": "Kids View",
+      "description": "Reframe through child's perspective — innocence reveals adult absurdity.",
+      "examples": [
+        "My daughter pointed at my neck and asked why I have a 'bump'.",
+        "Kids see the truth grown-ups have been ignoring for years."
+      ]
+    },
+    {
+      "id": "pattern-interrupt",
+      "name": "Pattern Interrupt",
+      "description": "Stops scroll with unexpected angle, contrast, or visual jolt.",
+      "examples": [
+        "Wait. Did you just feel that crackle in your neck?",
+        "Don't keep scrolling if your shoulders are tight right now."
+      ]
+    },
     {
       "id": "aging-not-cause",
       "name": "Aging Is Not the Cause",
@@ -12,110 +39,110 @@
     },
     {
       "id": "blocked-lymph-flow",
-      "name": "Blocked Lymph Flow",
-      "description": "Positions blocked lymph as the root cause of swelling, pain, and aging.",
+      "name": "Blocked Lymph Flow from long sitting",
+      "description": "Positions sedentary lifestyle as cause of lymph stagnation and symptoms.",
       "examples": [
-        "Your lymph nodes are blocked.",
-        "Lymph stagnation is silently aging your body."
+        "Sit 8 hours a day? Your lymph is screaming.",
+        "Your lymph nodes are blocked. And sitting all day makes it worse."
       ]
     },
     {
       "id": "body-transformation",
-      "name": "Body Transformation",
+      "name": "Body transformation",
       "description": "Visual before/after promise, body-level change in weeks.",
       "examples": [
-        "See the change in 14 days.",
-        "From bloated to slim — without diets."
+        "From bloated to slim — without diets.",
+        "See the change in 14 days."
       ]
     },
     {
-      "id": "doctor-knows",
-      "name": "Doctor Knows the Secret",
-      "description": "Authority figure reveals what mainstream medicine hides.",
+      "id": "early-warning",
+      "name": "Early Body Warning Signals",
+      "description": "Reframes minor symptoms as early signals of bigger issues.",
       "examples": [
-        "Doctors won't tell you this.",
-        "What your physiotherapist isn't telling you."
+        "If you wake up stiff, your body is sending you a warning.",
+        "The signs your body shows you decade before it gets serious."
       ]
     },
     {
-      "id": "natural-method",
-      "name": "Natural Method",
-      "description": "No pills, no surgery — just simple daily ritual.",
+      "id": "expert-guided",
+      "name": "Expert-Guided Transformation",
+      "description": "Doctor/expert leads viewer through a transformation method.",
       "examples": [
-        "3 minutes a day. No pills.",
-        "The natural way they don't want you to know."
+        "Physiotherapist of 20 years finally tells you the truth.",
+        "Trained at Mayo Clinic — here's what they don't teach you about your back."
       ]
     },
     {
-      "id": "energy-restoration",
-      "name": "Energy Restoration",
-      "description": "Fatigue as symptom of stagnant lymph; promise of returning energy.",
+      "id": "expert-relative-guided",
+      "name": "Expert-Relative-Guided Transformation",
+      "description": "Expert + family-member emotional anchor combined.",
       "examples": [
-        "Wake up actually rested.",
-        "Get back the energy you had at 25."
+        "My mom is a physio. She fixed my neck in 3 weeks.",
+        "Doctor sister told me — and I wish I'd listened sooner."
       ]
     },
     {
-      "id": "social-proof-relative",
-      "name": "Relative-as-Proof",
-      "description": "Family member transformation as social proof.",
+      "id": "lack-confidence",
+      "name": "Lack of confidence",
+      "description": "Body / posture issue creates social confidence problem.",
       "examples": [
-        "My mom did this for 30 days...",
-        "I gave it to my husband who scoffed — now he won't shut up about it."
+        "I stopped going to events because of my neck hump.",
+        "First photo in 3 years where I didn't ask to be cropped out."
       ]
     },
     {
-      "id": "pain-relief-fast",
-      "name": "Fast Pain Relief",
-      "description": "Immediate physical relief as primary value prop.",
+      "id": "relative-proof",
+      "name": "Relative-as-Proof Transformation",
+      "description": "Family member as proof of transformation success.",
       "examples": [
-        "Neck pain gone in 5 minutes.",
-        "Plantar fasciitis — finally something that works."
+        "I gave it to my husband who scoffed — now he won't shut up about it.",
+        "My mom did this for 30 days. The change is unreal."
       ]
     },
     {
-      "id": "self-care-ritual",
-      "name": "Self-Care Ritual",
-      "description": "Positions product as moment for self, not obligation.",
+      "id": "relative-proof-routine",
+      "name": "Relative-as-Proof Transformation Routine",
+      "description": "Family proof + replicable daily routine focus.",
       "examples": [
-        "The 5-min ritual that's saving my sanity.",
-        "Your daily reset."
+        "My grandma's morning routine — 5 minutes, 80 years young.",
+        "Watch my dad's evening 3-minute ritual."
       ]
     },
     {
-      "id": "scientific-backed",
-      "name": "Scientific Authority",
-      "description": "Studies, percentages, research citations.",
+      "id": "root-cause",
+      "name": "Root Cause of Physical Symptoms",
+      "description": "Reveals 'real' cause vs surface symptom marketers usually target.",
       "examples": [
-        "Studies show 87% improvement in...",
-        "Lymphology research finally confirms..."
+        "POV: you finally figured out why your neck always hurts.",
+        "Your headaches aren't from screens. They're from this."
       ]
     },
     {
-      "id": "before-it-too-late",
-      "name": "Urgency / Before It's Too Late",
-      "description": "Warns of progressive damage if ignored.",
+      "id": "stress-stored",
+      "name": "Stress Stored in the Body",
+      "description": "Frames emotional stress as physical tension to release.",
       "examples": [
-        "By 50, it's irreversible.",
-        "Don't wait until you can't fix it."
+        "Your shoulders are holding 6 years of stress. Time to put it down.",
+        "Trauma lives in the body. Here's where yours is."
       ]
     },
     {
-      "id": "confidence-look",
-      "name": "Confidence Through Appearance",
-      "description": "Better look → social confidence → life change.",
+      "id": "superficial-fix",
+      "name": "Superficial Fixes Don't Work",
+      "description": "Dismisses common 'band-aid' solutions to elevate product.",
       "examples": [
-        "Walked into the room differently.",
-        "First time I felt seen in years."
+        "Foam rollers don't work for this. Here's what does.",
+        "Stretching is treating the symptom. Treat the cause."
       ]
     },
     {
-      "id": "posture-confidence",
-      "name": "Posture-Confidence Loop",
-      "description": "Bad posture limits opportunities; fixing posture changes life.",
+      "id": "time-spent-dumb",
+      "name": "Time spent on dumb ways",
+      "description": "Mocks time wasted on ineffective methods, positions efficient solution.",
       "examples": [
-        "Your neck hump is killing your confidence.",
-        "Posture before product."
+        "I spent $4K on massages before realizing it was THIS the whole time.",
+        "10 years of physical therapy. The fix took 30 days."
       ]
     }
   ],
@@ -161,22 +188,37 @@
       "description": "Tender lymph nodes, side-of-chest fullness"
     },
     {
-      "id": "stomach",
-      "name": "stomach / bloat",
-      "description": "Bloating, slow digestion, belly puffiness"
+      "id": "stiffness-pain",
+      "name": "stiffness & pain",
+      "description": "Morning stiffness, general body aches"
     },
     {
-      "id": "fatigue",
-      "name": "chronic fatigue",
-      "description": "Daily tiredness, wake-up exhaustion"
+      "id": "sciatic-nerve",
+      "name": "sciatic nerve",
+      "description": "Shooting pain from lower back down leg"
     },
     {
-      "id": "sleep",
-      "name": "poor sleep",
-      "description": "Trouble falling/staying asleep, restless"
+      "id": "deep-hips",
+      "name": "deep hips",
+      "description": "Hip flexor / deep glute tension, sitting-related"
     }
   ],
   "visual_formats": [
+    {
+      "id": "visual-evidence",
+      "name": "Visual Evidence",
+      "description": "Before/after, transformation reveal, data overlay"
+    },
+    {
+      "id": "text-centric",
+      "name": "Text-Centric",
+      "description": "Large overlaid text drives the message; minimal action"
+    },
+    {
+      "id": "action-lifestyle",
+      "name": "Action / Lifestyle",
+      "description": "Activity / movement / daily-life context backdrop"
+    },
     {
       "id": "professional-authority",
       "name": "Professional Authority",
@@ -184,38 +226,23 @@
     },
     {
       "id": "native-ugc",
-      "name": "Native UGC",
-      "description": "Selfie-style, bedroom/kitchen background, raw lighting, real-person feel"
+      "name": "Native / Raw UGC",
+      "description": "Selfie-style, real-person raw feel, no production polish"
     },
     {
       "id": "social-interaction",
       "name": "Social Interaction",
-      "description": "Two people conversation, one teaching/advising the other"
+      "description": "Two people conversation, dialogue / advice format"
     },
     {
-      "id": "visual-evidence",
-      "name": "Visual Evidence",
-      "description": "Before/after split, transformation reveal"
+      "id": "longread-story",
+      "name": "Longread (Storybased ads)",
+      "description": "Extended narrative arc, 30-60+ sec, story-driven"
     },
     {
-      "id": "action",
-      "name": "Action / Demo",
-      "description": "Showing the technique or product in use, hands-focused"
-    },
-    {
-      "id": "talking-head",
-      "name": "Talking Head",
-      "description": "Direct-to-camera monologue, mid-shot, eye contact"
-    },
-    {
-      "id": "screen-record",
-      "name": "Screen / Phone Reveal",
-      "description": "Pointing at phone screen showing comments/reviews/studies"
-    },
-    {
-      "id": "lifestyle",
-      "name": "Lifestyle Context",
-      "description": "Activity background (driving, walking, working) — multi-tasking"
+      "id": "other",
+      "name": "Other",
+      "description": "Outside the standard 7 formats"
     }
   ],
   "hook_types": [
@@ -230,43 +257,43 @@
       "description": "Expert delivers a definitive claim"
     },
     {
-      "id": "pattern-interrupt",
+      "id": "pattern-interrupt-hook",
       "name": "Pattern interrupt",
       "description": "Unexpected visual or statement to stop scrolling"
     },
     {
-      "id": "question-hook",
-      "name": "Question hook",
-      "description": "Opens with provocative question to viewer"
+      "id": "curiosity-gap",
+      "name": "Curiosity gap",
+      "description": "Promises a reveal — viewer must watch to find out"
     },
     {
-      "id": "shock-stat",
-      "name": "Shock statistic",
-      "description": "Surprising number or percentage"
+      "id": "fear-trigger",
+      "name": "Fear trigger",
+      "description": "Health scare, urgency, consequence framing"
     },
     {
-      "id": "testimonial-open",
-      "name": "Testimonial opener",
-      "description": "Mid-result-story drop-in"
+      "id": "social-proof",
+      "name": "Social proof",
+      "description": "'Everyone is doing this' / testimonial drop-in"
     },
     {
-      "id": "myth-bust",
-      "name": "Myth bust",
-      "description": "'You've been told X. Actually Y.'"
+      "id": "dialogue-opener",
+      "name": "Dialogue opener",
+      "description": "Two-person conversation grab"
     },
     {
-      "id": "urgency-warning",
-      "name": "Urgency / warning",
-      "description": "'Don't do X anymore' / 'Stop doing X'"
+      "id": "frankenstein",
+      "name": "Frankenstein",
+      "description": "Mash-up of multiple winning hook formats"
     }
   ],
   "variation_types": [
-    "New Hook",
-    "New Visual",
-    "New Angle",
-    "Full Hook Var",
-    "Character Var",
-    "Pain Angle Var",
-    "Format Shift"
+    "Text / message",
+    "Audience",
+    "Tone",
+    "Character",
+    "Pain angle",
+    "Visual Format",
+    "Frankenstein"
   ]
 }
