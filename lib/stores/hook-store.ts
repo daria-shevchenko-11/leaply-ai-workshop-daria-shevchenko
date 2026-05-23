@@ -36,6 +36,14 @@ type HookState = {
   gemini_api_key: string
   setGeminiApiKey: (k: string) => void
 
+  // Replicate API token — for Kling video auto-render. Stored in localStorage.
+  replicate_api_token: string
+  setReplicateApiToken: (k: string) => void
+
+  // View mode — split UI between marketer (simple) and designer (full).
+  view_mode: "marketer" | "designer"
+  setViewMode: (m: "marketer" | "designer") => void
+
   // Navigation
   step: Step
   goToStep: (s: Step) => void
@@ -101,6 +109,8 @@ type HookState = {
 const initialState = {
   demo_mode: false,
   gemini_api_key: "",
+  replicate_api_token: "",
+  view_mode: "marketer" as "marketer" | "designer",
   step: "brief" as Step,
   brief: null,
   analysis: null,
@@ -123,6 +133,8 @@ export const useHookStore = create<HookState>()(
 
       setDemoMode: (v) => set({ demo_mode: v }),
       setGeminiApiKey: (k) => set({ gemini_api_key: k }),
+      setReplicateApiToken: (k) => set({ replicate_api_token: k }),
+      setViewMode: (m) => set({ view_mode: m }),
       goToStep: (s) => set({ step: s }),
 
       setBrief: (b) => set({ brief: b }),
@@ -253,6 +265,8 @@ export const useHookStore = create<HookState>()(
       partialize: (state) => ({
         demo_mode: state.demo_mode,
         gemini_api_key: state.gemini_api_key,
+        replicate_api_token: state.replicate_api_token,
+        view_mode: state.view_mode,
         variation_axes: state.variation_axes,
         axis_counts: state.axis_counts,
       }),

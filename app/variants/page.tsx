@@ -11,6 +11,7 @@ import { VariantCard } from "@/components/variant-card"
 import { DemoModeToggle } from "@/components/demo-mode-toggle"
 import { PipelineVisualizer } from "@/components/pipeline-visualizer"
 import { ProgressStream } from "@/components/progress-stream"
+import { ViewToggle } from "@/components/view-toggle"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { findCoreMessage } from "@/lib/fit-check"
@@ -32,6 +33,8 @@ export default function VariantsPage() {
   const approvedIds = useHookStore((s) => s.approved_ids)
   const setVideoJob = useHookStore((s) => s.setVideoJob)
   const updateVideoJobStatus = useHookStore((s) => s.updateVideoJobStatus)
+  const viewMode = useHookStore((s) => s.view_mode)
+  const replicateToken = useHookStore((s) => s.replicate_api_token)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -122,10 +125,16 @@ export default function VariantsPage() {
   const pollVideoJob = useCallback(
     async (variantId: string, jobId: string) => {
       const MAX_POLLS = 60 // ~5 min at 5s interval
+      const headers: Record<string, string> = {}
+      const tok = useHookStore.getState().replicate_api_token
+      if (tok) headers["x-replicate-token"] = tok
       for (let i = 0; i < MAX_POLLS; i++) {
         await new Promise((r) => setTimeout(r, 5000))
         try {
-          const res = await fetch(`/api/video-status/${jobId}`)
+          const res = await fetch(
+            `/api/video-status/${encodeURIComponent(jobId)}`,
+            { headers }
+          )
           if (!res.ok) continue
           const json = (await res.json()) as unknown
           const parsed = VideoStatusResponseSchema.parse(json)
@@ -166,9 +175,13 @@ export default function VariantsPage() {
         })
 
         try {
+          const videoHeaders: Record<string, string> = {
+            "content-type": "application/json",
+          }
+          if (replicateToken) videoHeaders["x-replicate-token"] = replicateToken
           const res = await fetch("/api/start-video", {
             method: "POST",
-            headers: { "content-type": "application/json" },
+            headers: videoHeaders,
             body: JSON.stringify({ variant: v }),
           })
           if (!res.ok) {
@@ -262,26 +275,43 @@ export default function VariantsPage() {
               Steps 4–5 of 5 · Approve & Launch
             </p>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Варіанти готові — апрувай і експортуй
+              {viewMode === "marketer"
+                ? "Апрувай варіанти, які підходять"
+                : "Designer view — повний експорт"}
             </h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={onDownloadAE}
-              disabled={approvedCount === 0}
-              size="sm"
-              title="Download After Effects JSX script"
-            >
-              🎬 AE Script
-            </Button>
-            <Button
-              onClick={onDownloadZip}
-              disabled={approvedCount === 0}
-              size="sm"
-            >
-              📦 ZIP ({approvedCount})
-            </Button>
+            <ViewToggle />
+            {viewMode === "designer" && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={onDownloadAE}
+                  disabled={approvedCount === 0}
+                  size="sm"
+                  title="Download After Effects JSX script"
+                >
+                  🎬 AE Script
+                </Button>
+                <Button
+                  onClick={onDownloadZip}
+                  disabled={approvedCount === 0}
+                  size="sm"
+                >
+                  📦 ZIP ({approvedCount})
+                </Button>
+              </>
+            )}
+            {viewMode === "marketer" && approvedCount > 0 && (
+              <Button
+                variant="outline"
+                onClick={onDownloadZip}
+                size="sm"
+                title="Передати дизайнеру (Designer view має більше опцій)"
+              >
+                📤 Hand off ({approvedCount})
+              </Button>
+            )}
           </div>
         </header>
 

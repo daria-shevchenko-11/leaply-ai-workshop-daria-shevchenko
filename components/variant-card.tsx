@@ -28,6 +28,7 @@ export function VariantCard({ variant }: Props) {
   const geminiKey = useHookStore((s) => s.gemini_api_key)
   const klingPrompts = useHookStore((s) => s.kling_prompts[variant.id])
   const setKlingPrompts = useHookStore((s) => s.setKlingPrompts)
+  const viewMode = useHookStore((s) => s.view_mode)
 
   const [loadingPrompts, setLoadingPrompts] = useState(false)
   const [promptsError, setPromptsError] = useState<string | null>(null)
@@ -147,14 +148,6 @@ export function VariantCard({ variant }: Props) {
           )}
         </div>
 
-        {/* AE brief (collapsed) */}
-        <details className="text-xs text-muted-foreground">
-          <summary className="cursor-pointer font-medium">
-            AE / Video brief
-          </summary>
-          <p className="mt-1.5 whitespace-pre-wrap">{variant.ae_brief}</p>
-        </details>
-
         {/* Video player or status */}
         <div className="space-y-1.5">
           {videoUrl ? (
@@ -202,102 +195,114 @@ export function VariantCard({ variant }: Props) {
           )}
         </div>
 
-        {/* Kling/Nano Banana prompts — lazy-loaded */}
-        <div className="space-y-2 border-t pt-3">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={onOpenPrompts}
-            className="w-full"
-          >
-            {promptsOpen ? "▼" : "▶"} 📋 Kling / Nano Banana prompts
-            {klingPrompts && " ✓"}
-          </Button>
+        {/* AE brief — collapsed by default, only in Designer view */}
+        {viewMode === "designer" && (
+          <details className="text-xs text-muted-foreground">
+            <summary className="cursor-pointer font-medium">
+              AE / Video brief
+            </summary>
+            <p className="mt-1.5 whitespace-pre-wrap">{variant.ae_brief}</p>
+          </details>
+        )}
 
-          {promptsOpen && (
-            <div className="space-y-3 rounded-md border bg-muted/30 p-3 text-xs">
-              {loadingPrompts && (
-                <p className="text-muted-foreground">
-                  ⏳ Generating prompts...
-                </p>
-              )}
-              {promptsError && (
-                <p className="text-destructive">⚠ {promptsError}</p>
-              )}
-              {klingPrompts && (
-                <>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-                        🖼 Nano Banana (image prompt)
-                      </span>
-                      <CopyButton
-                        text={klingPrompts.image_prompt}
-                        label="Copy"
-                      />
+        {/* Kling/Nano Banana prompts — Designer view only */}
+        {viewMode === "designer" && (
+          <div className="space-y-2 border-t pt-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onOpenPrompts}
+              className="w-full"
+            >
+              {promptsOpen ? "▼" : "▶"} 📋 Kling / Nano Banana prompts
+              {klingPrompts && " ✓"}
+            </Button>
+
+            {promptsOpen && (
+              <div className="space-y-3 rounded-md border bg-muted/30 p-3 text-xs">
+                {loadingPrompts && (
+                  <p className="text-muted-foreground">
+                    ⏳ Generating prompts...
+                  </p>
+                )}
+                {promptsError && (
+                  <p className="text-destructive">⚠ {promptsError}</p>
+                )}
+                {klingPrompts && (
+                  <>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                          🖼 Nano Banana (image prompt)
+                        </span>
+                        <CopyButton
+                          text={klingPrompts.image_prompt}
+                          label="Copy"
+                        />
+                      </div>
+                      <pre className="max-h-40 overflow-y-auto rounded bg-background p-2 font-mono text-[10px] whitespace-pre-wrap">
+                        {klingPrompts.image_prompt}
+                      </pre>
                     </div>
-                    <pre className="max-h-40 overflow-y-auto rounded bg-background p-2 font-mono text-[10px] whitespace-pre-wrap">
-                      {klingPrompts.image_prompt}
-                    </pre>
-                  </div>
 
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-                        🎬 Kling Omni (video prompt)
-                      </span>
-                      <CopyButton
-                        text={klingPrompts.video_prompt}
-                        label="Copy"
-                      />
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                          🎬 Kling Omni (video prompt)
+                        </span>
+                        <CopyButton
+                          text={klingPrompts.video_prompt}
+                          label="Copy"
+                        />
+                      </div>
+                      <pre className="max-h-40 overflow-y-auto rounded bg-background p-2 font-mono text-[10px] whitespace-pre-wrap">
+                        {klingPrompts.video_prompt}
+                      </pre>
                     </div>
-                    <pre className="max-h-40 overflow-y-auto rounded bg-background p-2 font-mono text-[10px] whitespace-pre-wrap">
-                      {klingPrompts.video_prompt}
-                    </pre>
-                  </div>
 
-                  {klingPrompts.needs_split &&
-                    klingPrompts.split_video_prompt && (
-                      <div className="space-y-1.5 border-t border-yellow-500/30 pt-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold tracking-widest text-yellow-700 uppercase dark:text-yellow-300">
-                            ⚠ Split required — Shot 2 of 2
-                          </span>
-                          <CopyButton
-                            text={klingPrompts.split_video_prompt}
-                            label="Copy"
-                          />
+                    {klingPrompts.needs_split &&
+                      klingPrompts.split_video_prompt && (
+                        <div className="space-y-1.5 border-t border-yellow-500/30 pt-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold tracking-widest text-yellow-700 uppercase dark:text-yellow-300">
+                              ⚠ Split required — Shot 2 of 2
+                            </span>
+                            <CopyButton
+                              text={klingPrompts.split_video_prompt}
+                              label="Copy"
+                            />
+                          </div>
+                          <pre className="max-h-40 overflow-y-auto rounded bg-background p-2 font-mono text-[10px] whitespace-pre-wrap">
+                            {klingPrompts.split_video_prompt}
+                          </pre>
                         </div>
-                        <pre className="max-h-40 overflow-y-auto rounded bg-background p-2 font-mono text-[10px] whitespace-pre-wrap">
-                          {klingPrompts.split_video_prompt}
-                        </pre>
-                      </div>
-                    )}
+                      )}
 
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    <div className="rounded bg-background p-2">
-                      <div className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase">
-                        🔊 Ambience
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      <div className="rounded bg-background p-2">
+                        <div className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase">
+                          🔊 Ambience
+                        </div>
+                        <div className="text-[10px]">
+                          {klingPrompts.ambience_note}
+                        </div>
                       </div>
-                      <div className="text-[10px]">
-                        {klingPrompts.ambience_note}
+                      <div className="rounded bg-background p-2">
+                        <div className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase">
+                          🎙 Voice
+                        </div>
+                        <div className="text-[10px]">
+                          {klingPrompts.voice_direction}
+                        </div>
                       </div>
                     </div>
-                    <div className="rounded bg-background p-2">
-                      <div className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase">
-                        🎙 Voice
-                      </div>
-                      <div className="text-[10px]">
-                        {klingPrompts.voice_direction}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Approve */}
         <Button

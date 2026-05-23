@@ -22,6 +22,8 @@ export function BriefForm() {
   const demoMode = useHookStore((s) => s.demo_mode)
   const geminiKey = useHookStore((s) => s.gemini_api_key)
   const setGeminiKey = useHookStore((s) => s.setGeminiApiKey)
+  const replicateToken = useHookStore((s) => s.replicate_api_token)
+  const setReplicateToken = useHookStore((s) => s.setReplicateApiToken)
 
   const [referenceType, setReferenceType] = useState<"text" | "video">("video")
   const [referenceText, setReferenceText] = useState("")
@@ -287,6 +289,39 @@ export function BriefForm() {
               <p className="text-[10px] text-muted-foreground">
                 Якщо один задушений rate-limit-ом — клікни на інший.
                 Зберігається лише у твоєму браузері (localStorage).
+              </p>
+            </div>
+          )}
+
+          {/* Replicate token — optional, for Kling video auto-render */}
+          {!demoMode && (
+            <div className="space-y-2 rounded-md border border-purple-500/40 bg-purple-500/5 p-3">
+              <label htmlFor="replicate-key" className="text-sm font-medium">
+                🎬 Replicate API Token{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  (optional — для auto-render Kling-відео)
+                </span>
+              </label>
+              <Input
+                id="replicate-key"
+                type="password"
+                placeholder="r8_..."
+                value={replicateToken}
+                onChange={(e) => setReplicateToken(e.target.value)}
+              />
+              <p className="text-[10px] text-muted-foreground">
+                Без токену картки покажуть тільки текст + cover. З токеном — на
+                approve запускається Kling auto-render через Replicate
+                (~$0.30/відео, 2-5 хв). Створи на{" "}
+                <a
+                  href="https://replicate.com/account/api-tokens"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary underline"
+                >
+                  replicate.com/account/api-tokens
+                </a>
+                . Зберігається у браузері (localStorage).
               </p>
             </div>
           )}

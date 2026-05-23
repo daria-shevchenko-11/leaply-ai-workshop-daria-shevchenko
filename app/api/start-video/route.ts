@@ -1,22 +1,45 @@
 import { NextResponse } from "next/server"
 import { StartVideoRequestSchema } from "@/lib/schemas/hook-schemas"
 import { submitVeoVideo } from "@/lib/gemini"
+import { submitKlingPrediction } from "@/lib/replicate"
+import { env } from "@/lib/env"
 
 export const runtime = "nodejs"
 export const maxDuration = 30
 
+// Job IDs are prefixed with provider tag so video-status can route the poll.
+// Format: "replicate:<id>" or "veo:<operation-name>"
+
 export async function POST(req: Request) {
   try {
+    // Client can override Replicate token via header (same pattern as Gemini key)
+    const replicateTokenOverride =
+      req.headers.get("x-replicate-token") || undefined
     const body = await req.json()
     const { variant } = StartVideoRequestSchema.parse(body)
 
     const prompt = buildVideoPrompt(variant)
 
-    // Default: Veo via Gemini (single workshop key)
-    // To swap to Kling: replace this with the Kling submit call.
-    const operationName = await submitVeoVideo(prompt)
+    // Prefer Replicate Kling when token is available — better video quality
+    // and async pattern fits Vercel timeouts cleanly.
+    const replicateToken = replicateTokenOverride || env.REPLICATE_API_TOKEN
+    if (replicateToken) {
+      const predictionId = await submitKlingPrediction(replicateToken, {
+        prompt,
+        // Nano Banana cover frame as first frame (if it's a URL, not data:)
+        ...(variant.cover_image_url &&
+        !variant.cover_image_url.startsWith("data:")
+          ? { start_image: variant.cover_image_url }
+          : {}),
+        duration: 5,
+        aspect_ratio: "9:16",
+      })
+      return NextResponse.json({ job_id: `replicate:${predictionId}` })
+    }
 
-    return NextResponse.json({ job_id: operationName })
+    // Fallback: Veo via Gemini (requires workshop key with Veo access)
+    const operationName = await submitVeoVideo(prompt)
+    return NextResponse.json({ job_id: `veo:${operationName}` })
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Unknown error"
     return NextResponse.json({ error: msg }, { status: 500 })
